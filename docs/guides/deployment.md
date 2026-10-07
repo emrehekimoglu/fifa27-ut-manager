@@ -85,7 +85,9 @@ GitHub's runners only have IPv4. The direct connection on the free plan is IPv6-
    - Repeat for every GitHub secret in the table.
 2. Vercel variables:
    - Open the project on [vercel.com](https://vercel.com) and go to **Settings → Environment Variables**.
-   - Enter the **Key** and **Value**. Select the **Production** and **Preview** environments, then click **Save**.
+   - Enter the **Key** and **Value**.
+   - Set the variable type to **Config**, not **Secret**. Both values are public by design, and Vercel refuses a `VITE_` variable of type **Secret** with the warning _Keep This Value Private_.
+   - Select the **Production** and **Preview** environments, then click **Save**.
    - Repeat for every Vercel variable in the table.
 3. Redeploy, because Vercel bakes `VITE_*` values into the build:
    - Go to **Deployments**.
@@ -98,13 +100,13 @@ GitHub's runners only have IPv4. The direct connection on the free plan is IPv6-
 
 ### Secrets and variables
 
-| Name                            | Value                                           | Where                                                | Used by             |
-| ------------------------------- | ----------------------------------------------- | ---------------------------------------------------- | ------------------- |
-| `SUPABASE_URL`                  | Project URL                                     | GitHub Actions secret                                | Catalog sync        |
-| `SUPABASE_SECRET_KEY`           | `sb_secret_…` key                               | GitHub Actions secret                                | Catalog sync        |
-| `SUPABASE_DB_URL`               | Session pooler connection string, with password | GitHub Actions secret                                | Database migrations |
-| `VITE_SUPABASE_URL`             | Project URL                                     | Vercel environment variable (Production and Preview) | Web app             |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_…` key                          | Vercel environment variable (Production and Preview) | Web app             |
+| Name                            | Value                                           | Where                                               | Used by             |
+| ------------------------------- | ----------------------------------------------- | --------------------------------------------------- | ------------------- |
+| `SUPABASE_URL`                  | Project URL                                     | GitHub Actions secret                               | Catalog sync        |
+| `SUPABASE_SECRET_KEY`           | `sb_secret_…` key                               | GitHub Actions secret                               | Catalog sync        |
+| `SUPABASE_DB_URL`               | Session pooler connection string, with password | GitHub Actions secret                               | Database migrations |
+| `VITE_SUPABASE_URL`             | Project URL                                     | Vercel **Config** variable (Production and Preview) | Web app             |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_…` key                          | Vercel **Config** variable (Production and Preview) | Web app             |
 
 - **The publishable key is public by design.** Row-level security protects the data.
 - **The secret key and database URL grant full access.** They belong only in GitHub secrets.
