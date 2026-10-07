@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "./node_modules/.tmp/node",
+    "types": ["node"]
+  },
+  "include": ["package.json", "vite.config.ts", "vitest.config.ts"]
+}
