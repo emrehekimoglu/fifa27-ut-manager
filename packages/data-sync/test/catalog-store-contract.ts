@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import type { CatalogCard } from '../src/catalog-card.js';
 import type { CatalogStore, SyncRecord } from '../src/catalog-store.js';
 import { parseFutggDefinitionsPage } from '../src/futgg.js';
+import heroPage from './fixtures/futgg-definitions-hero-page.json' with { type: 'json' };
 import page from './fixtures/futgg-definitions-page.json' with { type: 'json' };
 
 /** Read access to a store's state, so the same assertions run against every implementation. */
@@ -20,6 +21,7 @@ const [pele, kubo, courtois, donnarumma] = parseFutggDefinitionsPage(page).cards
   CatalogCard,
   CatalogCard,
 ];
+const [kohler] = parseFutggDefinitionsPage(heroPage).cards as [CatalogCard];
 
 const STARTED = '2026-10-07T04:00:00.000Z';
 const FINISHED = '2026-10-07T04:12:30.000Z';
@@ -58,6 +60,14 @@ export function describeCatalogStoreContract(
       expect(await subject.card(pele.eaId)).toEqual(pele);
       expect(await subject.card(courtois.eaId)).toEqual(courtois);
       expect(await subject.activeCardIds()).toEqual([courtois.eaId, pele.eaId]);
+    });
+
+    it('stores a card without a club, such as a hero, without loss', async () => {
+      const id = await subject.store.startSync(STARTED);
+      await subject.store.upsertCards(id, [kohler]);
+
+      expect(kohler.club).toBeNull();
+      expect(await subject.card(kohler.eaId)).toEqual(kohler);
     });
 
     it('overwrites an existing card on upsert', async () => {

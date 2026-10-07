@@ -6,6 +6,7 @@ Real responses captured on 2026-10-07. They are trimmed only by removing whole i
 | ---------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `futgg-definitions-page.json`      | `GET https://www.fut.gg/api/fut/players/v2/27/definitions/?page=N`                  | Four items from pages 1, 2, 3 and 40. Page metadata (`next`, `currentPage`, `total`) is from page 3. |
 | `futgg-definitions-last-page.json` | Same endpoint, `page=334`                                                           | The first item of the last page, where `next` is `null`.                                             |
+| `futgg-definitions-hero-page.json` | Same endpoint, `page=4&overall__gte=85&overall__lte=99`                             | The first hero item of that page, Jürgen Kohler (Base Hero, CB), whose `club` is `null`.             |
 | `ea-ratings-page.json`             | `GET https://drop-api.ea.com/rating/ea-sports-fc` (with the `drop-referrer` header) | Three items from offsets 0–2000; `totalItems` from the same run.                                     |
 
 The four FUT.GG items are:
