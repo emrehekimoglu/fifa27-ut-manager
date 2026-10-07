@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Test output
+coverage/
+reports/
+.stryker-tmp/
+test-results/
+playwright-report/
+blob-report/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Tooling
+.vercel/
+*.log
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
