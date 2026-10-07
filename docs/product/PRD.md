@@ -3,7 +3,7 @@
 | Field          | Value                                  |
 | -------------- | -------------------------------------- |
 | Status         | **Draft — awaiting owner approval**    |
-| Version        | 0.1.0-draft                            |
+| Version        | 0.2.0-draft                            |
 | Owner          | Emre Hekimoğlu                         |
 | Target release | v0.1.0                                 |
 | Last updated   | 2026-10-07                             |
@@ -34,7 +34,8 @@ and desktop computers.
 
 ### 2.2 Non-goals (v0.1)
 
-- Access to or automation of users' EA accounts (no Web App / Companion App automation, no trading, no auto-buying).
+- Automation of users' EA accounts (no Web App / Companion App automation, no trading, no auto-buying).
+- Importing the club from the EA account (a v0.2 candidate, see §6.4).
 - PC market prices.
 - SBC cards and SBC cost estimation (planned for v0.2).
 - Evolutions (planned for v0.2).
@@ -124,6 +125,7 @@ Metrics update instantly on every squad change.
 | CLB-2 | Owned cards are treated as cost 0 in recommendations and are flagged as "owned". | P0 |
 | CLB-3 | Owned untradeable cards are supported. | P0 |
 | CLB-4 | Bulk import of the club (e.g. CSV). | P2 |
+| CLB-5 | Import owned cards from the user's EA account (see §6.4). | P2 |
 
 ### 5.6 Recommendations
 
@@ -179,13 +181,24 @@ Metrics update instantly on every squad change.
 - Prices come from publicly visible price information, read the way a normal browser would display it. Volume is low and rate-limited, and requests are restricted to cards being evaluated.
 - Source order: **FUT.GG → FUTWIZ → manual entry**. The final order depends on the M1 data spike.
 - **Constraint:** the project does not implement any mechanism to circumvent bot protection (Cloudflare challenge bypass, stealth/fingerprint evasion, CAPTCHA solving, reverse-engineering request signatures). If a source blocks normal access, it is dropped, not defeated.
-- The project never automates or logs into EA services.
+- The project never automates EA services and never handles EA credentials.
 
 ### 6.3 Game rules data
 
 Chemistry thresholds, special-card contributions, chemistry-style boosts, formations, position
 eligibility and the squad-rating formula are stored as **versioned configuration data**, not
 hard-coded. A mid-season game update then only requires a data change.
+
+### 6.4 Club import from EA account (v0.2 candidate)
+
+EA's Community API, which grants official club access, is only open to authorised partners
+(FUT.GG, FUTBIN, FUTWIZ). The only feasible route is a user-initiated, read-only script
+(e.g. a bookmarklet). The user runs it while logged in to the EA Web App, and it exports the
+club list for import into this app.
+
+- Credentials never leave the user's browser. The app never stores EA credentials or session tokens.
+- No automation: the script runs once, on explicit user action, and only reads data.
+- **Risk:** EA's rules prohibit third-party tools that interact with the Web App, and the penalties include account bans. The decision to build this feature is deferred to v0.2. That decision is preceded by a dedicated spike and a risk review, recorded in an ADR.
 
 ## 7. Domain rules
 
@@ -255,7 +268,7 @@ will be verified against in-game examples.
 | NFR-2 | Squad metrics update in under 100 ms after a change. The first per-slot recommendations appear in under 3 s; prices that are not yet fetched fill in progressively. |
 | NFR-3 | Installable as a PWA. Card and squad data stay viewable offline (prices are shown as stale). |
 | NFR-4 | If a data source is down, the app keeps working with the last good data. |
-| NFR-5 | Security: only allow-listed accounts. Database row-level security ensures users only edit their own data. No secrets in the repository. |
+| NFR-5 | Security: only allow-listed accounts. Database row-level security ensures users only edit their own data. Secrets and personal data are handled as described in §9.1. |
 | NFR-6 | Cost: free tiers by default. Up to **$10 per month** is acceptable if price fetching requires a dedicated worker. |
 | NFR-7 | The UI is in Turkish. Code, comments, commits and documentation are in English. |
 | NFR-8 | Domain logic (chemistry, ratings, recommendations) has at least 90 % unit-test coverage. |
@@ -293,25 +306,72 @@ will be verified against in-game examples.
   - `packages/game-data`: versioned rules configuration.
 - **Tooling:**
   - TypeScript (strict), ESLint, Prettier.
-  - Vitest for unit tests, Playwright for end-to-end tests.
+  - Vitest for unit tests, Playwright for end-to-end tests, Stryker for mutation testing.
   - Commitlint (Conventional Commits) and GitHub Actions CI.
   - Releases follow SemVer, with a changelog.
 
-## 10. Milestones
+### 9.1 Secrets and public-repository safety
 
-| Milestone | Scope | Exit criteria |
-| --------- | ----- | ------------- |
-| **M0 — Foundation** | Repository structure, tooling, CI, contributing guide, PRD, ADR template. | CI green on an empty skeleton. |
-| **M1 — Data spike** | Verify every ⚠ item and every data source in §6, including whether prices are reachable through normal browser access. | ADRs for card source, price source and squad-rating `n`. |
-| **M2 — Catalog pipeline** | Database schema, daily sync with fallback and validation. | Full FC 27 catalog in the database; sync failures are handled. |
-| **M3 — Domain engine** | Chemistry, squad rating, chemistry styles, true rating. | ≥ 90 % coverage; matches in-game examples. |
-| **M4 — Squad builder** | Auth, formations, pitch UI, slots, metrics panel, club management. | Both users can build and sync a squad on phone and desktop. |
-| **M5 — Prices** | Price worker, cache, manual override, history. | Prices shown with age and source; history recorded. |
-| **M6 — Recommendations** | Per-slot recommendations and auto-complete with constraints. | REC-1 to REC-9 met. |
-| **M7 — Search and compare** | Advanced search, comparison, price chart. | CAT-4, CMP-1, PRC-5 met. |
-| **M8 — Release** | PWA, performance and accessibility pass, deployment, v0.1.0. | All P0 requirements met; release tagged. |
+The repository is **public**. Anything that would be risky to expose is kept out of it:
 
-## 11. Risks
+- **No sensitive values in Git.** API keys, service-role keys, database URLs, worker tokens and OAuth client secrets are never committed. CI and scheduled jobs read them from **GitHub repository secrets**. Runtime services (Vercel, Supabase, price worker) read them from their own encrypted environment-variable stores.
+- **Personal data stays out too.** The allow-listed e-mail addresses are personal data and live in a secret or in the database, never in code.
+- **Placeholders only.** `.env.example` documents every variable with placeholder values. Real `.env*` files are git-ignored.
+- **Automated leak checks.** CI runs secret scanning (gitleaks) on every push and pull request. GitHub secret scanning and push protection are enabled.
+- **Public client values.** Some values are public by design, such as the Supabase URL and anon key, which every browser must receive. They are still injected from secrets at build time rather than committed. They are documented as public, and security relies on row-level security, not on hiding them.
+
+## 10. Development process
+
+### 10.1 Test-first (strict TDD)
+
+1. **Tests come before code.** Every change starts with tests that specify the expected behaviour. The tests are committed first and fail in CI for the right reason (red). Only then is the implementation written (green), then refactored.
+2. **The history proves it.** The commit history of each pull request shows this order: a `test:` commit before the matching `feat:`/`fix:` commit. A pull request whose implementation precedes its tests is not merged.
+3. **Rules for test quality:**
+   - **Exact assertions.** Domain results such as chemistry and squad rating are asserted to the exact value. No "greater than 0" or "is defined" checks.
+   - **Real data.** Fixtures are real card data captured from the sources. Expected results come from verifiable references (in-game screenshots or documented game rules), never from running the code under test.
+   - **No mocking the unit under test.** Mocks are allowed only at process boundaries (network, clock, database), and contract tests verify those mocks against real responses.
+   - **No snapshot-only tests** for logic.
+   - **No trivial tests.** Getters, framework behaviour and type-system guarantees are not tested.
+   - **Every bug fix starts with a failing test that reproduces it.**
+4. **Quality gates in CI:**
+   - Line and branch coverage of at least 90 % for `packages/domain`.
+   - A **mutation score** of at least 80 % (Stryker). This catches tests that pass regardless of the code.
+   - End-to-end tests (Playwright, at mobile and desktop viewports) for every user-facing flow.
+
+### 10.2 Prototype-driven increments
+
+- **Something you can see in every pull request.** Every pull request delivers something the owner can see and try in a browser, not only tests and documentation.
+- **Preview deployment.** Each pull request gets its own preview URL (Vercel preview deployments), usable on both phone and desktop.
+- **"How to verify" checklist.** Each pull request description contains step-by-step instructions, so the owner can confirm the behaviour visually.
+- **Visible work before the full UI exists.** Work that would otherwise be invisible ships with a minimal demo page:
+  - Data pipeline: a source-health and catalog browser page.
+  - Domain engine: a chemistry and rating playground.
+
+### 10.3 Branches, commits and pull requests
+
+- **Branch names** use a type prefix and a descriptive name: `feat/`, `fix/`, `chore/`, `docs/`, `refactor/`, `test/`, `ci/`, `perf/`. For example: `feat/squad-builder-pitch`.
+- **Commits** follow Conventional Commits.
+- **No AI attribution.** Commits, pull requests and comments contain no AI-tool attribution, no co-author trailers and no "generated with" notes.
+- **Pull requests** are opened without asking for approval. **Only the owner merges.** No pull request is merged without the owner's approval.
+- **Pull request scope:** each pull request covers one increment from §11, small enough to review and verify in one sitting.
+
+## 11. Milestones
+
+Every milestone ends with a demo the owner can open on the preview URL (§10.2).
+
+| Milestone | Scope | Owner-visible demo | Exit criteria |
+| --------- | ----- | ------------------ | ------------- |
+| **M0 — Foundation** | Repository structure, tooling, CI (lint, types, tests, mutation, secret scan), contributing guide, ADR template, deployment pipeline. | A deployed placeholder page in Turkish, reachable from phone and desktop. | CI green; preview deployments work. |
+| **M1 — Data spike** | Verify every ⚠ item and every data source in §6, including whether prices are reachable through normal browser access. | Source-health page: live sample cards and prices per source, with status. | ADRs for card source, price source and squad-rating `n`. |
+| **M2 — Catalog pipeline** | Database schema, daily sync with fallback and validation. | Catalog browser: searchable list of all FC 27 cards with card detail. | Full FC 27 catalog in the database; sync failures are handled. |
+| **M3 — Domain engine** | Chemistry, squad rating, chemistry styles, true rating. | Playground: pick 11 cards and see chemistry, squad rating and true rating. | Coverage and mutation gates met; results match in-game references. |
+| **M4 — Squad builder** | Auth, formations, pitch UI, slots, metrics panel, club management. | Full squad builder with sign-in and cross-device sync. | Both users can build and sync a squad on phone and desktop. |
+| **M5 — Prices** | Price worker, cache, manual override, history. | Live prices with age and source on cards and squad value. | Prices shown with age and source; history recorded. |
+| **M6 — Recommendations** | Per-slot recommendations and auto-complete with constraints. | Recommendations panel and "complete squad" button. | REC-1 to REC-9 met. |
+| **M7 — Search and compare** | Advanced search, comparison, price chart. | Search filters, comparison view, price chart. | CAT-4, CMP-1, PRC-5 met. |
+| **M8 — Release** | PWA, performance and accessibility pass, production deployment, v0.1.0. | Installable app on both phones. | All P0 requirements met; release tagged. |
+
+## 12. Risks
 
 | Risk | Impact | Mitigation |
 | ---- | ------ | ---------- |
@@ -321,14 +381,15 @@ will be verified against in-game examples.
 | Game rules change mid-season. | Medium | Rules stored as versioned data (§6.3). |
 | True rating is subjective. | Low | Documented formula, configurable weights, comparison with meta ratings. |
 
-## 12. Open questions
+## 13. Open questions
 
 1. Squad-rating `n` (11 vs 18). Resolved in M1.
 2. The exact list of FC 27 formations. Resolved in M1.
 3. Chemistry-style per-attribute tables. Resolved in M1.
 4. Which price source is reachable without circumvention. Resolved in M1.
+5. Whether to build club import from the EA account (§6.4). Decided before v0.2 planning.
 
-## 13. Roadmap after v0.1
+## 14. Roadmap after v0.1
 
 - **v0.2:**
   - SBC cards with estimated cost.
@@ -336,4 +397,5 @@ will be verified against in-game examples.
   - Multiple saved squads.
   - Role-based true rating with per-slot role selection.
   - Club bulk import.
+  - Club import from the EA account, subject to §6.4.
   - Editable true-rating weights in the UI.
