@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "./node_modules/.tmp/server",
+    "types": ["node"]
+  },
+  "include": ["server", "api", "../../packages/data-sync/test/fixtures/*.json"],
+  "references": [{ "path": "../../packages/data-sync/tsconfig.lib.json" }]
+}
