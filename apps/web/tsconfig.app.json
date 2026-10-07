@@ -9,5 +9,10 @@
     "jsx": "react-jsx",
     "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/data-sync/tsconfig.lib.json"
+    }
+  ]
 }

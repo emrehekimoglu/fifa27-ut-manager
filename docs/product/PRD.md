@@ -166,20 +166,23 @@ Metrics update instantly on every squad change.
 
 ### 6.1 Card data (stats, metadata)
 
-| Order       | Source                                               | Use                                                              |
-| ----------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
-| Primary     | **FUT.GG** (its JSON endpoints, as used by the site) | All card versions, stats, PlayStyles, roles, AcceleRATE, images. |
-| Fallback    | **FUTDatabase API** (free key)                       | Used when FUT.GG fails or returns invalid data.                  |
-| Cross-check | **EA ratings API** (`drop-api.ea.com`)               | Base-card validation; mismatches are logged, not auto-applied.   |
+| Order    | Source                                               | Use                                                                                                                                                |
+| -------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Primary  | **FUT.GG** (its JSON endpoints, as used by the site) | All card versions, stats, PlayStyles, roles, AcceleRATE, images.                                                                                   |
+| Fallback | **EA ratings API** (`drop-api.ea.com`)               | Base cards only, used when FUT.GG fails or returns invalid data. It is also a cross-check for base cards; mismatches are logged, not auto-applied. |
 
+- Decision record: [ADR-0003](../adr/0003-card-data-sources.md). FUTDatabase is not used, because no API key can be obtained.
 - Cards are keyed by EA's `eaId`; holographic variants are distinct cards.
 - A scheduled job syncs the catalog **daily**, and can also be triggered manually during promo releases.
 - Each sync validates the schema and row counts before replacing data. On failure, the last good catalog is kept and the failure is reported.
 
 ### 6.2 Prices
 
-- Prices come from publicly visible price information, read the way a normal browser would display it. Volume is low and rate-limited, and requests are restricted to cards being evaluated.
-- Source order: **FUT.GG → FUTWIZ → manual entry**. The final order depends on the M1 data spike.
+- Decision record: [ADR-0004](../adr/0004-price-acquisition.md).
+- Prices come from FUT.GG pages loaded by a normal browser in a **price agent on the owner's home computer**. FUT.GG withholds prices from datacenter IPs, so a server or VPS cannot be used.
+- **Screening, then confirmation.** List pages give approximate prices for many candidates; card pages give the exact price for shortlisted cards. Volume is low and rate-limited.
+- **Fallbacks:** manual entry, then the last known price with its age. FUTWIZ (visible browser only) and FUTBIN (CAPTCHA) are not automated sources.
+- **Agent offline:** when the owner's PC is off, prices are not refreshed and the app shows each price's age.
 - **Constraint:** the project does not implement any mechanism to circumvent bot protection (Cloudflare challenge bypass, stealth/fingerprint evasion, CAPTCHA solving, reverse-engineering request signatures). If a source blocks normal access, it is dropped, not defeated.
 - The project never automates EA services and never handles EA credentials.
 
@@ -269,7 +272,7 @@ will be verified against in-game examples.
 | NFR-3 | Installable as a PWA. Card and squad data stay viewable offline (prices are shown as stale).                                                                          |
 | NFR-4 | If a data source is down, the app keeps working with the last good data.                                                                                              |
 | NFR-5 | Security: only allow-listed accounts. Database row-level security ensures users only edit their own data. Secrets and personal data are handled as described in §9.1. |
-| NFR-6 | Cost: free tiers by default. Up to **$10 per month** is acceptable if price fetching requires a dedicated worker.                                                     |
+| NFR-6 | Cost: free tiers. The price agent runs on the owner's PC, so it needs no paid hosting (up to **$10 per month** remains acceptable if a future need arises).           |
 | NFR-7 | The UI is in Turkish. Code, comments, commits and documentation are in English.                                                                                       |
 | NFR-8 | Domain logic (chemistry, ratings, recommendations) has at least 90 % unit-test coverage.                                                                              |
 | NFR-9 | Accessibility: WCAG 2.1 AA colour contrast. All actions are reachable without drag-and-drop.                                                                          |
@@ -286,21 +289,21 @@ will be verified against in-game examples.
                     auth, data│               │price requests
                               ▼               ▼
                  ┌──────────────────┐   ┌──────────────────────┐
-                 │ Supabase         │◀──│ Price worker         │  Node + Playwright
-                 │ - Postgres       │   │ - on-demand fetch    │  free tier or ≤ $10/mo
-                 │ - Google auth    │   │ - rate limit, cache  │
-                 │ - row-level sec. │   └──────────────────────┘
-                 └────────▲─────────┘
+                 │ Supabase         │◀──│ Price agent          │  Node + Playwright
+                 │ - Postgres       │   │ - polls price queue  │  on the owner's
+                 │ - Google auth    │   │ - FUT.GG pages       │  home PC (outbound only)
+                 │ - row-level sec. │   │ - rate limit, cache  │
+                 └────────▲─────────┘   └──────────────────────┘
                           │ daily upsert
                  ┌────────┴─────────┐
                  │ Catalog sync job │  GitHub Actions (scheduled)
-                 │ FUT.GG → FUTDB   │
+                 │ FUT.GG → EA API  │
                  └──────────────────┘
 ```
 
 - **Monorepo** (pnpm workspaces):
   - `apps/web`: the web app.
-  - `apps/price-worker`: the price worker.
+  - `apps/price-agent`: the home price agent.
   - `packages/domain`: chemistry, ratings and recommendations; framework-free and fully unit-tested.
   - `packages/data-sync`: the catalog sync.
   - `packages/game-data`: versioned rules configuration.
@@ -314,7 +317,7 @@ will be verified against in-game examples.
 
 The repository is **public**. Anything that would be risky to expose is kept out of it:
 
-- **No sensitive values in Git.** API keys, service-role keys, database URLs, worker tokens and OAuth client secrets are never committed. CI and scheduled jobs read them from **GitHub repository secrets**. Runtime services (Vercel, Supabase, price worker) read them from their own encrypted environment-variable stores.
+- **No sensitive values in Git.** API keys, service-role keys, database URLs, worker tokens and OAuth client secrets are never committed. CI and scheduled jobs read them from **GitHub repository secrets**. Runtime services (Vercel, Supabase, price agent) read them from their own encrypted environment-variable stores.
 - **Personal data stays out too.** The allow-listed e-mail addresses are personal data and live in a secret or in the database, never in code.
 - **Placeholders only.** `.env.example` documents every variable with placeholder values. Real `.env*` files are git-ignored.
 - **Automated leak checks.** CI runs secret scanning (gitleaks) on every push and pull request. GitHub secret scanning and push protection are enabled.
@@ -359,34 +362,36 @@ The repository is **public**. Anything that would be risky to expose is kept out
 
 Every milestone ends with a demo the owner can open on the preview URL (§10.2).
 
-| Milestone                   | Scope                                                                                                                                 | Owner-visible demo                                                         | Exit criteria                                                      |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **M0 — Foundation**         | Repository structure, tooling, CI (lint, types, tests, mutation, secret scan), contributing guide, ADR template, deployment pipeline. | A deployed placeholder page in Turkish, reachable from phone and desktop.  | CI green; preview deployments work.                                |
-| **M1 — Data spike**         | Verify every ⚠ item and every data source in §6, including whether prices are reachable through normal browser access.                | Source-health page: live sample cards and prices per source, with status.  | ADRs for card source, price source and squad-rating `n`.           |
-| **M2 — Catalog pipeline**   | Database schema, daily sync with fallback and validation.                                                                             | Catalog browser: searchable list of all FC 27 cards with card detail.      | Full FC 27 catalog in the database; sync failures are handled.     |
-| **M3 — Domain engine**      | Chemistry, squad rating, chemistry styles, true rating.                                                                               | Playground: pick 11 cards and see chemistry, squad rating and true rating. | Coverage and mutation gates met; results match in-game references. |
-| **M4 — Squad builder**      | Auth, formations, pitch UI, slots, metrics panel, club management.                                                                    | Full squad builder with sign-in and cross-device sync.                     | Both users can build and sync a squad on phone and desktop.        |
-| **M5 — Prices**             | Price worker, cache, manual override, history.                                                                                        | Live prices with age and source on cards and squad value.                  | Prices shown with age and source; history recorded.                |
-| **M6 — Recommendations**    | Per-slot recommendations and auto-complete with constraints.                                                                          | Recommendations panel and "complete squad" button.                         | REC-1 to REC-9 met.                                                |
-| **M7 — Search and compare** | Advanced search, comparison, price chart.                                                                                             | Search filters, comparison view, price chart.                              | CAT-4, CMP-1, PRC-5 met.                                           |
-| **M8 — Release**            | PWA, performance and accessibility pass, production deployment, v0.1.0.                                                               | Installable app on both phones.                                            | All P0 requirements met; release tagged.                           |
+| Milestone                   | Scope                                                                                                                                              | Owner-visible demo                                                                                           | Exit criteria                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| **M0 — Foundation**         | Repository structure, tooling, CI (lint, types, tests, mutation, secret scan), contributing guide, ADR template, deployment pipeline.              | A deployed placeholder page in Turkish, reachable from phone and desktop.                                    | CI green; preview deployments work.                                                 |
+| **M1 — Data spike**         | Verify every data source in §6, including whether prices are reachable through normal browser access; card source adapters with schema validation. | Source-health page: live status and sample cards per card source, and the price-access results of the spike. | ADRs for card source and price source; ⚠ game-rule items scheduled before M3 (§13). |
+| **M2 — Catalog pipeline**   | Database schema, daily sync with fallback and validation.                                                                                          | Catalog browser: searchable list of all FC 27 cards with card detail.                                        | Full FC 27 catalog in the database; sync failures are handled.                      |
+| **M3 — Domain engine**      | Chemistry, squad rating, chemistry styles, true rating.                                                                                            | Playground: pick 11 cards and see chemistry, squad rating and true rating.                                   | Coverage and mutation gates met; results match in-game references.                  |
+| **M4 — Squad builder**      | Auth, formations, pitch UI, slots, metrics panel, club management.                                                                                 | Full squad builder with sign-in and cross-device sync.                                                       | Both users can build and sync a squad on phone and desktop.                         |
+| **M5 — Prices**             | Home price agent with Windows setup guide, price queue, cache, manual override, history.                                                           | Live prices with age and source on cards and squad value.                                                    | Prices shown with age and source; history recorded.                                 |
+| **M6 — Recommendations**    | Per-slot recommendations and auto-complete with constraints.                                                                                       | Recommendations panel and "complete squad" button.                                                           | REC-1 to REC-9 met.                                                                 |
+| **M7 — Search and compare** | Advanced search, comparison, price chart.                                                                                                          | Search filters, comparison view, price chart.                                                                | CAT-4, CMP-1, PRC-5 met.                                                            |
+| **M8 — Release**            | PWA, performance and accessibility pass, production deployment, v0.1.0.                                                                            | Installable app on both phones.                                                                              | All P0 requirements met; release tagged.                                            |
 
 ## 12. Risks
 
 | Risk                                         | Impact | Mitigation                                                                                                                     |
 | -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Price sources block access or change markup. | High   | Multiple sources, manual entry, cached history, source health monitoring.                                                      |
-| FUT.GG's internal API changes or disappears. | High   | FUTDatabase fallback, schema validation, last-good-data retention.                                                             |
+| FUT.GG changes its page markup.              | Medium | Price parsing has unit tests on captured pages; the agent reports parse failures as source errors.                             |
+| FUT.GG's internal API changes or disappears. | High   | EA API fallback, schema validation, scheduled live contract tests, last-good-data retention.                                   |
+| The owner's PC is off, so prices go stale.   | Medium | Prices always show their age; manual entry; last known prices remain usable.                                                   |
+| FUT.GG starts challenging the home agent.    | High   | The agent stops and reports the source as blocked (no circumvention); manual entry; revisit a paid API (ADR-0004).             |
 | Fetching prices for many candidates is slow. | Medium | Pareto pruning, prefer list pages that show many prices per request, background warm-up of popular cards, progressive results. |
 | Game rules change mid-season.                | Medium | Rules stored as versioned data (§6.3).                                                                                         |
 | True rating is subjective.                   | Low    | Documented formula, configurable weights, comparison with meta ratings.                                                        |
 
 ## 13. Open questions
 
-1. Squad-rating `n` (11 vs 18). Resolved in M1.
-2. The exact list of FC 27 formations. Resolved in M1.
-3. Chemistry-style per-attribute tables. Resolved in M1.
-4. Which price source is reachable without circumvention. Resolved in M1.
+1. Squad-rating `n` (11 vs 18). Needs an in-game screenshot of a full squad (XI + 7 substitutes) with its rating; resolved before M3.
+2. The exact list of FC 27 formations. Resolved before M3.
+3. Chemistry-style per-attribute tables. FUT.GG exposes face-stat-level boosts only; the per-attribute tables are resolved before M3.
+4. ~~Which price source is reachable without circumvention.~~ Resolved by ADR-0004.
 5. Whether to build club import from the EA account (§6.4). Decided before v0.2 planning.
 
 ## 14. Roadmap after v0.1

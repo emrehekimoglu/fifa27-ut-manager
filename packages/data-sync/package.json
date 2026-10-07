@@ -1,0 +1,32 @@
+{
+  "name": "@fc27/data-sync",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Card catalog source adapters and synchronisation.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:mutation": "stryker run",
+    "test:contract": "vitest run --config vitest.contract.config.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "~4.1.11",
+    "typescript": "~6.0.3",
+    "vitest": "~4.1.11"
+  }
+}

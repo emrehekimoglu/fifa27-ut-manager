@@ -15,3 +15,5 @@ We record significant technical decisions as ADRs, following [Michael Nygard's f
 | --------------------------------------------- | ----------------------------- | -------- |
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
 | [0002](0002-monorepo-and-toolchain.md)        | Monorepo and toolchain        | Accepted |
+| [0003](0003-card-data-sources.md)             | Card data sources             | Accepted |
+| [0004](0004-price-acquisition.md)             | Price acquisition             | Accepted |
