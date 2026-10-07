@@ -79,6 +79,28 @@ jobs:
           path: apps/web/playwright-report/
           retention-days: 14
 
+  integration:
+    name: Database integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # A throwaway local Supabase stack with the repository's migrations; production is never touched.
+      - name: Start local Supabase
+        run: pnpm exec supabase start
+      - name: Run integration tests
+        run: |
+          eval "$(pnpm exec supabase status -o env | sed -E 's/^([A-Z_]+)=/export LOCAL_\1=/')"
+          export SUPABASE_URL="$LOCAL_API_URL"
+          export SUPABASE_SECRET_KEY="${LOCAL_SECRET_KEY:-$LOCAL_SERVICE_ROLE_KEY}"
+          pnpm --filter @fc27/data-sync test:integration
+
   commits:
     name: Conventional commits
     if: github.event_name == 'pull_request'
