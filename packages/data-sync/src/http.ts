@@ -14,11 +14,20 @@ export class SourceHttpError extends Error {
   }
 }
 
-export function getJson(
-  _source: CardSource,
-  _url: string,
-  _fetchFn: FetchFn,
-  _headers: Record<string, string> = {},
+export async function getJson(
+  source: CardSource,
+  url: string,
+  fetchFn: FetchFn,
+  headers: Record<string, string> = {},
 ): Promise<unknown> {
-  throw new Error('Not implemented');
+  const response = await fetchFn(url, { headers });
+  if (!response.ok) {
+    throw new SourceHttpError(source, response.status, `HTTP ${response.status}`);
+  }
+  try {
+    const body: unknown = await response.json();
+    return body;
+  } catch {
+    throw new SourceHttpError(source, response.status, 'invalid JSON body');
+  }
 }
