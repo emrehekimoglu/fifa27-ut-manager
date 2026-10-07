@@ -16,6 +16,12 @@ export interface SourceHealth {
   readonly error: string | null;
 }
 
+/** Health of every card source at one point in time; primary source first. */
+export interface SourceHealthReport {
+  readonly generatedAt: string;
+  readonly sources: readonly SourceHealth[];
+}
+
 export interface HealthCheckDeps {
   readonly fetch: FetchFn;
   /** Milliseconds since the epoch. */

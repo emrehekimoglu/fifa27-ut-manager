@@ -5,7 +5,13 @@
   "vitest": {
     "configFile": "vitest.config.ts"
   },
-  "mutate": ["src/lib/**/*.ts", "src/features/**/*.ts", "server/**/*.ts", "!**/*.test.ts"],
+  "mutate": [
+    "src/lib/**/*.ts",
+    "src/features/**/*.ts",
+    "server/**/*.ts",
+    "!**/*.test.ts",
+    "!src/features/**/price-access.ts"
+  ],
   "coverageAnalysis": "perTest",
   "reporters": ["clear-text", "progress", "html"],
   "htmlReporter": {
@@ -15,5 +21,6 @@
     "high": 90,
     "low": 80,
     "break": 80
-  }
+  },
+  "inPlace": true
 }

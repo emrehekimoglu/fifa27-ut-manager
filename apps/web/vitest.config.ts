@@ -17,7 +17,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/lib/**/*.ts', 'src/features/**/*.ts', 'server/**/*.ts'],
-      exclude: ['**/*.test.ts'],
+      // price-access.ts is a static table of spike results, verified by the e2e suite.
+      exclude: ['**/*.test.ts', 'src/features/**/price-access.ts'],
       reporter: ['text', 'html'],
       thresholds: { lines: 90, branches: 90, functions: 90, statements: 90 },
     },
