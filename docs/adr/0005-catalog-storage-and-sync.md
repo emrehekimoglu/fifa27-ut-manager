@@ -66,6 +66,7 @@ One page request failed with a network error during the crawl.
 
 - **Catalog already exists and FUT.GG fails** (error, incomplete partition or failed validation): the sync is recorded as failed and the stored catalog is not touched. EA is not used here: its data lacks promos, PlayStyles and roles, so writing it would degrade a richer catalog.
 - **Catalog is still empty:** the sync bootstraps it from EA's base cards. The next successful FUT.GG sync then replaces those rows. EA-only items, such as non-UT players and old item IDs, become inactive, because FUT.GG never reports them.
+- **Bootstrap record:** a sync that bootstraps from EA succeeds, but its record keeps FUT.GG's error, so the reason stays visible.
 
 **6. Scheduling**
 

@@ -22,3 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Catalog storage in Supabase (ADR-0005): migrations, a daily sync workflow that reads FUT.GG in overall-rating partitions, validates the result and keeps the last good catalog on failure, and a production migration workflow.
 - Catalog sync status on the `/kaynaklar` page.
 - Database integration tests against a local Supabase stack in CI.
+
+### Fixed
+
+- Cards without a club, such as heroes, no longer fail FUT.GG validation. They broke the catalog sync and the FUT.GG health check, and the source page names their league instead of a club.
+- A catalog bootstrapped from EA keeps the reason FUT.GG could not be used in its sync record, so the source page shows it.
