@@ -37,14 +37,64 @@ The card catalog lives in a Supabase project (ADR-0005).
 
 ### One-time setup
 
-1. Create a project at [supabase.com](https://supabase.com). The free plan is enough. Choose a European region.
-2. Collect the values listed in the table below:
-   - **Project URL:** the **Connect** dialog.
-   - **Publishable and secret keys:** **Project Settings → API Keys**, tab _Publishable and secret API keys_. If you only see a _Create new API keys_ button, click it first.
-   - **Database URL:** **Connect → Session pooler**. Replace `[YOUR-PASSWORD]` with the database password.
-3. Store each value where the table says. Never commit them; see [SECURITY.md](../../SECURITY.md).
-4. Run the **Database migrations** workflow once (GitHub → Actions → _Database migrations_ → _Run workflow_). It creates the tables.
-5. Run the **Catalog sync** workflow once to fill the catalog, which takes about 20 minutes. After that it runs daily at 03:47 UTC.
+Each value is copied from Supabase and pasted into GitHub or Vercel. Never paste a value anywhere else, and never commit it; see [SECURITY.md](../../SECURITY.md).
+
+**A. Create the project**
+
+1. Sign in at [supabase.com/dashboard](https://supabase.com/dashboard) with GitHub.
+2. Click **New project** and fill in the form:
+   - **Name:** `fifa27-ut-manager`.
+   - **Database password:** click **Generate a password**, then copy the password into a password manager. You need it for step D. A password of only letters and digits avoids escaping problems in the connection string.
+   - **Region:** a European one, for example Frankfurt.
+   - The plan stays **Free**.
+3. Click **Create new project** and wait until the dashboard stops showing _Setting up project_.
+
+**B. Project URL** (`SUPABASE_URL`, `VITE_SUPABASE_URL`)
+
+1. Look at the browser's address bar. It reads `https://supabase.com/dashboard/project/<project-ref>`.
+2. The project URL is `https://<project-ref>.supabase.co`. For example, the address `…/project/abcdefghijklmnop` gives `https://abcdefghijklmnop.supabase.co`.
+
+**C. API keys** (`VITE_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`)
+
+1. Click the gear icon (**Project Settings**) at the bottom of the left sidebar, then **API Keys**.
+2. If the page only shows a **Create new API keys** button, click it.
+3. **Publishable key:** the value starting with `sb_publishable_`. Copy it with the copy icon next to it.
+4. **Secret key:** the value starting with `sb_secret_`. Click the eye icon to reveal it, then copy it.
+
+**D. Database connection string** (`SUPABASE_DB_URL`)
+
+GitHub's runners only have IPv4. The direct connection on the free plan is IPv6-only, so the migration workflow must use the **session pooler**, which listens on IPv4.
+
+1. Open the project dashboard and click **Connect** in the top bar. A dialog opens. The link [supabase.com/dashboard/project/\_?showConnect=true&method=session](https://supabase.com/dashboard/project/_?showConnect=true&method=session) opens it with the session pooler preselected.
+2. In the dialog, open the **Connection String** tab.
+3. Set the dropdowns:
+   - **Type:** `URI`.
+   - **Source:** `Primary Database`.
+   - **Method:** `Session pooler`. The default is `Direct connection`, which is the wrong one.
+4. Copy the string shown under **Session pooler**. It has the form `postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-<n>-<region>.pooler.supabase.com:5432/postgres`.
+   - It starts with `postgres.<project-ref>`, not with plain `postgres`.
+   - It ends with port `5432`, not `6543`.
+5. Replace `[YOUR-PASSWORD]`, including the brackets, with the database password from step A.
+   - If you no longer have the password, reset it under **Project Settings → Database → Reset database password**.
+
+**E. Store the values**
+
+1. GitHub secrets:
+   - Open the repository on GitHub and go to **Settings → Secrets and variables → Actions**.
+   - Click **New repository secret** and enter the **Name** from the table below and the **Secret** value. Click **Add secret**.
+   - Repeat for every GitHub secret in the table.
+2. Vercel variables:
+   - Open the project on [vercel.com](https://vercel.com) and go to **Settings → Environment Variables**.
+   - Enter the **Key** and **Value**. Select the **Production** and **Preview** environments, then click **Save**.
+   - Repeat for every Vercel variable in the table.
+3. Redeploy, because Vercel bakes `VITE_*` values into the build:
+   - Go to **Deployments**.
+   - Open the **⋯** menu of the deployment you want to refresh and choose **Redeploy**.
+
+**F. Create the tables and fill the catalog**
+
+1. Run the **Database migrations** workflow once: GitHub → **Actions** → _Database migrations_ → **Run workflow**. It creates the tables, and it runs automatically on every later merge that changes `supabase/migrations`.
+2. Run the **Catalog sync** workflow once the same way. It fills the catalog in about 20 minutes, and from then on runs daily at 03:47 UTC.
 
 ### Secrets and variables
 
