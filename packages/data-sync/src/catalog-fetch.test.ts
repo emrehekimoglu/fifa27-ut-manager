@@ -146,9 +146,10 @@ describe('fetchFutggCatalog', () => {
     });
 
     await expect(result).rejects.toBeInstanceOf(CatalogFetchError);
-    await expect(result).rejects.toThrow(
-      '[futgg] partition 0-59: collected 34 of 35 cards after 3 passes',
-    );
+    await expect(result).rejects.toMatchObject({
+      name: 'CatalogFetchError',
+      message: '[futgg] partition 0-59: collected 34 of 35 cards after 3 passes',
+    });
     expect(futgg.requests.filter((requested) => requested === url(LOW, 1))).toHaveLength(
       MAX_PARTITION_PASSES,
     );
