@@ -1,6 +1,8 @@
 import type { CatalogCard } from './catalog-card.js';
+import { fetchEaRatingsPage } from './ea.js';
 import { FUTGG_QUERY_RESULT_CAP, fetchFutggDefinitionsPage } from './futgg.js';
 import type { OverallRange } from './futgg.js';
+import { SourceHttpError } from './http.js';
 import type { FetchFn } from './http.js';
 
 export type { OverallRange } from './futgg.js';
@@ -86,6 +88,22 @@ export interface EaCatalogFetchDeps {
 }
 
 /** Reads every base card from EA's ratings API, page by page. */
-export function fetchEaCatalog(_deps: EaCatalogFetchDeps): Promise<CatalogCard[]> {
-  throw new Error('Not implemented');
+export async function fetchEaCatalog(deps: EaCatalogFetchDeps): Promise<CatalogCard[]> {
+  const cards: CatalogCard[] = [];
+  for (let offset = 0; ; offset += deps.pageSize) {
+    if (offset > 0) await deps.sleep(deps.delayMs);
+    const page = await fetchEaRatingsPage(
+      { offset, limit: deps.pageSize, cacheBust: deps.cacheBust },
+      deps.fetch,
+    );
+    if (page.cards.length === 0) {
+      throw new SourceHttpError(
+        'ea',
+        null,
+        `page at offset ${offset} is empty, but ${page.totalItems} cards were reported`,
+      );
+    }
+    cards.push(...page.cards);
+    if (cards.length >= page.totalItems) return cards;
+  }
 }
