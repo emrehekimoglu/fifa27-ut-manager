@@ -46,6 +46,8 @@ export async function runCatalogSync(deps: CatalogSyncDeps): Promise<CatalogSync
 
   let source: CardSource = 'futgg';
   let cards: readonly CatalogCard[];
+  // Why FUT.GG failed when the catalog had to be bootstrapped from EA.
+  let primaryFailure: string | null = null;
   try {
     cards = await fetchValid(deps.fetchPrimary, previousCardCount);
   } catch (primaryError) {
@@ -55,6 +57,7 @@ export async function runCatalogSync(deps: CatalogSyncDeps): Promise<CatalogSync
     try {
       cards = await fetchValid(deps.fetchFallback, null);
       source = 'ea';
+      primaryFailure = messageOf(primaryError);
     } catch (fallbackError) {
       const error = `${messageOf(primaryError)}; fallback: ${messageOf(fallbackError)}`;
       return finish(deps, { ...FAILED, syncId, error });
@@ -69,7 +72,7 @@ export async function runCatalogSync(deps: CatalogSyncDeps): Promise<CatalogSync
     source,
     cardCount: cards.length,
     deactivatedCount,
-    error: null,
+    error: primaryFailure,
   });
 }
 

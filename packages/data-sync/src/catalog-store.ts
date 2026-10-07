@@ -9,6 +9,7 @@ export interface FinishedSync {
   readonly source: CardSource | null;
   readonly cardCount: number | null;
   readonly deactivatedCount: number | null;
+  /** Why the sync failed, or, after a bootstrap from EA, why FUT.GG could not be used. */
   readonly error: string | null;
 }
 
