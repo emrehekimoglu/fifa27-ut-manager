@@ -53,6 +53,9 @@ importers:
       '@fc27/data-sync':
         specifier: workspace:*
         version: link:../../packages/data-sync
+      '@supabase/supabase-js':
+        specifier: ^2.117.3
+        version: 2.117.3
       react:
         specifier: ^19.3.0
         version: 19.3.0
