@@ -14,10 +14,28 @@ export interface BuildInfo {
   readonly environment: DeploymentEnvironment;
 }
 
-export function parseBuildInfo(_raw: RawBuildInfo): BuildInfo {
-  throw new Error('Not implemented');
+const COMMIT_SHA_PATTERN = /^[0-9a-f]{7,40}$/i;
+const SHORT_SHA_LENGTH = 7;
+
+const ENVIRONMENT_LABELS: Record<DeploymentEnvironment, string> = {
+  production: 'Canlı',
+  preview: 'Önizleme',
+  development: 'Yerel',
+};
+
+function isDeploymentEnvironment(value: string): value is DeploymentEnvironment {
+  return Object.hasOwn(ENVIRONMENT_LABELS, value);
 }
 
-export function formatBuildInfo(_info: BuildInfo): string {
-  throw new Error('Not implemented');
+export function parseBuildInfo(raw: RawBuildInfo): BuildInfo {
+  const commit = COMMIT_SHA_PATTERN.test(raw.commitSha)
+    ? raw.commitSha.slice(0, SHORT_SHA_LENGTH).toLowerCase()
+    : null;
+  const environment = isDeploymentEnvironment(raw.environment) ? raw.environment : 'development';
+  return { version: raw.version, commit, environment };
+}
+
+export function formatBuildInfo(info: BuildInfo): string {
+  const commit = info.commit ?? 'yerel derleme';
+  return `v${info.version} · ${commit} · ${ENVIRONMENT_LABELS[info.environment]}`;
 }
