@@ -47,6 +47,17 @@ describe('checkSourceHealth', () => {
     expect(health.sample.map((card) => card.name)).toEqual(['Pelé', 'Takefusa Kubo']);
   });
 
+  it('does not flag a FUT.GG total below the query cap as capped', async () => {
+    const health = await checkSourceHealth('futgg', {
+      fetch: respondWith({ ...futggPage, total: 9999 }),
+      now: clock(START, START + 10),
+      sampleSize: 1,
+    });
+
+    expect(health.totalCards).toBe(9999);
+    expect(health.totalIsCapped).toBe(false);
+  });
+
   it('reports a healthy EA source with its real total', async () => {
     const requested: string[] = [];
     const health = await checkSourceHealth('ea', {

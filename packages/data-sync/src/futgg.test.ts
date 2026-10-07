@@ -16,6 +16,18 @@ function withItem(index: number, patch: Partial<Record<keyof RawItem, unknown>>)
   return copy;
 }
 
+/** Asserts the exact error a caller can rely on: class, name, source and message. */
+function expectValidationError(run: () => unknown, message: string): void {
+  let thrown: unknown;
+  try {
+    run();
+  } catch (error) {
+    thrown = error;
+  }
+  expect(thrown).toBeInstanceOf(SourceValidationError);
+  expect(thrown).toMatchObject({ name: 'SourceValidationError', source: 'futgg', message });
+}
+
 function cardAt(index: number): CatalogCard {
   const card = parseFutggDefinitionsPage(page).cards[index];
   if (!card) throw new Error(`fixture has no card at ${index}`);
@@ -217,32 +229,47 @@ describe('parseFutggDefinitionsPage', () => {
 
   it('rejects a position the game no longer uses', () => {
     // 2 was RWB, removed from Ultimate Team since FC 25.
-    expect(() => parseFutggDefinitionsPage(withItem(1, { position: 2 }))).toThrow(
-      new SourceValidationError('futgg', 'unknown position id 2'),
+    expectValidationError(
+      () => parseFutggDefinitionsPage(withItem(1, { position: 2 })),
+      '[futgg] unknown position id 2',
     );
   });
 
+  it('rejects an alternate position the game no longer uses', () => {
+    expectValidationError(
+      () => parseFutggDefinitionsPage(withItem(1, { alternativePositionIds: [23, 2] })),
+      '[futgg] unknown position id 2',
+    );
+  });
+
+  it('keeps a missing AcceleRATE type as unknown', () => {
+    const parsed = parseFutggDefinitionsPage(withItem(0, { accelerateType: null }));
+    expect(parsed.cards[0]?.accelerateType).toBeNull();
+  });
+
   it('rejects an unknown AcceleRATE type', () => {
-    expect(() => parseFutggDefinitionsPage(withItem(0, { accelerateType: 'TURBO' }))).toThrow(
-      SourceValidationError,
+    expectValidationError(
+      () => parseFutggDefinitionsPage(withItem(0, { accelerateType: 'TURBO' })),
+      '[futgg] unknown AcceleRATE type TURBO',
     );
   });
 
   it('rejects an unknown foot value', () => {
-    expect(() => parseFutggDefinitionsPage(withItem(0, { foot: 3 }))).toThrow(
-      SourceValidationError,
+    expectValidationError(
+      () => parseFutggDefinitionsPage(withItem(0, { foot: 3 })),
+      '[futgg] unknown foot value 3',
     );
   });
 
   it('rejects an item with a missing attribute', () => {
     expect(() =>
       parseFutggDefinitionsPage(withItem(2, { attributeSprintSpeed: undefined })),
-    ).toThrow(SourceValidationError);
+    ).toThrow(/^\[futgg\] invalid response: [\s\S]*attributeSprintSpeed/);
   });
 
   it('rejects a response without a data array', () => {
     expect(() => parseFutggDefinitionsPage({ next: null, currentPage: 1, total: 0 })).toThrow(
-      SourceValidationError,
+      /^\[futgg\] invalid response: /,
     );
   });
 });
@@ -262,6 +289,12 @@ describe('fetchFutggDefinitionsPage', () => {
     const result = fetchFutggDefinitionsPage(1, () =>
       Promise.resolve(new Response('Forbidden', { status: 403 })),
     );
-    await expect(result).rejects.toThrow(new SourceHttpError('futgg', 403, 'HTTP 403'));
+    await expect(result).rejects.toBeInstanceOf(SourceHttpError);
+    await expect(result).rejects.toMatchObject({
+      name: 'SourceHttpError',
+      source: 'futgg',
+      status: 403,
+      message: '[futgg] HTTP 403',
+    });
   });
 });

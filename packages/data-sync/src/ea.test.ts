@@ -16,6 +16,25 @@ function withItem(index: number, patch: Partial<Record<keyof RawItem, unknown>>)
   return copy;
 }
 
+/** Asserts the exact error a caller can rely on: class, name, source and message. */
+function expectValidationError(run: () => unknown, message: string | RegExp): void {
+  let thrown: unknown;
+  try {
+    run();
+  } catch (error) {
+    thrown = error;
+  }
+  expect(thrown).toBeInstanceOf(SourceValidationError);
+  // toMatchObject treats a bare RegExp value as matching anything; wrap it explicitly.
+  const expectedMessage: unknown =
+    typeof message === 'string' ? message : expect.stringMatching(message);
+  expect(thrown).toMatchObject({
+    name: 'SourceValidationError',
+    source: 'ea',
+    message: expectedMessage,
+  });
+}
+
 function cardAt(index: number): CatalogCard {
   const card = parseEaRatingsPage(eaPage).cards[index];
   if (!card) throw new Error(`fixture has no card at ${index}`);
@@ -150,21 +169,61 @@ describe('parseEaRatingsPage', () => {
   });
 
   it('rejects an unknown position', () => {
-    expect(() =>
-      parseEaRatingsPage(
-        withItem(0, { position: { id: '2', shortLabel: 'RWB', label: 'Right Wing Back' } }),
-      ),
-    ).toThrow(new SourceValidationError('ea', 'unknown position id 2'));
+    expectValidationError(
+      () =>
+        parseEaRatingsPage(
+          withItem(0, { position: { id: '2', shortLabel: 'RWB', label: 'Right Wing Back' } }),
+        ),
+      '[ea] unknown position id 2',
+    );
+  });
+
+  it('rejects an unknown alternate position', () => {
+    expectValidationError(
+      () =>
+        parseEaRatingsPage(
+          withItem(0, {
+            alternatePositions: [{ id: '8', shortLabel: 'LWB', label: 'Left Wing Back' }],
+          }),
+        ),
+      '[ea] unknown position id 8',
+    );
+  });
+
+  it.each(['25x', 'p25'])('rejects the malformed position id %s', (id) => {
+    expectValidationError(
+      () =>
+        parseEaRatingsPage(withItem(0, { position: { id, shortLabel: 'ST', label: 'Striker' } })),
+      /^\[ea\] invalid response: [\s\S]*position/,
+    );
+  });
+
+  it('rejects an unknown preferred foot', () => {
+    expectValidationError(
+      () => parseEaRatingsPage(withItem(0, { preferredFoot: 0 })),
+      '[ea] unknown foot value 0',
+    );
+  });
+
+  it.each(['178 cm', '~178'])('rejects the non-numeric height %s', (height) => {
+    expectValidationError(
+      () => parseEaRatingsPage(withItem(0, { height })),
+      /^\[ea\] invalid response: [\s\S]*height/,
+    );
   });
 
   it('rejects an item without stats', () => {
-    expect(() => parseEaRatingsPage(withItem(1, { stats: undefined }))).toThrow(
-      SourceValidationError,
+    expectValidationError(
+      () => parseEaRatingsPage(withItem(1, { stats: undefined })),
+      /^\[ea\] invalid response: [\s\S]*stats/,
     );
   });
 
   it('rejects a response without items', () => {
-    expect(() => parseEaRatingsPage({ totalItems: 0 })).toThrow(SourceValidationError);
+    expectValidationError(
+      () => parseEaRatingsPage({ totalItems: 0 }),
+      /^\[ea\] invalid response: [\s\S]*items/,
+    );
   });
 });
 

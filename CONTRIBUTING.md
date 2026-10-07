@@ -26,6 +26,7 @@ This guide is binding for every change to the repository, whether a person or a 
 - **Use real data.** Fixtures come from real card data captured from the data sources. Do not invent card data when real data exists.
 - **Mock only at process boundaries** (network, clock, database). Never mock the unit under test. Contract tests keep boundary mocks honest.
 - **No snapshot-only tests** for logic.
+- **Watch matcher pitfalls.** Inside `toMatchObject` and `toEqual`, a bare `RegExp` value matches anything. Wrap it in `expect.stringMatching(...)`.
 - **No trivial tests.** Do not test getters, framework behaviour or guarantees the type system already enforces.
 
 **Quality gates (enforced in CI)**
