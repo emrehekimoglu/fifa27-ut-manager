@@ -253,6 +253,9 @@ test.describe('catalog sync status', () => {
     await openWithReport(page);
     const sync = page.getByRole('region', { name: 'Katalog senkronizasyonu' });
 
-    await expect(sync.getByRole('alert')).toHaveText('Senkronizasyon durumu alınamadı.');
+    // supabase-js retries a 503 three times (about 7 s) before giving up.
+    await expect(sync.getByRole('alert')).toHaveText('Senkronizasyon durumu alınamadı.', {
+      timeout: 15_000,
+    });
   });
 });
