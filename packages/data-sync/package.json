@@ -16,9 +16,11 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:mutation": "stryker run",
-    "test:contract": "vitest run --config vitest.contract.config.ts"
+    "test:contract": "vitest run --config vitest.contract.config.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
