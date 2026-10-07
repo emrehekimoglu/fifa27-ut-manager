@@ -11,6 +11,8 @@ export default defineConfig({
         'src/**/*.test.ts',
         'src/**/*.contract.ts',
         'src/**/*.integration.ts',
+        // Covered by the CatalogStore contract suite against Supabase (test:integration).
+        'src/supabase-catalog-store.ts',
         'src/index.ts',
       ],
       reporter: ['text', 'html'],

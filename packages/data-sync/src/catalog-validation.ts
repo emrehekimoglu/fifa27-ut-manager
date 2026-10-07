@@ -7,8 +7,24 @@ export type CatalogSizeCheck =
   { readonly ok: true } | { readonly ok: false; readonly reason: string };
 
 export function checkCatalogSize(
-  _cardCount: number,
-  _previousCardCount: number | null,
+  cardCount: number,
+  previousCardCount: number | null,
 ): CatalogSizeCheck {
-  throw new Error('Not implemented');
+  if (cardCount < MIN_CATALOG_CARDS) {
+    return {
+      ok: false,
+      reason: `catalog has ${cardCount} cards, fewer than the minimum of ${MIN_CATALOG_CARDS}`,
+    };
+  }
+  if (
+    // Stryker disable next-line ConditionalExpression: equivalent mutant, `null * x` is 0 in JavaScript.
+    previousCardCount !== null &&
+    cardCount < previousCardCount * (1 - MAX_CATALOG_SHRINK_RATIO)
+  ) {
+    return {
+      ok: false,
+      reason: `catalog has ${cardCount} cards, more than 5 % fewer than the previous ${previousCardCount}`,
+    };
+  }
+  return { ok: true };
 }
