@@ -75,3 +75,17 @@ export async function fetchFutggCatalog(deps: CatalogFetchDeps): Promise<Catalog
   }
   return [...catalog.values()];
 }
+
+export interface EaCatalogFetchDeps {
+  readonly fetch: FetchFn;
+  readonly sleep: (milliseconds: number) => Promise<void>;
+  readonly delayMs: number;
+  readonly pageSize: number;
+  /** Unique per run; EA's CDN caches by URL. */
+  readonly cacheBust: string;
+}
+
+/** Reads every base card from EA's ratings API, page by page. */
+export function fetchEaCatalog(_deps: EaCatalogFetchDeps): Promise<CatalogCard[]> {
+  throw new Error('Not implemented');
+}
