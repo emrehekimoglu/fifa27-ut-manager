@@ -19,3 +19,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `/kaynaklar` page and `/api/source-health` endpoint showing the live status of both card sources and the price-access results.
 - Scheduled live contract tests for the card sources.
 - All-rights-reserved license.
+- Catalog storage in Supabase (ADR-0005): migrations, a daily sync workflow that reads FUT.GG in overall-rating partitions, validates the result and keeps the last good catalog on failure, and a production migration workflow.
+- Catalog sync status on the `/kaynaklar` page.
+- Database integration tests against a local Supabase stack in CI.

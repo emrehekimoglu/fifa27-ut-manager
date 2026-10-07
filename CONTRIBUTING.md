@@ -36,6 +36,7 @@ This guide is binding for every change to the repository, whether a person or a 
 | Line, branch, function and statement coverage of logic modules | ≥ 90 %                                                         |
 | Stryker mutation score                                         | ≥ 80 % (the build breaks below this)                           |
 | End-to-end tests                                               | Every user-facing flow, at desktop and 360 px mobile viewports |
+| Database integration tests                                     | Every store implementation passes the shared contract suite    |
 
 If mutants survive, improve the tests. Never lower the thresholds.
 
@@ -101,6 +102,20 @@ pnpm test:e2e      # first run: pnpm --filter @fc27/web exec playwright install 
 ```
 
 If Chromium is preinstalled somewhere else, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its path.
+
+### Database integration tests
+
+These run against a throwaway local Supabase stack, never against production. They need Docker.
+
+```sh
+pnpm exec supabase start                     # applies supabase/migrations
+eval "$(pnpm exec supabase status -o env | sed -E 's/^([A-Z_]+)=/export LOCAL_\1=/')"
+SUPABASE_URL="$LOCAL_API_URL" SUPABASE_SECRET_KEY="${LOCAL_SECRET_KEY:-$LOCAL_SERVICE_ROLE_KEY}" \
+  pnpm --filter @fc27/data-sync test:integration
+pnpm exec supabase stop
+```
+
+Schema changes are new files in `supabase/migrations`, created with `pnpm exec supabase migration new <name>`. Never edit an applied migration.
 
 ## Architecture decisions
 

@@ -31,11 +31,38 @@ The footer of every page shows the deployed build: `v<version> · <commit> · <e
 
 The commit must match the head commit of the PR you are verifying.
 
+## Supabase (database)
+
+The card catalog lives in a Supabase project (ADR-0005).
+
+### One-time setup
+
+1. Create a project at [supabase.com](https://supabase.com). The free plan is enough. Choose a European region.
+2. Collect the values listed in the table below:
+   - **Project URL:** the **Connect** dialog.
+   - **Publishable and secret keys:** **Project Settings → API Keys**, tab _Publishable and secret API keys_. If you only see a _Create new API keys_ button, click it first.
+   - **Database URL:** **Connect → Session pooler**. Replace `[YOUR-PASSWORD]` with the database password.
+3. Store each value where the table says. Never commit them; see [SECURITY.md](../../SECURITY.md).
+4. Run the **Database migrations** workflow once (GitHub → Actions → _Database migrations_ → _Run workflow_). It creates the tables.
+5. Run the **Catalog sync** workflow once to fill the catalog, which takes about 20 minutes. After that it runs daily at 03:47 UTC.
+
+### Secrets and variables
+
+| Name                            | Value                                           | Where                                                | Used by             |
+| ------------------------------- | ----------------------------------------------- | ---------------------------------------------------- | ------------------- |
+| `SUPABASE_URL`                  | Project URL                                     | GitHub Actions secret                                | Catalog sync        |
+| `SUPABASE_SECRET_KEY`           | `sb_secret_…` key                               | GitHub Actions secret                                | Catalog sync        |
+| `SUPABASE_DB_URL`               | Session pooler connection string, with password | GitHub Actions secret                                | Database migrations |
+| `VITE_SUPABASE_URL`             | Project URL                                     | Vercel environment variable (Production and Preview) | Web app             |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_…` key                          | Vercel environment variable (Production and Preview) | Web app             |
+
+- **The publishable key is public by design.** Row-level security protects the data.
+- **The secret key and database URL grant full access.** They belong only in GitHub secrets.
+- **Vercel bakes `VITE_*` variables into the build.** After changing them, redeploy.
+
 ## Environment variables and secrets
 
-The app needs none yet. When later milestones add variables:
-
-- **Register each variable** in Vercel under **Settings → Environment Variables**, separately for Production and Preview where needed.
+- **Register each new variable** in Vercel under **Settings → Environment Variables**, separately for Production and Preview where needed.
 - **Document each variable** in `.env.example` with a placeholder.
 - **Put values used by CI** in GitHub under **Settings → Secrets and variables → Actions**.
 - **Keep real values out of the repository** (see [SECURITY.md](../../SECURITY.md)).
@@ -56,4 +83,5 @@ Configure these in GitHub under **Settings**.
     - _End-to-end tests_
     - _Conventional commits_
     - _Secret scan_
+    - _Database integration tests_
   - Block force pushes.
