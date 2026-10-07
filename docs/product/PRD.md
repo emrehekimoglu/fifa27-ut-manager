@@ -1,12 +1,12 @@
 # Product Requirements Document — FC 27 UT Manager
 
-| Field          | Value                               |
-| -------------- | ----------------------------------- |
-| Status         | **Draft — awaiting owner approval** |
-| Version        | 0.2.0-draft                         |
-| Owner          | Emre Hekimoğlu                      |
-| Target release | v0.1.0                              |
-| Last updated   | 2026-10-07                          |
+| Field          | Value          |
+| -------------- | -------------- |
+| Status         | **Approved**   |
+| Version        | 1.0.0          |
+| Owner          | Emre Hekimoğlu |
+| Target release | v0.1.0         |
+| Last updated   | 2026-10-07     |
 
 ---
 
