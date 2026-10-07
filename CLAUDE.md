@@ -13,6 +13,11 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/product/PRD.md](docs/product/P
 - **Public repo:** never commit secrets or personal data. Use GitHub repository secrets and `.env.example` placeholders.
 - **Data acquisition:** never implement bot-protection circumvention (Cloudflare bypass, stealth or fingerprint evasion, CAPTCHA solving, request-signature reverse engineering). Never automate EA accounts or services.
 - **Language:** the UI is in Turkish. Code, comments, commits and docs are in English.
+- **Owner instructions:** whenever the owner must do something by hand (accounts, dashboards, secrets, workflows), explain it from scratch, step by step:
+  - Name every page, button and field exactly as the UI labels it.
+  - Say what the value looks like and where it goes.
+  - Never assume earlier context.
+  - Keep `docs/guides` equally detailed.
 
 ## Toolchain notes
 

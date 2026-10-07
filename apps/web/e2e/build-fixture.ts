@@ -5,3 +5,9 @@ export const E2E_BUILD = {
 } as const;
 
 export const E2E_PORT = 4173;
+
+/** Supabase project the app under test talks to; every request to it is answered by route mocks. */
+export const E2E_SUPABASE = {
+  url: 'https://supabase.e2e.test',
+  publishableKey: 'sb_publishable_e2e',
+} as const;

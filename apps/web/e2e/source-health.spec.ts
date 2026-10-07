@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import type { Locator, Page, Route } from '@playwright/test';
 
+import { E2E_SUPABASE } from './build-fixture';
 import report from './fixtures/source-health-report.json' with { type: 'json' };
 
 const API = '**/api/source-health';
@@ -19,7 +20,21 @@ async function openWithReport(page: Page, body: unknown = report): Promise<void>
   await page.goto('/kaynaklar');
 }
 
+const SYNCS = `${E2E_SUPABASE.url}/rest/v1/catalog_syncs**`;
+
+const SUCCEEDED_SYNC = {
+  id: 12,
+  started_at: '2026-10-07T03:47:05+00:00',
+  finished_at: '2026-10-07T04:11:52+00:00',
+  status: 'succeeded',
+  source: 'futgg',
+  card_count: 19958,
+  deactivated_count: 4,
+  error: null,
+};
+
 test.beforeEach(async ({ page }) => {
+  await page.route(SYNCS, (route) => fulfillJson(route, [SUCCEEDED_SYNC]));
   // Card images come from third-party CDNs; keep the tests offline and deterministic.
   await page.route(
     /^https:\/\/(game-assets\.fut\.gg|ratings-images-prod\.pulse\.ea\.com)\//,
@@ -184,4 +199,63 @@ test('fits the viewport without horizontal scrolling', async ({ page }) => {
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBe(0);
+});
+
+test.describe('catalog sync status', () => {
+  test('shows the latest successful sync', async ({ page }) => {
+    await openWithReport(page);
+    const sync = page.getByRole('region', { name: 'Katalog senkronizasyonu' });
+
+    await expect(field(sync, 'Durum')).toHaveText('Başarılı');
+    await expect(field(sync, 'Son çalışma')).toHaveText('7 Ekim 2026 06:47');
+    await expect(field(sync, 'Kaynak')).toHaveText('FUT.GG');
+    await expect(field(sync, 'Kart sayısı')).toHaveText('19.958');
+    await expect(field(sync, 'Pasife alınan kart')).toHaveText('4');
+    await expect(field(sync, 'Hata ayrıntısı')).toHaveCount(0);
+  });
+
+  test('shows a failed sync with its error', async ({ page }) => {
+    await page.route(SYNCS, (route) =>
+      fulfillJson(route, [
+        {
+          ...SUCCEEDED_SYNC,
+          id: 13,
+          status: 'failed',
+          source: null,
+          card_count: null,
+          deactivated_count: null,
+          error: '[futgg] partition 60-64: collected 4282 of 4375 cards after 3 passes',
+        },
+      ]),
+    );
+    await openWithReport(page);
+    const sync = page.getByRole('region', { name: 'Katalog senkronizasyonu' });
+
+    await expect(field(sync, 'Durum')).toHaveText('Başarısız');
+    await expect(field(sync, 'Kaynak')).toHaveText('—');
+    await expect(field(sync, 'Kart sayısı')).toHaveText('—');
+    await expect(field(sync, 'Hata ayrıntısı')).toHaveText(
+      '[futgg] partition 60-64: collected 4282 of 4375 cards after 3 passes',
+    );
+  });
+
+  test('explains when no sync has run yet', async ({ page }) => {
+    await page.route(SYNCS, (route) => fulfillJson(route, []));
+    await openWithReport(page);
+
+    await expect(page.getByRole('region', { name: 'Katalog senkronizasyonu' })).toContainText(
+      'Henüz bir katalog senkronizasyonu çalışmadı.',
+    );
+  });
+
+  test('reports when the database cannot be reached', async ({ page }) => {
+    await page.route(SYNCS, (route) => fulfillJson(route, { message: 'unavailable' }, 503));
+    await openWithReport(page);
+    const sync = page.getByRole('region', { name: 'Katalog senkronizasyonu' });
+
+    // supabase-js retries a 503 three times (about 7 s) before giving up.
+    await expect(sync.getByRole('alert')).toHaveText('Senkronizasyon durumu alınamadı.', {
+      timeout: 15_000,
+    });
+  });
 });

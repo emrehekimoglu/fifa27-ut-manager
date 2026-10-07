@@ -9,5 +9,12 @@
     "outDir": "./node_modules/.tmp/test",
     "types": ["node"]
   },
-  "include": ["src", "test/**/*.json", "vitest.config.ts", "vitest.contract.config.ts"]
+  "include": [
+    "src",
+    "test/**/*.ts",
+    "test/**/*.json",
+    "vitest.config.ts",
+    "vitest.contract.config.ts",
+    "vitest.integration.config.ts"
+  ]
 }

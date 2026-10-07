@@ -21,7 +21,8 @@ A private web app for building EA SPORTS FC 27 Ultimate Team squads. It shows ga
 apps/
   web/              React + Vite web app (PWA in later milestones)
 packages/
-  data-sync/        Card source adapters (FUT.GG, EA) and source health checks
+  data-sync/        Card source adapters, catalog sync engine and its CLI
+supabase/           Database migrations and local stack config
 docs/
   product/          Product requirements
   adr/              Architecture decision records
@@ -40,17 +41,18 @@ pnpm dev            # start the web app at http://localhost:5173
 
 ## Scripts
 
-| Command                                       | Description                                              |
-| --------------------------------------------- | -------------------------------------------------------- |
-| `pnpm dev`                                    | Start the web app in development mode                    |
-| `pnpm build`                                  | Type-check and build all packages                        |
-| `pnpm lint`                                   | Run ESLint                                               |
-| `pnpm format` / `pnpm format:check`           | Format or check formatting with Prettier                 |
-| `pnpm typecheck`                              | Type-check all packages                                  |
-| `pnpm test`                                   | Unit tests with coverage thresholds                      |
-| `pnpm test:mutation`                          | Mutation tests (Stryker) with score thresholds           |
-| `pnpm test:e2e`                               | End-to-end tests (Playwright, desktop and 360 px mobile) |
-| `pnpm --filter @fc27/data-sync test:contract` | Live contract tests against the real card sources        |
+| Command                                          | Description                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------------- |
+| `pnpm dev`                                       | Start the web app in development mode                               |
+| `pnpm build`                                     | Type-check and build all packages                                   |
+| `pnpm lint`                                      | Run ESLint                                                          |
+| `pnpm format` / `pnpm format:check`              | Format or check formatting with Prettier                            |
+| `pnpm typecheck`                                 | Type-check all packages                                             |
+| `pnpm test`                                      | Unit tests with coverage thresholds                                 |
+| `pnpm test:mutation`                             | Mutation tests (Stryker) with score thresholds                      |
+| `pnpm test:e2e`                                  | End-to-end tests (Playwright, desktop and 360 px mobile)            |
+| `pnpm --filter @fc27/data-sync test:contract`    | Live contract tests against the real card sources                   |
+| `pnpm --filter @fc27/data-sync test:integration` | Database tests against a local Supabase stack (see CONTRIBUTING.md) |
 
 ## Data and usage
 

@@ -10,6 +10,7 @@ import {
   sourceRole,
   statusLabel,
 } from './format';
+import { CatalogSyncSection } from './CatalogSyncSection';
 import { PRICE_ACCESS_RESULTS, PRICE_ACCESS_TESTED_ON } from './price-access';
 
 type LoadState =
@@ -161,6 +162,8 @@ export function SourceHealthPage() {
           </div>
         )}
       </section>
+
+      <CatalogSyncSection />
 
       <section className="panel" aria-labelledby="price-access-title">
         <h2 id="price-access-title">Fiyat erişimi</h2>

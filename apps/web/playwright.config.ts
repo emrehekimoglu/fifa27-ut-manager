@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { E2E_BUILD, E2E_PORT } from './e2e/build-fixture';
+import { E2E_BUILD, E2E_PORT, E2E_SUPABASE } from './e2e/build-fixture';
 
 const isCI = Boolean(process.env['CI']);
 // Optional override for environments with a preinstalled Chromium build.
@@ -29,6 +29,11 @@ export default defineConfig({
     command: `pnpm build && pnpm preview --port ${E2E_PORT} --strictPort`,
     url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: false,
-    env: { APP_COMMIT_SHA: E2E_BUILD.commitSha, APP_ENV: E2E_BUILD.environment },
+    env: {
+      APP_COMMIT_SHA: E2E_BUILD.commitSha,
+      APP_ENV: E2E_BUILD.environment,
+      VITE_SUPABASE_URL: E2E_SUPABASE.url,
+      VITE_SUPABASE_PUBLISHABLE_KEY: E2E_SUPABASE.publishableKey,
+    },
   },
 });

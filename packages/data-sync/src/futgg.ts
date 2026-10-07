@@ -213,10 +213,19 @@ export function parseFutggDefinitionsPage(json: unknown): FutggDefinitionsPage {
   };
 }
 
+/** Inclusive overall-rating range used to split the catalog below the query cap. */
+export interface OverallRange {
+  readonly min: number;
+  readonly max: number;
+}
+
 export async function fetchFutggDefinitionsPage(
   page: number,
   fetchFn: FetchFn,
+  range?: OverallRange,
 ): Promise<FutggDefinitionsPage> {
-  const json = await getJson('futgg', `${FUTGG_DEFINITIONS_URL}?page=${page}`, fetchFn);
+  // No sort parameter: FUT.GG's default order pages stably, sorting by overall does not (ADR-0005).
+  const filter = range ? `&overall__gte=${range.min}&overall__lte=${range.max}` : '';
+  const json = await getJson('futgg', `${FUTGG_DEFINITIONS_URL}?page=${page}${filter}`, fetchFn);
   return parseFutggDefinitionsPage(json);
 }
