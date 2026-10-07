@@ -10,6 +10,7 @@ async function loadBrowserSupabase() {
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
 });
 
 describe('browserSupabase', () => {
@@ -30,11 +31,16 @@ describe('browserSupabase', () => {
     vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_test');
     const browserSupabase = await loadBrowserSupabase();
 
+    const requests: string[] = [];
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      requests.push(input instanceof Request ? input.url : String(input));
+      return Promise.resolve(Response.json([]));
+    });
+
     const client = browserSupabase();
-    expect(client).not.toBeNull();
-    expect(String(client?.from('catalog_syncs').select('*').url)).toBe(
-      `${PROJECT_URL}/rest/v1/catalog_syncs?select=*`,
-    );
+    await client?.from('catalog_syncs').select('*');
+
+    expect(requests).toEqual([`${PROJECT_URL}/rest/v1/catalog_syncs?select=*`]);
     expect(browserSupabase()).toBe(client);
   });
 });
