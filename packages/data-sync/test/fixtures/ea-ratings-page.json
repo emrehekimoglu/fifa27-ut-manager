@@ -1,0 +1,799 @@
+{
+  "items": [
+    {
+      "id": 231747,
+      "rank": 1,
+      "overallRating": 91,
+      "firstName": "Kylian",
+      "lastName": "Mbappé",
+      "commonName": null,
+      "birthdate": "12/20/1998 0:00",
+      "height": "",
+      "skillMoves": 5,
+      "weakFootAbility": 4,
+      "preferredFoot": 1,
+      "leagueName": "LALIGA EA SPORTS",
+      "weight": "",
+      "avatarUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-portraits/p231747.png?padding=0.7",
+      "shieldUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/231747.png?width=265",
+      "alternatePositions": [
+        {
+          "id": "27",
+          "label": "Left Wing",
+          "shortLabel": "LW"
+        }
+      ],
+      "playerAbilities": [
+        {
+          "id": "trait1_1",
+          "label": "Finesse Shot",
+          "description": "Faster finesse shots with more curve and accuracy",
+          "imageUrl": "https://drop-assets.ea.com/images/468u1R1p2k1fA6WBHi0OEn/fb9d49ed2a8fb500cd5a184937b96b34/Finesse_Shot.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_32",
+          "label": "Acrobatic",
+          "description": "Perform volleys with increased accuracy, acrobatic volley animations",
+          "imageUrl": "https://drop-assets.ea.com/images/2sRRBHcIe0zrDwYaRI2xG3/d02b8c8855de853470897009e030eb5d/Acrobatic.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_64",
+          "label": "Low Driven Shot",
+          "description": "Enhances a player's ability to execute low driven shots with increased accuracy, faster ball travel, and quicker shot execution.",
+          "imageUrl": "https://drop-assets.ea.com/images/1NfyWsEpQ7s9bhWWt92lbn/5b5dbeb0e55c2e9241cdc26c70ee2d2c/Low_Driven_Shot.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_128",
+          "label": "Gamechanger",
+          "description": "Fancy and Trivela shots are performed with improved accuracy.",
+          "imageUrl": "https://drop-assets.ea.com/images/2v8I0GQrtREaEJzJcyStKe/e46d719e4e5ed88ac5a1f671c7448f4a/Gamechanger.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_2097152",
+          "label": "Rapid",
+          "description": "Higher sprint speed while dribbling, reduced error on knock-ons",
+          "imageUrl": "https://drop-assets.ea.com/images/1aGsvwKyIFlRG1eoJSS0Ot/a4d3d661ff962795a632fe86439d2146/Rapid.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_4194304",
+          "label": "First Touch",
+          "description": "Reduced trapping error, faster dribbling transition",
+          "imageUrl": "https://drop-assets.ea.com/images/3f727XsoDVLbT49oMk0HBu/2787568be8ccb2d5daa2d18fabacad97/First_Touch.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "icontrait1_33554432",
+          "label": "Quick Step+",
+          "description": "Significantly faster acceleration during Explosive Sprint",
+          "imageUrl": "https://drop-assets.ea.com/images/44zHnq7IqO4ItY3NPzXNEC/d7fc408baa76e8ba053cd69e0a1a51c4/Quick_Step_.png",
+          "type": {
+            "id": "playStylePlus",
+            "label": "Play Style Plus"
+          }
+        }
+      ],
+      "gender": {
+        "id": 0,
+        "label": "Men's Football"
+      },
+      "nationality": {
+        "id": 18,
+        "label": "France",
+        "imageUrl": "https://drop-assets.ea.com/images/3ECAQzhfgSLWRf9IIHB6G8/7e235a7b2f93c1f73db7f89dc03b3657/f_18.png"
+      },
+      "team": {
+        "id": 243,
+        "label": "Real Madrid",
+        "imageUrl": "https://drop-assets.ea.com/images/Pk8nYrWuRt895RlhJx8jI/445d98b711f413a3a1e70c41b19b0f95/l243.png",
+        "isPopular": true
+      },
+      "position": {
+        "id": "25",
+        "shortLabel": "ST",
+        "label": "Striker",
+        "positionType": {
+          "id": "attack",
+          "name": "Attack"
+        }
+      },
+      "stats": {
+        "acceleration": {
+          "value": 97,
+          "diff": 0
+        },
+        "agility": {
+          "value": 93,
+          "diff": 0
+        },
+        "jumping": {
+          "value": 90,
+          "diff": 0
+        },
+        "stamina": {
+          "value": 83,
+          "diff": 0
+        },
+        "strength": {
+          "value": 77,
+          "diff": 0
+        },
+        "aggression": {
+          "value": 61,
+          "diff": 0
+        },
+        "balance": {
+          "value": 82,
+          "diff": 0
+        },
+        "ballControl": {
+          "value": 93,
+          "diff": 0
+        },
+        "composure": {
+          "value": 88,
+          "diff": 0
+        },
+        "crossing": {
+          "value": 74,
+          "diff": 0
+        },
+        "curve": {
+          "value": 80,
+          "diff": 0
+        },
+        "def": {
+          "value": 29,
+          "diff": 0
+        },
+        "defensiveAwareness": {
+          "value": 15,
+          "diff": 0
+        },
+        "dri": {
+          "value": 92,
+          "diff": 0
+        },
+        "dribbling": {
+          "value": 92,
+          "diff": 0
+        },
+        "finishing": {
+          "value": 95,
+          "diff": 0
+        },
+        "freeKickAccuracy": {
+          "value": 70,
+          "diff": 0
+        },
+        "gkDiving": {
+          "value": 13,
+          "diff": 0
+        },
+        "gkHandling": {
+          "value": 5,
+          "diff": 0
+        },
+        "gkKicking": {
+          "value": 7,
+          "diff": 0
+        },
+        "gkPositioning": {
+          "value": 11,
+          "diff": 0
+        },
+        "gkReflexes": {
+          "value": 6,
+          "diff": 0
+        },
+        "headingAccuracy": {
+          "value": 78,
+          "diff": 0
+        },
+        "interceptions": {
+          "value": 19,
+          "diff": 0
+        },
+        "longPassing": {
+          "value": 74,
+          "diff": 0
+        },
+        "longShots": {
+          "value": 86,
+          "diff": 0
+        },
+        "pac": {
+          "value": 96,
+          "diff": 0
+        },
+        "pas": {
+          "value": 80,
+          "diff": 0
+        },
+        "penalties": {
+          "value": 86,
+          "diff": 0
+        },
+        "phy": {
+          "value": 76,
+          "diff": 0
+        },
+        "positioning": {
+          "value": 91,
+          "diff": 0
+        },
+        "reactions": {
+          "value": 92,
+          "diff": 0
+        },
+        "sho": {
+          "value": 91,
+          "diff": 0
+        },
+        "shortPassing": {
+          "value": 87,
+          "diff": 0
+        },
+        "shotPower": {
+          "value": 91,
+          "diff": 0
+        },
+        "slidingTackle": {
+          "value": 24,
+          "diff": 0
+        },
+        "sprintSpeed": {
+          "value": 96,
+          "diff": 0
+        },
+        "standingTackle": {
+          "value": 34,
+          "diff": 0
+        },
+        "vision": {
+          "value": 83,
+          "diff": 0
+        },
+        "volleys": {
+          "value": 87,
+          "diff": 0
+        }
+      }
+    },
+    {
+      "id": 192119,
+      "rank": 10,
+      "overallRating": 90,
+      "firstName": "Thibaut",
+      "lastName": "Courtois",
+      "commonName": null,
+      "birthdate": "5/11/1992 0:00",
+      "height": "",
+      "skillMoves": 1,
+      "weakFootAbility": 3,
+      "preferredFoot": 2,
+      "leagueName": "LALIGA EA SPORTS",
+      "weight": "",
+      "avatarUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-portraits/p192119.png?padding=0.7",
+      "shieldUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/192119.png?width=250",
+      "alternatePositions": null,
+      "playerAbilities": [
+        {
+          "id": "trait2_1",
+          "label": "Far Throw",
+          "description": "Unique goalkeeper throw animations with longer throw distance",
+          "imageUrl": "https://drop-assets.ea.com/images/3CjCz29sjIt1xMZTRDi4vQ/8ecb201b0ae7d6d536d03c847a768ffa/Far_Throw.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait2_16",
+          "label": "Far Reach",
+          "description": "Unique far dive animations, better long shot saves",
+          "imageUrl": "https://drop-assets.ea.com/images/7zbtymM2pCbANuM7wKFYZU/698e8ece65867df97e61189ac6666463/Far_Reach.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "icontrait2_8",
+          "label": "Rush Out+",
+          "description": "Unique reflex saves, better close shot reads, greater rush speed",
+          "imageUrl": "https://drop-assets.ea.com/images/2Dob5ZWyGDwaPtaOdJQDqT/a2ec208993396b49fcbd9fd959a72fc2/1v1_Close_Down_.png",
+          "type": {
+            "id": "playStylePlus",
+            "label": "Play Style Plus"
+          }
+        }
+      ],
+      "gender": {
+        "id": 0,
+        "label": "Men's Football"
+      },
+      "nationality": {
+        "id": 7,
+        "label": "Belgium",
+        "imageUrl": "https://drop-assets.ea.com/images/7eZLPoDDyxSlQoqcS4NVA2/6fc085dc7e85ccd7519be7ff2df875ee/f_7.png"
+      },
+      "team": {
+        "id": 243,
+        "label": "Real Madrid",
+        "imageUrl": "https://drop-assets.ea.com/images/Pk8nYrWuRt895RlhJx8jI/445d98b711f413a3a1e70c41b19b0f95/l243.png",
+        "isPopular": true
+      },
+      "position": {
+        "id": "0",
+        "shortLabel": "GK",
+        "label": "Goalkeeper",
+        "positionType": {
+          "id": "defense",
+          "name": "Defense"
+        }
+      },
+      "stats": {
+        "acceleration": {
+          "value": 42,
+          "diff": 0
+        },
+        "agility": {
+          "value": 63,
+          "diff": 0
+        },
+        "jumping": {
+          "value": 68,
+          "diff": 0
+        },
+        "stamina": {
+          "value": 38,
+          "diff": 0
+        },
+        "strength": {
+          "value": 70,
+          "diff": 0
+        },
+        "aggression": {
+          "value": 23,
+          "diff": 0
+        },
+        "balance": {
+          "value": 45,
+          "diff": 0
+        },
+        "ballControl": {
+          "value": 23,
+          "diff": 0
+        },
+        "composure": {
+          "value": 66,
+          "diff": 0
+        },
+        "crossing": {
+          "value": 14,
+          "diff": 0
+        },
+        "curve": {
+          "value": 19,
+          "diff": 0
+        },
+        "def": {
+          "value": 46,
+          "diff": 0
+        },
+        "defensiveAwareness": {
+          "value": 20,
+          "diff": 0
+        },
+        "dri": {
+          "value": 90,
+          "diff": 0
+        },
+        "dribbling": {
+          "value": 13,
+          "diff": 0
+        },
+        "finishing": {
+          "value": 14,
+          "diff": 0
+        },
+        "freeKickAccuracy": {
+          "value": 20,
+          "diff": 0
+        },
+        "gkDiving": {
+          "value": 87,
+          "diff": 0
+        },
+        "gkHandling": {
+          "value": 89,
+          "diff": 0
+        },
+        "gkKicking": {
+          "value": 78,
+          "diff": 0
+        },
+        "gkPositioning": {
+          "value": 90,
+          "diff": 0
+        },
+        "gkReflexes": {
+          "value": 90,
+          "diff": 0
+        },
+        "headingAccuracy": {
+          "value": 13,
+          "diff": 0
+        },
+        "interceptions": {
+          "value": 15,
+          "diff": 0
+        },
+        "longPassing": {
+          "value": 35,
+          "diff": 0
+        },
+        "longShots": {
+          "value": 17,
+          "diff": 0
+        },
+        "pac": {
+          "value": 87,
+          "diff": 0
+        },
+        "pas": {
+          "value": 78,
+          "diff": 0
+        },
+        "penalties": {
+          "value": 27,
+          "diff": 0
+        },
+        "phy": {
+          "value": 90,
+          "diff": 0
+        },
+        "positioning": {
+          "value": 13,
+          "diff": 0
+        },
+        "reactions": {
+          "value": 88,
+          "diff": 0
+        },
+        "sho": {
+          "value": 89,
+          "diff": 0
+        },
+        "shortPassing": {
+          "value": 33,
+          "diff": 0
+        },
+        "shotPower": {
+          "value": 59,
+          "diff": 0
+        },
+        "slidingTackle": {
+          "value": 16,
+          "diff": 0
+        },
+        "sprintSpeed": {
+          "value": 52,
+          "diff": 0
+        },
+        "standingTackle": {
+          "value": 18,
+          "diff": 0
+        },
+        "vision": {
+          "value": 60,
+          "diff": 0
+        },
+        "volleys": {
+          "value": 12,
+          "diff": 0
+        }
+      }
+    },
+    {
+      "id": 239085,
+      "rank": 3,
+      "overallRating": 91,
+      "firstName": "Erling",
+      "lastName": "Haaland",
+      "commonName": null,
+      "birthdate": "7/21/2000 0:00",
+      "height": "",
+      "skillMoves": 3,
+      "weakFootAbility": 3,
+      "preferredFoot": 2,
+      "leagueName": "Premier League",
+      "weight": "",
+      "avatarUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-portraits/p239085.png?padding=0.7",
+      "shieldUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/239085.png?width=265",
+      "alternatePositions": null,
+      "playerAbilities": [
+        {
+          "id": "trait1_2",
+          "label": "Chip Shot",
+          "description": "Faster, more accurate chip shots",
+          "imageUrl": "https://drop-assets.ea.com/images/6Gl08kt7odn1fJNX74CS2P/984feac3cd8d99902f5cb5131d5fd26a/Chip_Shot.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_4",
+          "label": "Power Shot",
+          "description": "Faster power shots with increased speed",
+          "imageUrl": "https://drop-assets.ea.com/images/3ohVoKWSsvT44qgjabWqfV/e536ef26ad854c3c4cbf63ed7954b9cd/Power_Shot.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_16",
+          "label": "Precision Header",
+          "description": "Performs headers with increased accuracy and power.",
+          "imageUrl": "https://drop-assets.ea.com/images/3ync8fbblS4zLzF3p1VXmT/7752a5103c2ebd8be5cf1819379c66f4/Precision_Header.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_32",
+          "label": "Acrobatic",
+          "description": "Perform volleys with increased accuracy, acrobatic volley animations",
+          "imageUrl": "https://drop-assets.ea.com/images/2sRRBHcIe0zrDwYaRI2xG3/d02b8c8855de853470897009e030eb5d/Acrobatic.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_128",
+          "label": "Gamechanger",
+          "description": "Fancy and Trivela shots are performed with improved accuracy.",
+          "imageUrl": "https://drop-assets.ea.com/images/2v8I0GQrtREaEJzJcyStKe/e46d719e4e5ed88ac5a1f671c7448f4a/Gamechanger.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "trait1_536870912",
+          "label": "Enforcer",
+          "description": "Performs dribble Shoulder Challenges and Shielding with increased effectiveness.",
+          "imageUrl": "https://drop-assets.ea.com/images/2sNQz8b9dgV0hW8vl7oOvV/d7a503dbd4c73b232055b3ca06aa88eb/Enforcer.png",
+          "type": {
+            "id": "playStyle",
+            "label": "Play Style"
+          }
+        },
+        {
+          "id": "icontrait1_64",
+          "label": "Low Driven Shot+",
+          "description": "Enhances a player's ability to perform low driven shots with significantly enhanced accuracy, even faster ball travel, and quicker shot execution.",
+          "imageUrl": "https://drop-assets.ea.com/images/7lY8ZhvwacbwMVTeuXYmM6/0e9f0e9411ad83a18712cbc1549a8317/Low_Driven_Shot_.png",
+          "type": {
+            "id": "playStylePlus",
+            "label": "Play Style Plus"
+          }
+        }
+      ],
+      "gender": {
+        "id": 0,
+        "label": "Men's Football"
+      },
+      "nationality": {
+        "id": 36,
+        "label": "Norway",
+        "imageUrl": "https://drop-assets.ea.com/images/kyD8KeqfkpF4AODggVj9z/999272a9ed21faa0d79c9ed626b89ec2/f_36.png"
+      },
+      "team": {
+        "id": 10,
+        "label": "Manchester City",
+        "imageUrl": "https://drop-assets.ea.com/images/4asmNLic4aQn6cjlEg1t5u/88bea3ddd6c1f620bbf813041f248685/l10.png",
+        "isPopular": false
+      },
+      "position": {
+        "id": "25",
+        "shortLabel": "ST",
+        "label": "Striker",
+        "positionType": {
+          "id": "attack",
+          "name": "Attack"
+        }
+      },
+      "stats": {
+        "acceleration": {
+          "value": 81,
+          "diff": 0
+        },
+        "agility": {
+          "value": 66,
+          "diff": 0
+        },
+        "jumping": {
+          "value": 93,
+          "diff": 0
+        },
+        "stamina": {
+          "value": 80,
+          "diff": 0
+        },
+        "strength": {
+          "value": 93,
+          "diff": 0
+        },
+        "aggression": {
+          "value": 88,
+          "diff": 0
+        },
+        "balance": {
+          "value": 69,
+          "diff": 0
+        },
+        "ballControl": {
+          "value": 83,
+          "diff": 0
+        },
+        "composure": {
+          "value": 86,
+          "diff": 0
+        },
+        "crossing": {
+          "value": 58,
+          "diff": 0
+        },
+        "curve": {
+          "value": 77,
+          "diff": 0
+        },
+        "def": {
+          "value": 47,
+          "diff": 0
+        },
+        "defensiveAwareness": {
+          "value": 42,
+          "diff": 0
+        },
+        "dri": {
+          "value": 80,
+          "diff": 0
+        },
+        "dribbling": {
+          "value": 79,
+          "diff": 0
+        },
+        "finishing": {
+          "value": 96,
+          "diff": 0
+        },
+        "freeKickAccuracy": {
+          "value": 62,
+          "diff": 0
+        },
+        "gkDiving": {
+          "value": 7,
+          "diff": 0
+        },
+        "gkHandling": {
+          "value": 14,
+          "diff": 0
+        },
+        "gkKicking": {
+          "value": 13,
+          "diff": 0
+        },
+        "gkPositioning": {
+          "value": 11,
+          "diff": 0
+        },
+        "gkReflexes": {
+          "value": 7,
+          "diff": 0
+        },
+        "headingAccuracy": {
+          "value": 85,
+          "diff": 0
+        },
+        "interceptions": {
+          "value": 43,
+          "diff": 0
+        },
+        "longPassing": {
+          "value": 66,
+          "diff": 0
+        },
+        "longShots": {
+          "value": 83,
+          "diff": 0
+        },
+        "pac": {
+          "value": 87,
+          "diff": 0
+        },
+        "pas": {
+          "value": 71,
+          "diff": 0
+        },
+        "penalties": {
+          "value": 89,
+          "diff": 0
+        },
+        "phy": {
+          "value": 89,
+          "diff": 0
+        },
+        "positioning": {
+          "value": 95,
+          "diff": 0
+        },
+        "reactions": {
+          "value": 94,
+          "diff": 0
+        },
+        "sho": {
+          "value": 92,
+          "diff": 0
+        },
+        "shortPassing": {
+          "value": 78,
+          "diff": 0
+        },
+        "shotPower": {
+          "value": 94,
+          "diff": 0
+        },
+        "slidingTackle": {
+          "value": 33,
+          "diff": 0
+        },
+        "sprintSpeed": {
+          "value": 92,
+          "diff": 0
+        },
+        "standingTackle": {
+          "value": 47,
+          "diff": 0
+        },
+        "vision": {
+          "value": 75,
+          "diff": 0
+        },
+        "volleys": {
+          "value": 90,
+          "diff": 0
+        }
+      }
+    }
+  ],
+  "totalItems": 19789
+}
