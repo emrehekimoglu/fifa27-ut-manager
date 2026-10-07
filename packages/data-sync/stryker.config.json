@@ -11,6 +11,7 @@
     "!src/**/*.contract.ts",
     "!src/**/*.integration.ts",
     "!src/supabase-catalog-store.ts",
+    "!src/cli/**",
     "!src/index.ts"
   ],
   "coverageAnalysis": "perTest",

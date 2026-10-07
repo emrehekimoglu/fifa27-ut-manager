@@ -14,6 +14,8 @@ export default defineConfig({
         // Covered by the CatalogStore contract suite against Supabase (test:integration).
         'src/supabase-catalog-store.ts',
         'src/index.ts',
+        // Wiring of real dependencies; exercised by the scheduled sync workflow.
+        'src/cli/**',
       ],
       reporter: ['text', 'html'],
       thresholds: { lines: 90, branches: 90, functions: 90, statements: 90 },
