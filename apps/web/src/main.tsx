@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 
 import { App } from './App';
+import { CardDetailPage } from './features/catalog/CardDetailPage';
+import { CatalogPage } from './features/catalog/CatalogPage';
 import { SourceHealthPage } from './features/source-health/SourceHealthPage';
 import { HomePage } from './HomePage';
 import './styles.css';
@@ -14,6 +16,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'kaynaklar', element: <SourceHealthPage /> },
+      { path: 'katalog', element: <CatalogPage /> },
+      { path: 'katalog/:eaId', element: <CardDetailPage /> },
     ],
   },
 ]);

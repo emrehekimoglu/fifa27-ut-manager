@@ -4,6 +4,7 @@
   "private": true,
   "description": "Card catalog source adapters and synchronisation.",
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

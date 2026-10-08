@@ -8,9 +8,14 @@ export function HomePage() {
       <p className="hero__status" role="status">
         Yapım aşamasında: v0.1 geliştiriliyor
       </p>
-      <Link className="hero__link" to="/kaynaklar">
-        Veri kaynakları
-      </Link>
+      <nav className="hero__links">
+        <Link className="hero__link" to="/katalog">
+          Kart kataloğu
+        </Link>
+        <Link className="hero__link" to="/kaynaklar">
+          Veri kaynakları
+        </Link>
+      </nav>
     </main>
   );
 }
