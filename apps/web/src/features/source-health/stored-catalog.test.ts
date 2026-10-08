@@ -21,9 +21,15 @@ interface Answers {
 }
 
 /** A Supabase client answering the three queries like PostgREST would. */
-function clientAnswering(answers: Answers): { client: SupabaseClient; requests: string[] } {
+function clientAnswering(
+  answers: Answers,
+  failingUrl?: string,
+): { client: SupabaseClient; requests: string[] } {
   const requests: string[] = [];
   const respond = (url: string): Response => {
+    if (url === failingUrl) {
+      return Response.json({ message: `permission denied for ${url}` }, { status: 401 });
+    }
     if (url === LATEST_FINISHED) return Response.json(answers.latestFinished);
     if (url === LAST_FUTGG_SUCCESS) return Response.json(answers.lastFutggSuccess);
     if (url === ACTIVE_FUTGG_CARDS) {
@@ -133,19 +139,21 @@ describe('fetchStoredFutggCatalog', () => {
     });
   });
 
-  it('fails with the database error message', async () => {
-    const client = createClient(SUPABASE_URL, 'sb_publishable_test', {
-      auth: { persistSession: false },
-      global: {
-        fetch: () =>
-          Promise.resolve(
-            Response.json({ message: 'permission denied for table cards' }, { status: 401 }),
-          ),
-      },
-    });
+  it.each([
+    ['the latest sync', LATEST_FINISHED],
+    ['the last FUT.GG success', LAST_FUTGG_SUCCESS],
+    ['the stored cards', ACTIVE_FUTGG_CARDS],
+  ])('fails with the database error when reading %s fails', async (_, failingUrl) => {
+    const answers: Answers = {
+      latestFinished: [{ status: 'succeeded', source: 'futgg', error: null }],
+      lastFutggSuccess: [{ finished_at: '2026-10-08T07:16:48+00:00' }],
+      cards: [{ data: pele }],
+      totalCards: 19958,
+    };
+    const { client } = clientAnswering(answers, failingUrl);
 
     await expect(fetchStoredFutggCatalog(client, 3)).rejects.toThrow(
-      'permission denied for table cards',
+      `permission denied for ${failingUrl}`,
     );
   });
 });

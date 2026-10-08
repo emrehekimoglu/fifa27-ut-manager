@@ -30,7 +30,11 @@ function fulfillCards(route: Route, cards: readonly unknown[], total: number): P
   return route.fulfill({
     status: 200,
     contentType: 'application/json',
-    headers: { 'content-range': `${range}/${total}` },
+    // Cross-origin, so the header must be exposed like Supabase does.
+    headers: {
+      'access-control-expose-headers': 'content-range',
+      'content-range': `${range}/${total}`,
+    },
     body: JSON.stringify(cards.map((data) => ({ data }))),
   });
 }
