@@ -36,10 +36,7 @@ const SUCCEEDED_SYNC = {
 test.beforeEach(async ({ page }) => {
   await page.route(SYNCS, (route) => fulfillJson(route, [SUCCEEDED_SYNC]));
   // Card images come from third-party CDNs; keep the tests offline and deterministic.
-  await page.route(
-    /^https:\/\/(game-assets\.fut\.gg|ratings-images-prod\.pulse\.ea\.com)\//,
-    (route) => route.abort(),
-  );
+  await page.route(/^https:\/\/game-assets\.fut\.gg\//, (route) => route.abort());
 });
 
 test('is reachable from the landing page', async ({ page }) => {
@@ -116,6 +113,18 @@ test('shows the live status of the fallback card source', async ({ page }) => {
     'Thibaut Courtois 90 · GK · Real Madrid',
     'Erling Haaland 91 · ST · Manchester City',
   ]);
+});
+
+test('shows card images from FUT.GG but none for EA cards, whose images are outdated', async ({
+  page,
+}) => {
+  await openWithReport(page);
+  const samples = (name: string) =>
+    page.getByRole('region', { name }).getByRole('list', { name: 'Örnek kartlar' });
+
+  await expect(samples('FUT.GG').locator('img')).toHaveCount(3);
+  await expect(samples('EA resmi API').locator('img')).toHaveCount(0);
+  await expect(samples('EA resmi API').getByRole('listitem')).toHaveCount(3);
 });
 
 test('shows a failing source with its error and without sample cards', async ({ page }) => {
