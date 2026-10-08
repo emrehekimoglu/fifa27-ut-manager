@@ -21,10 +21,9 @@ export async function handleSourceHealth(deps: SourceHealthDeps): Promise<Respon
     now: deps.now,
     sampleSize: SOURCE_HEALTH_SAMPLE_SIZE,
   };
-  const sources = await Promise.all([
-    checkSourceHealth('futgg', checkDeps),
-    checkSourceHealth('ea', checkDeps),
-  ]);
+  // FUT.GG rejects requests from Vercel's servers (HTTP 403); the page reports
+  // FUT.GG from the catalog stored by the daily sync instead.
+  const sources = [await checkSourceHealth('ea', checkDeps)];
   const report: SourceHealthReport = { generatedAt, sources };
   return Response.json(report, { headers: { 'cache-control': SOURCE_HEALTH_CACHE_CONTROL } });
 }

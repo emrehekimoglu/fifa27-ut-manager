@@ -26,8 +26,13 @@ async function readReport(response: Response): Promise<SourceHealthReport> {
 }
 
 describe('handleSourceHealth', () => {
-  it('returns a cacheable JSON report of both sources, primary first', async () => {
-    const response = await handleSourceHealth({ fetch: fakeSources(), now: () => NOW });
+  it('returns a cacheable JSON report of the live EA check only', async () => {
+    const requests: string[] = [];
+    const fetch: FetchFn = (url, init) => {
+      requests.push(url);
+      return fakeSources()(url, init);
+    };
+    const response = await handleSourceHealth({ fetch, now: () => NOW });
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toBe('application/json');
@@ -46,26 +51,25 @@ describe('handleSourceHealth', () => {
         error,
       })),
     ).toEqual([
-      { source: 'futgg', status: 'ok', totalCards: 10000, totalIsCapped: true, error: null },
       { source: 'ea', status: 'ok', totalCards: 19789, totalIsCapped: false, error: null },
     ]);
     expect(report.sources.map((source) => source.sample.map((card) => card.name))).toEqual([
-      ['Pelé', 'Takefusa Kubo', 'Thibaut Courtois'],
       ['Kylian Mbappé', 'Thibaut Courtois', 'Erling Haaland'],
     ]);
+    // FUT.GG rejects Vercel's servers, so its status comes from the stored catalog instead.
+    expect(requests.some((url) => url.startsWith('https://www.fut.gg/'))).toBe(false);
   });
 
-  it('still answers 200 when a source fails, reporting that source as an error', async () => {
+  it('still answers 200 when EA fails, reporting it as an error', async () => {
     const response = await handleSourceHealth({
-      fetch: fakeSources({ futgg: new Response('Forbidden', { status: 403 }) }),
+      fetch: fakeSources({ ea: new Response('Bad Gateway', { status: 502 }) }),
       now: () => NOW,
     });
 
     expect(response.status).toBe(200);
     const report = await readReport(response);
     expect(report.sources.map(({ source, status, error }) => ({ source, status, error }))).toEqual([
-      { source: 'futgg', status: 'error', error: '[futgg] HTTP 403' },
-      { source: 'ea', status: 'ok', error: null },
+      { source: 'ea', status: 'error', error: '[ea] HTTP 502' },
     ]);
   });
 });
