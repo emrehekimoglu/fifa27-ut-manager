@@ -26,4 +26,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Cards without a club, such as heroes, no longer fail FUT.GG validation. They broke the catalog sync and the FUT.GG health check, and the source page names their league instead of a club.
+- EA cards no longer show FC 25 card images, which EA's API still links and which show outdated cards; the source page shows a placeholder instead.
 - A catalog bootstrapped from EA keeps the reason FUT.GG could not be used in its sync record, so the source page shows it.
