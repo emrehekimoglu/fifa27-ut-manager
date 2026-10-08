@@ -123,7 +123,8 @@ export interface CatalogCard {
   readonly position: Position;
   readonly alternatePositions: readonly Position[];
   readonly rarity: EntityRef | null;
-  readonly club: EntityRef;
+  /** Null for cards without a club, such as heroes, which belong only to a league. */
+  readonly club: EntityRef | null;
   readonly league: LeagueRef;
   readonly nation: EntityRef;
   /** Outfield face stats; null when the source only reports goalkeeper face stats. */

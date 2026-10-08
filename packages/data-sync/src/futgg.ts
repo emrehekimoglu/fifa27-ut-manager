@@ -32,7 +32,8 @@ const itemSchema = z.object({
   position: int,
   alternativePositionIds: ids,
   rarity: entityRef,
-  club: entityRef,
+  // Heroes belong to a league but to no club.
+  club: entityRef.nullable(),
   league: entityRef,
   nation: entityRef,
   facePace: int,

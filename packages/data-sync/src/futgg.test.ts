@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import heroPage from '../test/fixtures/futgg-definitions-hero-page.json' with { type: 'json' };
 import lastPage from '../test/fixtures/futgg-definitions-last-page.json' with { type: 'json' };
 import page from '../test/fixtures/futgg-definitions-page.json' with { type: 'json' };
 import { SourceValidationError } from './catalog-card.js';
@@ -52,6 +53,24 @@ describe('parseFutggDefinitionsPage', () => {
     expect(parsed.currentPage).toBe(334);
     expect(parsed.nextPage).toBeNull();
     expect(parsed.cards.map((card) => card.name)).toEqual(['Maxence Rivera']);
+  });
+
+  it('reads a hero card, which belongs to a league but to no club', () => {
+    const parsed = parseFutggDefinitionsPage(heroPage);
+    expect(parsed.currentPage).toBe(4);
+    expect(parsed.nextPage).toBe(5);
+    expect(parsed.total).toBe(480);
+    expect(parsed.cards).toHaveLength(1);
+    expect(parsed.cards[0]).toMatchObject({
+      eaId: 261593,
+      name: 'Jürgen Kohler',
+      overall: 89,
+      position: 'CB',
+      rarity: { eaId: 72, name: 'Base Hero' },
+      club: null,
+      league: { eaId: 19, name: 'Bundesliga' },
+      nation: { eaId: 21, name: 'Germany' },
+    });
   });
 
   it('normalises an icon card completely', () => {

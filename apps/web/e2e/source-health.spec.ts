@@ -69,6 +69,40 @@ test('shows the live status of the primary card source', async ({ page }) => {
   );
 });
 
+test('names the league of a sample card that has no club, such as a hero', async ({ page }) => {
+  const [futgg, ea] = report.sources;
+  const [pele] = futgg?.sample ?? [];
+  await openWithReport(page, {
+    ...report,
+    sources: [
+      {
+        ...futgg,
+        sample: [
+          {
+            ...pele,
+            eaId: 261593,
+            basePlayerEaId: 261593,
+            name: 'Jürgen Kohler',
+            overall: 89,
+            position: 'CB',
+            alternatePositions: [],
+            rarity: { eaId: 72, name: 'Base Hero' },
+            club: null,
+            league: { eaId: 19, name: 'Bundesliga' },
+            nation: { eaId: 21, name: 'Germany' },
+          },
+        ],
+      },
+      ea,
+    ],
+  });
+  const region = page.getByRole('region', { name: 'FUT.GG' });
+
+  await expect(
+    region.getByRole('list', { name: 'Örnek kartlar' }).getByRole('listitem'),
+  ).toHaveText(['Jürgen Kohler 89 · CB · Bundesliga']);
+});
+
 test('shows the live status of the fallback card source', async ({ page }) => {
   await openWithReport(page);
   const ea = page.getByRole('region', { name: 'EA resmi API' });

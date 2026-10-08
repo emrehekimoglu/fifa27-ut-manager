@@ -61,7 +61,7 @@ function SourceCard({ health }: { readonly health: SourceHealth }) {
               <img src={card.imageUrl} alt="" width={48} height={48} loading="lazy" />
               <span className="sample__name">{card.name}</span>{' '}
               <span className="sample__meta">
-                {card.overall} · {card.position} · {card.club.name}
+                {card.overall} · {card.position} · {card.club?.name ?? card.league.name}
               </span>
             </li>
           ))}

@@ -150,7 +150,7 @@ describe('runCatalogSync', () => {
     expect([...store.cards.values()].filter((stored) => stored.isActive)).toHaveLength(20000);
   });
 
-  it('bootstraps an empty catalog from EA when FUT.GG fails', async () => {
+  it('bootstraps an empty catalog from EA when FUT.GG fails, keeping the FUT.GG error', async () => {
     const store = new InMemoryCatalogStore();
 
     const result = await runCatalogSync({
@@ -166,8 +166,9 @@ describe('runCatalogSync', () => {
       source: 'ea',
       cardCount: 19789,
       deactivatedCount: 0,
-      error: null,
+      error: '[futgg] HTTP 403',
     });
+    expect(store.syncs[0]?.error).toBe('[futgg] HTTP 403');
     expect([...store.cards.values()].every((stored) => stored.card.source === 'ea')).toBe(true);
   });
 
