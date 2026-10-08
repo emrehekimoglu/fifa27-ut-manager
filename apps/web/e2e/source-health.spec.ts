@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import type { Locator, Page, Route } from '@playwright/test';
 
 import { E2E_SUPABASE } from './build-fixture';
+import futggCards from './fixtures/futgg-catalog-cards.json' with { type: 'json' };
 import report from './fixtures/source-health-report.json' with { type: 'json' };
 
 const API = '**/api/source-health';
@@ -21,6 +22,18 @@ async function openWithReport(page: Page, body: unknown = report): Promise<void>
 }
 
 const SYNCS = `${E2E_SUPABASE.url}/rest/v1/catalog_syncs**`;
+const CARDS = `${E2E_SUPABASE.url}/rest/v1/cards**`;
+
+/** Answers the stored-catalog query like PostgREST, with the total in Content-Range. */
+function fulfillCards(route: Route, cards: readonly unknown[], total: number): Promise<void> {
+  const range = cards.length > 0 ? `0-${cards.length - 1}` : '*';
+  return route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    headers: { 'content-range': `${range}/${total}` },
+    body: JSON.stringify(cards.map((data) => ({ data }))),
+  });
+}
 
 const SUCCEEDED_SYNC = {
   id: 12,
@@ -35,6 +48,7 @@ const SUCCEEDED_SYNC = {
 
 test.beforeEach(async ({ page }) => {
   await page.route(SYNCS, (route) => fulfillJson(route, [SUCCEEDED_SYNC]));
+  await page.route(CARDS, (route) => fulfillCards(route, futggCards, 19958));
   // Card images come from third-party CDNs; keep the tests offline and deterministic.
   await page.route(/^https:\/\/game-assets\.fut\.gg\//, (route) => route.abort());
 });
@@ -48,15 +62,16 @@ test('is reachable from the landing page', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Veri kaynakları');
 });
 
-test('shows the live status of the primary card source', async ({ page }) => {
+test('shows the FUT.GG catalog stored by the daily sync', async ({ page }) => {
   await openWithReport(page);
   const futgg = page.getByRole('region', { name: 'FUT.GG' });
 
   await expect(futgg.getByText('Birincil kaynak', { exact: true })).toBeVisible();
   await expect(field(futgg, 'Durum')).toHaveText('Çalışıyor');
-  await expect(field(futgg, 'Yanıt süresi')).toHaveText('412 ms');
-  await expect(field(futgg, 'Kart sayısı')).toHaveText('10.000+');
-  await expect(field(futgg, 'Kontrol saati')).toHaveText('22:00');
+  await expect(field(futgg, 'Kart sayısı')).toHaveText('19.958');
+  await expect(field(futgg, 'Son başarılı çekim')).toHaveText('7 Ekim 2026 07:11');
+  await expect(field(futgg, 'Yanıt süresi')).toHaveCount(0);
+  await expect(field(futgg, 'Hata ayrıntısı')).toHaveCount(0);
   await expect(futgg.getByRole('list', { name: 'Örnek kartlar' }).getByRole('listitem')).toHaveText(
     [
       'Pelé 95 · CAM · ICON',
@@ -67,37 +82,74 @@ test('shows the live status of the primary card source', async ({ page }) => {
 });
 
 test('names the league of a sample card that has no club, such as a hero', async ({ page }) => {
-  const [futgg, ea] = report.sources;
-  const [pele] = futgg?.sample ?? [];
-  await openWithReport(page, {
-    ...report,
-    sources: [
-      {
-        ...futgg,
-        sample: [
-          {
-            ...pele,
-            eaId: 261593,
-            basePlayerEaId: 261593,
-            name: 'Jürgen Kohler',
-            overall: 89,
-            position: 'CB',
-            alternatePositions: [],
-            rarity: { eaId: 72, name: 'Base Hero' },
-            club: null,
-            league: { eaId: 19, name: 'Bundesliga' },
-            nation: { eaId: 21, name: 'Germany' },
-          },
-        ],
-      },
-      ea,
-    ],
-  });
+  const [pele] = futggCards;
+  await page.route(CARDS, (route) =>
+    fulfillCards(
+      route,
+      [
+        {
+          ...pele,
+          eaId: 261593,
+          basePlayerEaId: 261593,
+          name: 'Jürgen Kohler',
+          overall: 89,
+          position: 'CB',
+          alternatePositions: [],
+          rarity: { eaId: 72, name: 'Base Hero' },
+          club: null,
+          league: { eaId: 19, name: 'Bundesliga' },
+          nation: { eaId: 21, name: 'Germany' },
+        },
+      ],
+      19958,
+    ),
+  );
+  await openWithReport(page);
   const region = page.getByRole('region', { name: 'FUT.GG' });
 
   await expect(
     region.getByRole('list', { name: 'Örnek kartlar' }).getByRole('listitem'),
   ).toHaveText(['Jürgen Kohler 89 · CB · Bundesliga']);
+});
+
+test('shows a failed FUT.GG sync with its error, keeping the stored cards', async ({ page }) => {
+  await page.route(SYNCS, (route) =>
+    fulfillJson(route, [
+      { ...SUCCEEDED_SYNC, status: 'failed', source: null, error: '[futgg] HTTP 503' },
+    ]),
+  );
+  await openWithReport(page);
+  const futgg = page.getByRole('region', { name: 'FUT.GG' });
+
+  await expect(field(futgg, 'Durum')).toHaveText('Hata');
+  await expect(field(futgg, 'Hata ayrıntısı')).toHaveText('[futgg] HTTP 503');
+  await expect(field(futgg, 'Kart sayısı')).toHaveText('19.958');
+  await expect(
+    futgg.getByRole('list', { name: 'Örnek kartlar' }).getByRole('listitem'),
+  ).toHaveCount(3);
+});
+
+test('explains when no FUT.GG data has been stored yet', async ({ page }) => {
+  await page.route(SYNCS, (route) => fulfillJson(route, []));
+  await page.route(CARDS, (route) => fulfillCards(route, [], 0));
+  await openWithReport(page);
+  const futgg = page.getByRole('region', { name: 'FUT.GG' });
+
+  await expect(field(futgg, 'Durum')).toHaveText('Henüz veri yok');
+  await expect(field(futgg, 'Kart sayısı')).toHaveText('0');
+  await expect(field(futgg, 'Son başarılı çekim')).toHaveText('—');
+  await expect(futgg.getByRole('list', { name: 'Örnek kartlar' })).toHaveCount(0);
+});
+
+test('reports when the stored FUT.GG catalog cannot be read', async ({ page }) => {
+  await page.route(CARDS, (route) => fulfillJson(route, { message: 'permission denied' }, 401));
+  await openWithReport(page);
+  const futgg = page.getByRole('region', { name: 'FUT.GG' });
+
+  await expect(futgg.getByRole('alert')).toHaveText('FUT.GG verisi alınamadı.');
+  await expect(field(page.getByRole('region', { name: 'EA resmi API' }), 'Durum')).toHaveText(
+    'Çalışıyor',
+  );
 });
 
 test('shows the live status of the fallback card source', async ({ page }) => {
@@ -127,29 +179,28 @@ test('shows card images from FUT.GG but none for EA cards, whose images are outd
   await expect(samples('EA resmi API').getByRole('listitem')).toHaveCount(3);
 });
 
-test('shows a failing source with its error and without sample cards', async ({ page }) => {
-  const [futgg, ea] = report.sources;
+test('shows a failing EA check with its error and without sample cards', async ({ page }) => {
+  const [ea] = report.sources;
   await openWithReport(page, {
     ...report,
     sources: [
       {
-        ...futgg,
+        ...ea,
         status: 'error',
         totalCards: null,
         totalIsCapped: false,
         sample: [],
-        error: '[futgg] HTTP 403',
+        error: '[ea] HTTP 502',
       },
-      ea,
     ],
   });
-  const region = page.getByRole('region', { name: 'FUT.GG' });
+  const region = page.getByRole('region', { name: 'EA resmi API' });
 
   await expect(field(region, 'Durum')).toHaveText('Hata');
   await expect(field(region, 'Kart sayısı')).toHaveText('—');
-  await expect(field(region, 'Hata ayrıntısı')).toHaveText('[futgg] HTTP 403');
+  await expect(field(region, 'Hata ayrıntısı')).toHaveText('[ea] HTTP 502');
   await expect(region.getByRole('list', { name: 'Örnek kartlar' })).toHaveCount(0);
-  await expect(field(page.getByRole('region', { name: 'EA resmi API' }), 'Durum')).toHaveText(
+  await expect(field(page.getByRole('region', { name: 'FUT.GG' }), 'Durum')).toHaveText(
     'Çalışıyor',
   );
 });
@@ -167,7 +218,7 @@ test('shows progress while the sources are being checked', async ({ page }) => {
 
   await expect(page.getByRole('status')).toHaveText('Kaynaklar kontrol ediliyor…');
   release();
-  await expect(page.getByRole('region', { name: 'FUT.GG' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'EA resmi API' })).toBeVisible();
   await expect(page.getByRole('status')).toHaveCount(0);
 });
 
@@ -183,7 +234,7 @@ test('reports when the status cannot be loaded and recovers on retry', async ({ 
   await page.getByRole('button', { name: 'Tekrar dene' }).click();
 
   await expect(page.getByRole('alert')).toHaveCount(0);
-  await expect(field(page.getByRole('region', { name: 'FUT.GG' }), 'Durum')).toHaveText(
+  await expect(field(page.getByRole('region', { name: 'EA resmi API' }), 'Durum')).toHaveText(
     'Çalışıyor',
   );
 });
@@ -195,7 +246,7 @@ test('re-checks the sources on demand', async ({ page }) => {
     return fulfillJson(route, report);
   });
   await page.goto('/kaynaklar');
-  await expect(page.getByRole('region', { name: 'FUT.GG' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'EA resmi API' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Yeniden kontrol et' }).click();
 
