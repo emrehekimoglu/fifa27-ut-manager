@@ -62,3 +62,4 @@ The milestone M1 spike tested each candidate source on 2026-10-07. Tests ran fro
   - the last good catalog is kept (PRD §6.1, NFR-4).
 - When FUT.GG is down, promo cards are unavailable until it recovers.
 - The source-health page (M1 demo) shows both sources' live status and sample cards.
+- **Update 2026-10-08:** FUT.GG answers HTTP 403 to requests from Vercel's serverless functions, although GitHub Actions runners are served. The web app therefore never calls FUT.GG. Its source page reports FUT.GG from the catalog stored by the daily sync (ADR-0005); only EA is checked live.

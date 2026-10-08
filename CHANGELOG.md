@@ -23,6 +23,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Catalog sync status on the `/kaynaklar` page.
 - Database integration tests against a local Supabase stack in CI.
 
+### Changed
+
+- The `/kaynaklar` page reports FUT.GG from the stored catalog: status of the latest sync, active card count, last successful fetch and the top-rated cards. FUT.GG rejects requests from Vercel's servers, so `/api/source-health` now checks only EA live.
+
 ### Fixed
 
 - Cards without a club, such as heroes, no longer fail FUT.GG validation. They broke the catalog sync and the FUT.GG health check, and the source page names their league instead of a club.
