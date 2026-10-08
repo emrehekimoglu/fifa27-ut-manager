@@ -58,7 +58,11 @@ function SourceCard({ health }: { readonly health: SourceHealth }) {
         <ul className="sample" aria-label="Örnek kartlar">
           {health.sample.map((card) => (
             <li key={card.eaId} className="sample__card">
-              <img src={card.imageUrl} alt="" width={48} height={48} loading="lazy" />
+              {card.imageUrl === null ? (
+                <span className="sample__placeholder" aria-hidden="true" />
+              ) : (
+                <img src={card.imageUrl} alt="" width={48} height={48} loading="lazy" />
+              )}
               <span className="sample__name">{card.name}</span>{' '}
               <span className="sample__meta">
                 {card.overall} · {card.position} · {card.club?.name ?? card.league.name}

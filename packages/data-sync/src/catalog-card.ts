@@ -144,7 +144,8 @@ export interface CatalogCard {
   readonly rolesPlusPlus: readonly number[] | null;
   readonly chemistry: ChemistryProfile;
   readonly isUntradeable: boolean;
-  readonly imageUrl: string;
+  /** Card image; null when the source has no image of the current card. */
+  readonly imageUrl: string | null;
 }
 
 /** Thrown when a source response does not match the expected shape. */
