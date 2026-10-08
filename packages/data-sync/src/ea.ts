@@ -41,7 +41,6 @@ const itemSchema = z.object({
   weakFootAbility: int,
   preferredFoot: int,
   leagueName: z.string(),
-  shieldUrl: z.string(),
   position: positionRef,
   alternatePositions: z.array(positionRef).nullable(),
   nationality: z.object({ id: int, label: z.string() }),
@@ -179,7 +178,8 @@ function toCard(item: EaItem): CatalogCard {
     rolesPlusPlus: null,
     chemistry: NO_SPECIAL_CHEMISTRY,
     isUntradeable: false,
-    imageUrl: item.shieldUrl,
+    // EA's shield and avatar URLs still point to FC 25 images, which show outdated cards.
+    imageUrl: null,
   };
 }
 

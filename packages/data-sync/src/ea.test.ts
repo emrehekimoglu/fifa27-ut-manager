@@ -125,8 +125,8 @@ describe('parseEaRatingsPage', () => {
         countsForEveryNation: false,
       },
       isUntradeable: false,
-      imageUrl:
-        'https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/231747.png?width=265',
+      // EA only links FC 25 card images, which show outdated cards.
+      imageUrl: null,
     });
   });
 

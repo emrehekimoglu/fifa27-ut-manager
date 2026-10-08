@@ -382,7 +382,7 @@
             "countsForEveryNation": false
           },
           "isUntradeable": false,
-          "imageUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/231747.png?width=265"
+          "imageUrl": null
         },
         {
           "source": "ea",
@@ -469,7 +469,7 @@
             "countsForEveryNation": false
           },
           "isUntradeable": false,
-          "imageUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/192119.png?width=250"
+          "imageUrl": null
         },
         {
           "source": "ea",
@@ -556,7 +556,7 @@
             "countsForEveryNation": false
           },
           "isUntradeable": false,
-          "imageUrl": "https://ratings-images-prod.pulse.ea.com/FC25/full/player-shields/en/239085.png?width=265"
+          "imageUrl": null
         }
       ],
       "error": null
