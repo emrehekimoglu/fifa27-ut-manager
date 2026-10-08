@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Catalog storage in Supabase (ADR-0005): migrations, a daily sync workflow that reads FUT.GG in overall-rating partitions, validates the result and keeps the last good catalog on failure, and a production migration workflow.
 - Catalog sync status on the `/kaynaklar` page.
 - Database integration tests against a local Supabase stack in CI.
+- `/katalog` card catalog: search by name ignoring case and accents, filter by a position the card can play, 30 cards per page, best first. `/katalog/:eaId` card detail with all facts and the face stats with their attributes, in Turkish.
 
 ### Changed
 
