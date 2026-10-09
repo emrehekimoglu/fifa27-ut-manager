@@ -15,6 +15,7 @@ import {
 import { fetchCard } from './catalog-query';
 import type { StoredCard } from './catalog-query';
 import { CardImage } from './CardImage';
+import { trueRatingRows } from './true-rating-rows';
 
 type Outcome =
   { readonly kind: 'failed' } | { readonly kind: 'loaded'; readonly stored: StoredCard | null };
@@ -65,6 +66,22 @@ function CardFacts({ card }: { readonly card: CatalogCard }) {
       <Fact label="Roller">{rolesLabel(card)}</Fact>
       <Fact label="Takas">{card.isUntradeable ? 'Takas edilemez' : 'Takas edilebilir'}</Fact>
     </dl>
+  );
+}
+
+function TrueRatings({ card }: { readonly card: CatalogCard }) {
+  return (
+    <section className="panel" aria-labelledby="true-rating-title">
+      <h2 id="true-rating-title">Gerçek reyting</h2>
+      <p className="panel__note">Tam kimyada, en iyi kimya stiliyle.</p>
+      <dl className="source__facts">
+        {trueRatingRows(card).map((row) => (
+          <Fact key={row.position} label={row.position}>
+            {`${row.rating} · ${row.style}`}
+          </Fact>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -171,6 +188,7 @@ export function CardDetailPage() {
           <section className="panel" aria-label="Kart bilgileri">
             <CardFacts card={outcome.stored.card} />
           </section>
+          <TrueRatings card={outcome.stored.card} />
           <AccelerateByStyle card={outcome.stored.card} />
           <CardStats card={outcome.stored.card} />
         </>
