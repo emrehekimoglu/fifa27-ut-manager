@@ -131,9 +131,11 @@ test('gives the playground controls touch-sized targets', async ({ page }) => {
   expect(await heightOf(page.getByRole('combobox', { name: 'Diziliş' }))).toBeGreaterThanOrEqual(
     MIN_TARGET,
   );
-  const pickButtons = page.getByRole('button', { name: 'Kart seç' });
-  await expect(pickButtons).toHaveCount(11);
-  expect(await heightOf(pickButtons.first())).toBeGreaterThanOrEqual(MIN_TARGET);
+  const spots = page.getByRole('list', { name: 'Saha' }).getByRole('button');
+  await expect(spots).toHaveCount(11);
+  for (const index of [0, 5, 10]) {
+    expect(await heightOf(spots.nth(index))).toBeGreaterThanOrEqual(MIN_TARGET);
+  }
 });
 
 test('uses a 16 px font in text fields so phones do not zoom on focus', async ({ page }) => {
