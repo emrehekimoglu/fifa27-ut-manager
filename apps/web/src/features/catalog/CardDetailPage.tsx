@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
 import { browserSupabase } from '../../lib/supabase';
-import { accelerateLabel, footLabel, positionName, statGroups } from './card-labels';
+import {
+  accelerateLabel,
+  footLabel,
+  playStylesLabel,
+  positionName,
+  rolesLabel,
+  statGroups,
+} from './card-labels';
 import { fetchCard } from './catalog-query';
 import type { StoredCard } from './catalog-query';
 import { CardImage } from './CardImage';
@@ -53,6 +60,8 @@ function CardFacts({ card }: { readonly card: CatalogCard }) {
       <Fact label="AcceleRATE">
         {card.accelerateType === null ? '—' : accelerateLabel(card.accelerateType)}
       </Fact>
+      <Fact label="PlayStyle'lar">{playStylesLabel(card)}</Fact>
+      <Fact label="Roller">{rolesLabel(card)}</Fact>
       <Fact label="Takas">{card.isUntradeable ? 'Takas edilemez' : 'Takas edilebilir'}</Fact>
     </dl>
   );

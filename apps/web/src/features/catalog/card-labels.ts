@@ -7,6 +7,7 @@ import type {
   GoalkeeperFaceStats,
   Position,
 } from '@fc27/data-sync';
+import { cardPlayStyles, cardRoles } from '@fc27/domain';
 
 export interface StatRow {
   readonly label: string;
@@ -43,17 +44,38 @@ const ACCELERATE_LABELS: Record<AccelerateType, string> = {
   lengthy: 'Uzun',
 };
 
+/** Shown when the source does not report a list. */
+const UNKNOWN = 'Bilinmiyor';
+
+const joined = (items: readonly string[]) => (items.length > 0 ? items.join(', ') : '—');
+
 /** The card's PlayStyles, PlayStyles+ first and marked with +. */
-export function playStylesLabel(_card: Pick<CatalogCard, 'playStyles' | 'playStylesPlus'>): string {
-  throw new Error('Not implemented');
+export function playStylesLabel(card: Pick<CatalogCard, 'playStyles' | 'playStylesPlus'>): string {
+  const playStyles = cardPlayStyles(card);
+  if (playStyles === null) return UNKNOWN;
+  return joined(
+    playStyles.map(({ id, name, plus }) => `${name ?? `PlayStyle #${id}`}${plus ? '+' : ''}`),
+  );
 }
 
 /** The card's Role++ and Role+, with positions unless only those of `position` are listed. */
 export function rolesLabel(
-  _card: Pick<CatalogCard, 'rolesPlus' | 'rolesPlusPlus'>,
-  _position?: Position,
+  card: Pick<CatalogCard, 'rolesPlus' | 'rolesPlusPlus'>,
+  position?: Position,
 ): string {
-  throw new Error('Not implemented');
+  const roles = cardRoles(card, position);
+  if (roles === null) return UNKNOWN;
+  return joined(
+    roles.map((role) => {
+      const name =
+        role.name === null
+          ? `Rol #${role.id}`
+          : position === undefined
+            ? `${role.position} ${role.name}`
+            : role.name;
+      return `${name}${role.plusPlus ? '++' : '+'}`;
+    }),
+  );
 }
 
 /** Turkish name of a position, e.g. "Santrafor" for ST. */
