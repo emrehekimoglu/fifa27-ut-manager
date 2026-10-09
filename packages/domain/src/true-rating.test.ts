@@ -6,7 +6,7 @@ import type { CatalogCard } from '@fc27/data-sync';
 import { CHEMISTRY_STYLES } from './rules/chemistry-styles.js';
 import type { ChemistryStyle } from './rules/chemistry-styles.js';
 import type { GroupWeights, TrueRatingRules } from './rules/true-rating.js';
-import { bestChemistryStyle, squadTrueRating, trueRating } from './true-rating.js';
+import { bestChemistryStyle, squadTrueRating, trueRating, trueRatingTerms } from './true-rating.js';
 
 const [pele, kubo, courtois] = parseFutggDefinitionsPage(futggPage).cards as [
   CatalogCard,
@@ -158,6 +158,42 @@ describe('trueRating', () => {
     expect(Math.round((plusPlus - atCam) * 10) / 10).toBe(0.5);
     // Kubo's Inside Forward+ is a RW role, so it adds nothing at LW: 81.67 − 0.5 = 81.17.
     expect(trueRating(kubo, 'LW', null, 3, RULES)).toBe(81.2);
+  });
+});
+
+describe('trueRatingTerms', () => {
+  it('lists the inputs the weights multiply, before any weight is applied', () => {
+    // Pelé at ST: weak foot 4 − 3, skill moves 5 − 3, Explosive +1, height (173 − 180)/5;
+    // PlayStyles Power Shot 1 + Precision Header 2, PlayStyle+ Finesse Shot 2; False 9++.
+    expect(trueRatingTerms(pele, 'ST', null, 3, RULES)).toEqual({
+      attributes: pele.attributes,
+      weakFoot: 1,
+      skillMoves: 2,
+      accelerate: 1,
+      height: -1.4,
+      playStyles: 3,
+      playStylesPlus: 2,
+      role: 1,
+    });
+  });
+
+  it('boosts the attributes with the style and caps the height steps', () => {
+    const kuboTerms = trueRatingTerms(kubo, 'RW', style('Hunter'), 3, RULES);
+    // Hunter at 3 chemistry: finishing 76 + 3, sprint speed 84 + 6.
+    expect(kuboTerms.attributes).toMatchObject({ finishing: 79, sprintSpeed: 90 });
+    expect(kuboTerms).toMatchObject({ playStyles: 1, playStylesPlus: 0, role: 0.5 });
+    // Courtois: 200 cm is 4 steps, capped at 3; Lengthy −1; skill moves 1 − 3;
+    // Far Throw 1 + Far Reach 2, PlayStyle+ 1v1 Close Down 2; Goalkeeper++.
+    expect(trueRatingTerms(courtois, 'GK', null, 3, RULES)).toEqual({
+      attributes: courtois.attributes,
+      weakFoot: 0,
+      skillMoves: -2,
+      accelerate: -1,
+      height: 3,
+      playStyles: 3,
+      playStylesPlus: 2,
+      role: 1,
+    });
   });
 });
 
