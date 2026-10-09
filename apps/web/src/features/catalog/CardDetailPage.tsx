@@ -35,7 +35,7 @@ function Fact({ label, children }: { readonly label: string; readonly children: 
 
 function CardFacts({ card }: { readonly card: CatalogCard }) {
   return (
-    <dl className="source__facts">
+    <dl className="facts">
       <Fact label="Reyting">{String(card.overall)}</Fact>
       <Fact label="Mevki">{`${card.position} · ${positionName(card.position)}`}</Fact>
       <Fact label="Diğer mevkiler">
@@ -120,7 +120,7 @@ export function CardDetailPage() {
         : null;
 
   return (
-    <main className="page">
+    <div className="page">
       <nav className="page__nav">
         <Link to="/katalog">← Katalog</Link>
       </nav>
@@ -141,12 +141,12 @@ export function CardDetailPage() {
           {!outcome.stored.isActive && (
             <p className="panel__note">Bu kart artık kaynakta listelenmiyor.</p>
           )}
-          <section className="panel" aria-label="Kart bilgileri">
+          <section className="panel source" aria-label="Kart bilgileri">
             <CardFacts card={outcome.stored.card} />
           </section>
           <CardStats card={outcome.stored.card} />
         </>
       )}
-    </main>
+    </div>
   );
 }
