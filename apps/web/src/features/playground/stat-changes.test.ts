@@ -6,7 +6,7 @@ import type { CatalogCard } from '@fc27/data-sync';
 import { CHEMISTRY_STYLES, applyChemistryStyle } from '@fc27/domain';
 import type { ChemistryStyle } from '@fc27/domain';
 
-import { statChanges } from './stat-changes';
+import { statChanges, styleBoosts } from './stat-changes';
 
 const [pele, , courtois] = parseFutggDefinitionsPage(futggPage).cards as [
   CatalogCard,
@@ -82,5 +82,27 @@ describe('statChanges', () => {
       change: 0,
       attributes: [{ label: 'Plonjon', value: 87, change: 0 }],
     });
+  });
+});
+
+describe('styleBoosts', () => {
+  it('lists the attributes Hunter raises at full chemistry, as FUT.GG publishes them', () => {
+    expect(styleBoosts(style('Hunter'))).toEqual([
+      { label: 'Hızlanma', boost: 6 },
+      { label: 'Sprint hızı', boost: 6 },
+      { label: 'Pozisyon alma', boost: 3 },
+      { label: 'Bitiricilik', boost: 3 },
+      { label: 'Şut gücü', boost: 3 },
+      { label: 'Vole', boost: 9 },
+      { label: 'Penaltı', boost: 6 },
+    ]);
+  });
+
+  it('names goalkeeper attributes for goalkeeper styles', () => {
+    expect(styleBoosts(style('Cat'))).toEqual([
+      { label: 'Hızlanma', boost: 3 },
+      { label: 'Pozisyon alma', boost: 9 },
+      { label: 'Refleks', boost: 6 },
+    ]);
   });
 });

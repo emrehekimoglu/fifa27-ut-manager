@@ -203,6 +203,10 @@ test('shows what the chosen chemistry style changes in the stats', async ({ page
     'Fizik 74',
   ]);
 
+  await expect(striker.getByTestId('style-boosts')).toHaveText(
+    'Hunter tam kimyada: Hızlanma +6 · Sprint hızı +6 · Pozisyon alma +3 · Bitiricilik +3 · Şut gücü +3 · Vole +9 · Penaltı +6',
+  );
+
   await striker.getByText('Tüm statlar').click();
   const shooting = striker.getByRole('region', { name: 'Şut' });
   await expect(shooting.getByRole('listitem')).toHaveText([
@@ -235,6 +239,12 @@ test('keeps the cards when the formation changes, out of position where they no 
   await spot(page, 'LM').click();
   await expect(slot(page, 'LM · Sol orta saha')).toContainText('Takefusa Kubo 80');
   await expect(field(slot(page, 'LM · Sol orta saha'), 'Kimya')).toHaveText('Mevki dışı');
+  await slot(page, 'LM · Sol orta saha')
+    .getByRole('combobox', { name: 'Kimya stili' })
+    .selectOption({ label: 'Hunter' });
+  await expect(slot(page, 'LM · Sol orta saha')).toContainText(
+    'Kimyası 0 olduğu için stil şu an etki etmiyor.',
+  );
   await spot(page, 'RS').click();
   await expect(field(slot(page, 'RS · Santrafor'), 'Kimya')).toHaveText('3 / 3');
   await expect(field(summary(page), 'Takım kimyası')).toHaveText('3 / 33');

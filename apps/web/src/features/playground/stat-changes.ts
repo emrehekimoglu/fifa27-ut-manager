@@ -1,5 +1,5 @@
 import type { CatalogCard } from '@fc27/data-sync';
-import type { CardStats } from '@fc27/domain';
+import type { CardStats, ChemistryStyle } from '@fc27/domain';
 
 import { statGroups } from '../catalog/card-labels';
 
@@ -30,4 +30,14 @@ export function statChanges(card: CatalogCard, stats: CardStats): readonly StatG
       })),
     };
   });
+}
+
+export interface StyleBoost {
+  readonly label: string;
+  readonly boost: number;
+}
+
+/** What a chemistry style adds to each attribute at full chemistry, e.g. Hızlanma +6. */
+export function styleBoosts(_style: ChemistryStyle): readonly StyleBoost[] {
+  throw new Error('Not implemented');
 }
