@@ -7,7 +7,9 @@ import {
   accelerateByStyle,
   accelerateLabel,
   footLabel,
+  playStylesLabel,
   positionName,
+  rolesLabel,
   statGroups,
 } from './card-labels';
 import { fetchCard } from './catalog-query';
@@ -59,6 +61,8 @@ function CardFacts({ card }: { readonly card: CatalogCard }) {
       <Fact label="AcceleRATE">
         {card.accelerateType === null ? '—' : accelerateLabel(card.accelerateType)}
       </Fact>
+      <Fact label="PlayStyle'lar">{playStylesLabel(card)}</Fact>
+      <Fact label="Roller">{rolesLabel(card)}</Fact>
       <Fact label="Takas">{card.isUntradeable ? 'Takas edilemez' : 'Takas edilebilir'}</Fact>
     </dl>
   );
