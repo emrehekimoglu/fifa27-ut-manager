@@ -145,6 +145,35 @@ describe('squadChemistry', () => {
     });
   });
 
+  it('adds the extra club, league and nation counts some cards carry', () => {
+    // The RCB counts twice for club 2, league 1 and nation 3: club 2 ×2, league 1 ×4, nation 3 ×2.
+    const doubled: CatalogCard = {
+      ...player('CB', 2, 1, 3),
+      chemistry: {
+        ...kubo.chemistry,
+        extraClubChemistry: 1,
+        extraLeagueChemistry: 1,
+        extraNationChemistry: 1,
+      },
+    };
+    expect(squadChemistry(formation('4-4-2'), replaced(2, doubled))).toEqual({
+      players: [3, 2, 3, 1, 0, 3, 3, 1, 0, 1, 1],
+      total: 18,
+    });
+  });
+
+  it('counts a card that counts toward every nation once for each nation of the squad', () => {
+    // The LB lifts every nation by 1: nations 2, 3, 4, 6 and 7 reach 2, the others stay above.
+    const everyNation: CatalogCard = {
+      ...player('LB', 4, 2, 4),
+      chemistry: { ...kubo.chemistry, countsForEveryNation: true },
+    };
+    expect(squadChemistry(formation('4-4-2'), replaced(4, everyNation))).toEqual({
+      players: [3, 3, 2, 1, 1, 3, 3, 2, 1, 1, 1],
+      total: 21,
+    });
+  });
+
   it('matches leagues by name when the source has no league id', () => {
     // The first three share league 1; renamed to Liga X, Liga X and Liga Y, league 1 splits.
     const unnamed = XI.map((card, at) =>

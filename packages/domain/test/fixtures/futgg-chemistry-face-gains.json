@@ -1,4 +1,12 @@
 {
+  "Basic": {
+    "Pace": 1.7,
+    "Shooting": 0.9,
+    "Passing": 2.2,
+    "Dribbling": 2.7,
+    "Defending": 2.1,
+    "Physicality": 1.5
+  },
   "Anchor": {
     "Pace": 3.0,
     "Shooting": 0,
@@ -174,5 +182,13 @@
     "Reflexes": 0,
     "Speed": 0,
     "Positioning": 0
+  },
+  "GK Basic": {
+    "Diving": 3.0,
+    "Handling": 3.0,
+    "Kicking": 3.0,
+    "Reflexes": 3.0,
+    "Speed": 1.8,
+    "Positioning": 3.0
   }
 }

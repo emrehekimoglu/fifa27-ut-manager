@@ -120,7 +120,7 @@ describe('CHEMISTRY_STYLES', () => {
         ];
       }),
     );
-    expect(Object.keys(computed)).toHaveLength(22);
+    expect(Object.keys(computed)).toHaveLength(24);
     expect(computed).toEqual(published);
   });
 });

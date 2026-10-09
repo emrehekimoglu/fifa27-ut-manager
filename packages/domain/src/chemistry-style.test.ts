@@ -147,6 +147,14 @@ describe('applyChemistryStyle', () => {
     });
   });
 
+  it('keeps the printed face stats at 0 chemistry, even where they differ from the formula', () => {
+    const printed: CatalogCard = {
+      ...pele,
+      faceStats: { ...outfieldFaceStats(pele.attributes), pace: 50 },
+    };
+    expect(applyChemistryStyle(printed, style('Hunter'), 0).faceStats).toEqual(printed.faceStats);
+  });
+
   it('boosts a goalkeeper and recomputes both sets of face stats', () => {
     // Cat: acceleration +3, GK positioning +9, GK reflexes +6.
     const stats = applyChemistryStyle(courtois, style('Cat'), 3);
