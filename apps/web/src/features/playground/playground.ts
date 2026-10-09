@@ -2,6 +2,7 @@ import type { AccelerateType, CatalogCard, Position } from '@fc27/data-sync';
 import {
   CHEMISTRY_STYLES,
   FORMATIONS,
+  accelerateTypeWith,
   applyChemistryStyle,
   canPlay,
   squadChemistry,
@@ -90,8 +91,11 @@ export function changeFormation(playground: Playground, formationId: number): Pl
   return { ...playground, formationId };
 }
 
+const styleOf = (styleId: number | null) =>
+  CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId) ?? null;
+
 function statsOf(card: CatalogCard, styleId: number | null, chemistry: number): CardStats {
-  const style = CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId);
+  const style = styleOf(styleId);
   return style
     ? applyChemistryStyle(card, style, chemistry)
     : {
@@ -117,7 +121,7 @@ export function evaluate(playground: Playground): Evaluation {
       inPosition: card !== null && canPlay(card, slot.position),
       chemistry: playerChemistry,
       stats: card && statsOf(card, styleId, playerChemistry),
-      accelerateType: null,
+      accelerateType: card && accelerateTypeWith(card, styleOf(styleId), playerChemistry),
     };
   });
   return {

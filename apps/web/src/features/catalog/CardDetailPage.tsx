@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
 import { browserSupabase } from '../../lib/supabase';
-import { accelerateLabel, footLabel, positionName, statGroups } from './card-labels';
+import {
+  accelerateByStyle,
+  accelerateLabel,
+  footLabel,
+  positionName,
+  statGroups,
+} from './card-labels';
 import { fetchCard } from './catalog-query';
 import type { StoredCard } from './catalog-query';
 import { CardImage } from './CardImage';
@@ -55,6 +61,23 @@ function CardFacts({ card }: { readonly card: CatalogCard }) {
       </Fact>
       <Fact label="Takas">{card.isUntradeable ? 'Takas edilemez' : 'Takas edilebilir'}</Fact>
     </dl>
+  );
+}
+
+function AccelerateByStyle({ card }: { readonly card: CatalogCard }) {
+  const rows = accelerateByStyle(card);
+  if (rows === null) return null;
+  return (
+    <section className="panel" aria-labelledby="accelerate-by-style-title">
+      <h2 id="accelerate-by-style-title">Kimya stiline göre AcceleRATE</h2>
+      <dl className="source__facts">
+        {rows.map((row) => (
+          <Fact key={row.label} label={row.label}>
+            {row.styles}
+          </Fact>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -144,6 +167,7 @@ export function CardDetailPage() {
           <section className="panel" aria-label="Kart bilgileri">
             <CardFacts card={outcome.stored.card} />
           </section>
+          <AccelerateByStyle card={outcome.stored.card} />
           <CardStats card={outcome.stored.card} />
         </>
       )}

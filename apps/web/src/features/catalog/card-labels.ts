@@ -1,3 +1,4 @@
+import { ACCELERATE_TYPES } from '@fc27/data-sync';
 import type {
   AccelerateType,
   Attributes,
@@ -64,9 +65,18 @@ export interface AccelerateStyles {
 
 /** The chemistry styles grouped by the AcceleRATE type they give; null when unknown. */
 export function accelerateByStyle(
-  _card: Pick<CatalogCard, 'accelerateTypeByStyle'>,
+  card: Pick<CatalogCard, 'accelerateTypeByStyle'>,
 ): readonly AccelerateStyles[] | null {
-  throw new Error('Not implemented');
+  const byStyle = card.accelerateTypeByStyle;
+  if (byStyle === null || byStyle === undefined) return null;
+  const entries = Object.entries(byStyle);
+  return ACCELERATE_TYPES.flatMap((type) => {
+    const styles = entries
+      .filter(([, styleType]) => styleType === type)
+      .map(([style]) => style)
+      .sort((a, b) => a.localeCompare(b, 'en'));
+    return styles.length > 0 ? [{ label: ACCELERATE_LABELS[type], styles: styles.join(', ') }] : [];
+  });
 }
 
 type AttributeKey = keyof Attributes;

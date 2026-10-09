@@ -172,6 +172,7 @@ function toCard(item: EaItem): CatalogCard {
     heightCm: item.height,
     weightKg: item.weight,
     accelerateType: null,
+    accelerateTypeByStyle: null,
     playStyles: null,
     playStylesPlus: null,
     rolesPlus: null,

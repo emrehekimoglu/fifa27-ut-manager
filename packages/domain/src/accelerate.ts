@@ -7,9 +7,11 @@ import type { ChemistryStyle } from './rules/chemistry-styles.js';
  * the source's per-style type at full chemistry, the card's own type otherwise.
  */
 export function accelerateTypeWith(
-  _card: Pick<CatalogCard, 'accelerateType' | 'accelerateTypeByStyle'>,
-  _style: ChemistryStyle | null,
-  _chemistry: number,
+  card: Pick<CatalogCard, 'accelerateType' | 'accelerateTypeByStyle'>,
+  style: ChemistryStyle | null,
+  chemistry: number,
 ): AccelerateType | null {
-  throw new Error('Not implemented');
+  const withStyle =
+    style !== null && chemistry >= 3 ? card.accelerateTypeByStyle?.[style.name] : undefined;
+  return withStyle ?? card.accelerateType;
 }
