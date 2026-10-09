@@ -14,6 +14,7 @@ A private web app for building EA SPORTS FC 27 Ultimate Team squads. It shows ga
 | [Deployment guide](docs/guides/deployment.md) | Vercel setup and environments                      |
 | [Security policy](SECURITY.md)                | Secrets handling and reporting issues              |
 | [Changelog](CHANGELOG.md)                     | Release history                                    |
+| [Project status](docs/STATUS.md)              | Current state, decisions and next steps            |
 
 ## Repository layout
 
