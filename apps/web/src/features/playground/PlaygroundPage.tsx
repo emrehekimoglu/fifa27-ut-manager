@@ -21,14 +21,14 @@ import {
   placeCard,
   removeCard,
 } from './playground';
-import type { EvaluatedSlot } from './playground';
+import type { EvaluatedSlot, StyleChoice } from './playground';
 
 interface SlotCardProps {
   readonly index: number;
   readonly slot: EvaluatedSlot;
   readonly onPick: () => void;
   readonly onRemove: () => void;
-  readonly onStyle: (styleId: number | null) => void;
+  readonly onStyle: (styleId: StyleChoice) => void;
 }
 
 function SlotStats({ card, slot }: { readonly card: CatalogCard; readonly slot: EvaluatedSlot }) {

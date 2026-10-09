@@ -7,13 +7,16 @@ import {
   canPlay,
   squadChemistry,
   squadRating,
+  TRUE_RATING_RULES,
 } from '@fc27/domain';
-import type { CardStats, Formation } from '@fc27/domain';
+import type { CardStats, ChemistryStyle, Formation, TrueRatingRules } from '@fc27/domain';
+
+/** A chemistry style id, 'auto' for the best style at the player's chemistry, or null for none. */
+export type StyleChoice = number | 'auto' | null;
 
 export interface PlaygroundSlot {
   readonly card: CatalogCard | null;
-  /** The chosen chemistry style, or null for none. */
-  readonly styleId: number | null;
+  readonly styleId: StyleChoice;
 }
 
 /** A starting XI being tried out: a formation and one entry per slot. */
@@ -29,7 +32,9 @@ export interface EvaluatedSlot {
   readonly code: string;
   readonly position: Position;
   readonly card: CatalogCard | null;
-  readonly styleId: number | null;
+  readonly styleId: StyleChoice;
+  /** The style in effect: the chosen one, or the automatic one; null for none. */
+  readonly style: ChemistryStyle | null;
   /** Whether the card can play the slot's position; false for an empty slot. */
   readonly inPosition: boolean;
   readonly chemistry: number;
@@ -37,6 +42,8 @@ export interface EvaluatedSlot {
   readonly stats: CardStats | null;
   /** The AcceleRATE type with the chosen style at the player's chemistry; null when unknown. */
   readonly accelerateType: AccelerateType | null;
+  /** The true rating at the slot's position with the style in effect; null for an empty slot. */
+  readonly trueRating: number | null;
 }
 
 export interface Evaluation {
@@ -45,6 +52,8 @@ export interface Evaluation {
   /** Squad chemistry, 0–33. */
   readonly chemistry: number;
   readonly rating: number;
+  /** The squad true rating, one decimal. */
+  readonly trueRating: number;
 }
 
 const EMPTY_SLOT: PlaygroundSlot = { card: null, styleId: null };
@@ -79,7 +88,7 @@ export function removeCard(playground: Playground, index: number): Playground {
 export function chooseStyle(
   playground: Playground,
   index: number,
-  styleId: number | null,
+  styleId: StyleChoice,
 ): Playground {
   const current = playground.slots[index] ?? EMPTY_SLOT;
   return withSlot(playground, index, { ...current, styleId });
@@ -91,10 +100,10 @@ export function changeFormation(playground: Playground, formationId: number): Pl
   return { ...playground, formationId };
 }
 
-const styleOf = (styleId: number | null) =>
+const styleOf = (styleId: StyleChoice) =>
   CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId) ?? null;
 
-function statsOf(card: CatalogCard, styleId: number | null, chemistry: number): CardStats {
+function statsOf(card: CatalogCard, styleId: StyleChoice, chemistry: number): CardStats {
   const style = styleOf(styleId);
   return style
     ? applyChemistryStyle(card, style, chemistry)
@@ -106,7 +115,10 @@ function statsOf(card: CatalogCard, styleId: number | null, chemistry: number): 
 }
 
 /** Chemistry, squad rating and boosted stats of the playground's XI. */
-export function evaluate(playground: Playground): Evaluation {
+export function evaluate(
+  playground: Playground,
+  _rules: TrueRatingRules = TRUE_RATING_RULES,
+): Evaluation {
   const formation = formationOf(playground.formationId);
   const cards = playground.slots.map((slot) => slot.card);
   const chemistry = squadChemistry(formation, cards);
@@ -118,10 +130,12 @@ export function evaluate(playground: Playground): Evaluation {
       position: slot.position,
       card,
       styleId,
+      style: null,
       inPosition: card !== null && canPlay(card, slot.position),
       chemistry: playerChemistry,
       stats: card && statsOf(card, styleId, playerChemistry),
       accelerateType: card && accelerateTypeWith(card, styleOf(styleId), playerChemistry),
+      trueRating: null,
     };
   });
   return {
@@ -129,6 +143,7 @@ export function evaluate(playground: Playground): Evaluation {
     slots,
     chemistry: chemistry.total,
     rating: squadRating(cards.map((card) => card?.overall ?? null)),
+    trueRating: 0,
   };
 }
 
