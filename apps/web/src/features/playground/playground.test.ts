@@ -156,6 +156,13 @@ describe('changeFormation', () => {
   });
 });
 
+describe('unknown formations', () => {
+  it('are refused when starting or switching', () => {
+    expect(() => newPlayground(999)).toThrow('Unknown formation 999');
+    expect(() => changeFormation(newPlayground(), 999)).toThrow('Unknown formation 999');
+  });
+});
+
 describe('formationLabel', () => {
   it('translates the variant names into Turkish', () => {
     expect(
