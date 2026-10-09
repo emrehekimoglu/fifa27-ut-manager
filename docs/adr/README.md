@@ -11,10 +11,11 @@ We record significant technical decisions as ADRs, following [Michael Nygard's f
 
 ## Log
 
-| ADR                                           | Title                         | Status   |
-| --------------------------------------------- | ----------------------------- | -------- |
-| [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
-| [0002](0002-monorepo-and-toolchain.md)        | Monorepo and toolchain        | Accepted |
-| [0003](0003-card-data-sources.md)             | Card data sources             | Accepted |
-| [0004](0004-price-acquisition.md)             | Price acquisition             | Accepted |
-| [0005](0005-catalog-storage-and-sync.md)      | Catalog storage and sync      | Accepted |
+| ADR                                               | Title                             | Status   |
+| ------------------------------------------------- | --------------------------------- | -------- |
+| [0001](0001-record-architecture-decisions.md)     | Record architecture decisions     | Accepted |
+| [0002](0002-monorepo-and-toolchain.md)            | Monorepo and toolchain            | Accepted |
+| [0003](0003-card-data-sources.md)                 | Card data sources                 | Accepted |
+| [0004](0004-price-acquisition.md)                 | Price acquisition                 | Accepted |
+| [0005](0005-catalog-storage-and-sync.md)          | Catalog storage and sync          | Accepted |
+| [0006](0006-game-rules-data-and-domain-engine.md) | Game rules data and domain engine | Proposed |

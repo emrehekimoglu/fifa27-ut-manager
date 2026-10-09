@@ -239,7 +239,7 @@ The domain-engine tests (M3) assert this formula against in-game squads, includi
 
 - 24 styles: 19 outfield and 5 goalkeeper.
 - The boost scales with chem: 1/3 of the boost at 1 chem, 2/3 at 2 chem, the full boost at 3 chem, and nothing at 0 chem.
-- ⚠ The per-attribute boost tables still need to be sourced.
+- The per-attribute boost tables come from FUT.GG's site data ([ADR-0006](../adr/0006-game-rules-data-and-domain-engine.md)).
 - Auto-selection picks the style that maximises the player's true rating at their slot, given their current chem.
 
 ### 7.4 True rating
@@ -389,8 +389,8 @@ Every milestone ends with a demo the owner can open on the preview URL (§10.2).
 ## 13. Open questions
 
 1. ~~Squad-rating `n` (11 vs 18).~~ Resolved: the starting XI only, `n = 11` (§7.2).
-2. The exact list of FC 27 formations. Resolved before M3.
-3. Chemistry-style per-attribute tables. FUT.GG exposes face-stat-level boosts only; the per-attribute tables are resolved before M3.
+2. ~~The exact list of FC 27 formations.~~ Resolved: 29 formations ([ADR-0006](../adr/0006-game-rules-data-and-domain-engine.md)).
+3. ~~Chemistry-style per-attribute tables.~~ Resolved from FUT.GG's site data ([ADR-0006](../adr/0006-game-rules-data-and-domain-engine.md)).
 4. ~~Which price source is reachable without circumvention.~~ Resolved by ADR-0004.
 5. Whether to build club import from the EA account (§6.4). Decided before v0.2 planning.
 
