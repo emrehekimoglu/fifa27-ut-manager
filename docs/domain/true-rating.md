@@ -189,7 +189,7 @@ The report (date, sample size, the two metrics per group, and the largest disagr
 - Mean absolute error is 1.7–3.0 points per group; Spearman is 0.85–0.97. FUT.GG's rating is not linear in the attributes: even fitted to all of a partial sample with a free scale and offset, a linear model missed it by 1.0–1.5 points on average, and rescaling our held-out ratings does not close the gap.
 - 32 of the 573 cards with meta ratings have ratings that do not cover the card's primary position, apparently those of another version of the card, often 15–20 points lower. They are left out. Another 147 sampled cards have no meta ratings at all.
 - The fit gives PlayStyles a weight of about 0: once the attributes are in, they explain nothing more of FUT.GG's rating.
-- **Proposal:** ship these weights, since the order of cards agrees well, and treat the bounds as targets for a later model (for example, the best of several role-specific weightings, as FUT.GG does), not as a gate. The owner decides on the calibration PR.
+- **Decision (owner, #24):** ship these weights, since the order of cards agrees well. The bounds stay as targets for a later model (for example, the best of several role-specific weightings, as FUT.GG does), not as a gate for re-calibrations.
 
 ## 5. Squad true rating
 
