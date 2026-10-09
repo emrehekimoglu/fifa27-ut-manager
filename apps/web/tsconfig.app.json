@@ -13,6 +13,9 @@
   "references": [
     {
       "path": "../../packages/data-sync/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/domain/tsconfig.lib.json"
     }
   ]
 }

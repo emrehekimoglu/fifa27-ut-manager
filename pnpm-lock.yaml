@@ -53,6 +53,9 @@ importers:
       '@fc27/data-sync':
         specifier: workspace:*
         version: link:../../packages/data-sync
+      '@fc27/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@supabase/supabase-js':
         specifier: ^2.117.3
         version: 2.117.3
