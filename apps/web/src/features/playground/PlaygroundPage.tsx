@@ -1,5 +1,5 @@
 import type { CatalogCard } from '@fc27/data-sync';
-import { FORMATIONS, stylesFor } from '@fc27/domain';
+import { CHEMISTRY_STYLES, FORMATIONS, stylesFor } from '@fc27/domain';
 import type { CardStats } from '@fc27/domain';
 import { useState } from 'react';
 
@@ -17,7 +17,7 @@ import {
   removeCard,
 } from './playground';
 import type { EvaluatedSlot } from './playground';
-import { statChanges } from './stat-changes';
+import { statChanges, styleBoosts } from './stat-changes';
 import type { StatChange } from './stat-changes';
 
 const slotTitle = (slot: EvaluatedSlot) => `${slot.code} · ${positionName(slot.position)}`;
@@ -157,6 +157,25 @@ function SlotStats({ card, stats }: { readonly card: CatalogCard; readonly stats
   );
 }
 
+/** What the chosen style adds at full chemistry, and why nothing changes at 0 chemistry. */
+function StyleNote({ slot }: { readonly slot: EvaluatedSlot }) {
+  const style = CHEMISTRY_STYLES.find((candidate) => candidate.id === slot.styleId);
+  if (!style) return null;
+  const boosts = styleBoosts(style)
+    .map((row) => `${row.label} +${row.boost}`)
+    .join(' · ');
+  return (
+    <div className="style-note">
+      <p data-testid="style-boosts">
+        {style.name} tam kimyada: {boosts}
+      </p>
+      {slot.chemistry === 0 && (
+        <p className="style-note__warning">Kimyası 0 olduğu için stil şu an etki etmiyor.</p>
+      )}
+    </div>
+  );
+}
+
 interface SlotPanelProps {
   readonly slot: EvaluatedSlot;
   readonly onPick: () => void;
@@ -211,6 +230,7 @@ function SlotPanel({ slot, onPick, onRemove, onStyle }: SlotPanelProps) {
               ))}
             </select>
           </label>
+          <StyleNote slot={slot} />
           {stats && <SlotStats card={card} stats={stats} />}
           <div className="slot__actions">
             <button type="button" onClick={onPick}>

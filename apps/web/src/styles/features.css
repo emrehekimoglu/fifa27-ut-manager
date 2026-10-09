@@ -632,6 +632,21 @@
     color: var(--color-text);
   }
 
+  .style-note {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    border-left: 3px solid var(--color-success);
+    border-radius: var(--radius-sm);
+    background: var(--color-success-soft);
+    font-size: var(--text-sm);
+  }
+
+  .style-note__warning {
+    color: var(--color-danger);
+    font-weight: 600;
+  }
+
   .slot__actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

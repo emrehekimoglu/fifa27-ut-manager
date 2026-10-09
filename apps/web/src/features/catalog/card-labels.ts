@@ -176,3 +176,13 @@ export function statGroups(card: CatalogCard): readonly StatGroup[] {
     attributes: rows(group.attributes),
   }));
 }
+
+/** Turkish name of an attribute, e.g. "Hızlanma" for acceleration. */
+export function attributeLabel(key: AttributeKey): string {
+  const labels = Object.fromEntries(
+    [...OUTFIELD_GROUPS, ...GOALKEEPER_GROUPS].flatMap((group) =>
+      group.attributes.map(([label, attribute]) => [attribute, label]),
+    ),
+  ) as Record<AttributeKey, string>;
+  return labels[key];
+}
