@@ -14,7 +14,7 @@ This file tells a new working session where the project stands and what comes ne
 | M1 Data spike         | Done        | #8                      | `/kaynaklar` source page; ADR-0003 (card sources), ADR-0004 (prices via a home agent)                |
 | M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14 | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail |
 | M3 Domain engine      | In progress | #15, #16                | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006)  |
-| UI foundation         | In progress | #21                     | App shell with main menu (bottom tab bar on phones), design tokens, restyled pages (ADR-0007)        |
+| UI foundation         | In progress | #21, #23                | App shell and main menu, design tokens, restyled pages; playground pitch with style stat changes     |
 | M4 Squad builder      | Not started | —                       | —                                                                                                    |
 | M5 Prices             | Not started | —                       | —                                                                                                    |
 | M6 Recommendations    | Not started | —                       | —                                                                                                    |
@@ -60,7 +60,7 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 
 ## 4. Next steps, in order
 
-The UI foundation runs alongside steps 1–3. Its next step is a FUT-style card component and a pitch view for the playground (SQD-8), which M4 reuses. New pages use the tokens and component classes in `apps/web/src/styles` (ADR-0007).
+The UI foundation runs alongside steps 1–3. The playground now shows the XI on a pitch (`pitchSpot`, #23) with small FUT-style cards, which the M4 pitch UI reuses. New pages use the tokens and component classes in `apps/web/src/styles` (ADR-0007).
 
 1. **Check M3 part 1 against the game.**
    - The owner builds a full XI from their club in `/oyun-alani` and compares squad rating and chemistry with the game.
