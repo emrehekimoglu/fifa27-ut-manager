@@ -3,21 +3,21 @@
 This file tells a new working session where the project stands and what comes next. Read it after [CLAUDE.md](../CLAUDE.md), [CONTRIBUTING.md](../CONTRIBUTING.md) and the [PRD](product/PRD.md). Update it in the pull request that changes the state it describes.
 
 - **Last updated:** 2026-10-09
-- **Current milestone:** M3 (domain engine); part 1 merged, part 2 (true rating) design in review
+- **Current milestone:** M3 (domain engine); part 1 merged; part 2 (true rating) design approved, implementation in progress
 
 ## 1. Milestones
 
-| Milestone             | State       | Pull requests           | What the owner can see                                                                               |
-| --------------------- | ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------- |
-| M0 Foundation         | Done        | #2, #9                  | Placeholder page with build info, CI, preview deployments                                            |
-| M1 Data spike         | Done        | #8                      | `/kaynaklar` source page; ADR-0003 (card sources), ADR-0004 (prices via a home agent)                |
-| M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14 | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail |
-| M3 Domain engine      | In progress | #15, #16                | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006)  |
-| M4 Squad builder      | Not started | —                       | —                                                                                                    |
-| M5 Prices             | Not started | —                       | —                                                                                                    |
-| M6 Recommendations    | Not started | —                       | —                                                                                                    |
-| M7 Search and compare | Not started | —                       | —                                                                                                    |
-| M8 Release            | Not started | —                       | —                                                                                                    |
+| Milestone             | State       | Pull requests           | What the owner can see                                                                                                        |
+| --------------------- | ----------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| M0 Foundation         | Done        | #2, #9                  | Placeholder page with build info, CI, preview deployments                                                                     |
+| M1 Data spike         | Done        | #8                      | `/kaynaklar` source page; ADR-0003 (card sources), ADR-0004 (prices via a home agent)                                         |
+| M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14 | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail                          |
+| M3 Domain engine      | In progress | #15, #16, #19, #20      | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006); PlayStyle and role names |
+| M4 Squad builder      | Not started | —                       | —                                                                                                                             |
+| M5 Prices             | Not started | —                       | —                                                                                                                             |
+| M6 Recommendations    | Not started | —                       | —                                                                                                                             |
+| M7 Search and compare | Not started | —                       | —                                                                                                                             |
+| M8 Release            | Not started | —                       | —                                                                                                                             |
 
 ## 2. What runs in production
 
@@ -61,22 +61,19 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 1. **Check M3 part 1 against the game.**
    - The owner builds a full XI from their club in `/oyun-alani` and compares squad rating and chemistry with the game.
    - Fix any mismatch the owner reports, especially in the squad-rating rounding.
-2. **PlayStyle names.**
-   - `https://www.fut.gg/api/fut/playstyles/` returns 36 PlayStyles with the `eaId` the catalog stores.
-   - Add them as rules data and show names on the card detail and in the playground.
-3. **M3 part 2: true rating** (PRD §7.4).
-   - The design is [`docs/domain/true-rating.md`](domain/true-rating.md). It needs the owner's approval before any implementation starts.
-   - After approval, follow its delivery plan (§7), one PR per step: PlayStyle and role rules data (this also covers step 2 above), per-style AcceleRATE in the catalog, the calibration workflow, then the true rating and chemistry-style auto-selection in `@fc27/domain` and the UI.
-   - AcceleRATE needs no rules: FUT.GG's card data lists each card's AcceleRATE type per chemistry style (`accelerateTypes`).
-   - Calibration uses FUT.GG's per-role, per-style meta ratings (`/api/fut/metarank/player/{eaId}/`), fetched by a manual GitHub Actions workflow and never committed.
-4. **Manager support.** Find a source for FC 27 managers (nation, league), then add a manager slot to the chemistry calculation and the playground.
-5. **M4 squad builder.**
+2. **M3 part 2: true rating** (PRD §7.4), following the approved design [`docs/domain/true-rating.md`](domain/true-rating.md) (#19), one PR per step of its delivery plan (§7):
+   - ~~PlayStyle and role rules data, with names on the card detail and in the playground~~ (#20).
+   - Per-style AcceleRATE in the catalog. FUT.GG's card data lists each card's AcceleRATE type per chemistry style (`accelerateTypes`), so no AcceleRATE rules are needed.
+   - The calibration workflow. It uses FUT.GG's per-role, per-style meta ratings (`/api/fut/metarank/player/{eaId}/`), fetched by a manual GitHub Actions workflow and never committed.
+   - The true rating and chemistry-style auto-selection in `@fc27/domain` and the UI.
+3. **Manager support.** Find a source for FC 27 managers (nation, league), then add a manager slot to the chemistry calculation and the playground.
+4. **M4 squad builder.**
    - Google sign-in with an allow-list of the two users.
    - RLS on reads.
    - Saved squads with 7 substitutes and a manager.
    - Pitch UI and club management (owned cards cost 0).
-6. **M5 prices:** the home price agent (ADR-0004), with a Windows setup guide written step by step for the owner.
-7. **M6 recommendations, M7 search and compare, M8 release,** as in PRD §12.
+5. **M5 prices:** the home price agent (ADR-0004), with a Windows setup guide written step by step for the owner.
+6. **M6 recommendations, M7 search and compare, M8 release,** as in PRD §12.
 
 ## 5. Working notes for a new session
 

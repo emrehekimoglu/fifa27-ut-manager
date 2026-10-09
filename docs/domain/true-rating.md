@@ -1,6 +1,6 @@
 # True rating
 
-- **Status:** Proposed. Implementation starts after the owner approves this document.
+- **Status:** Approved (#19)
 - **Date:** 2026-10-09
 - **Requirement:** PRD §7.4 (true rating) and §7.3 (chemistry-style auto-selection)
 
