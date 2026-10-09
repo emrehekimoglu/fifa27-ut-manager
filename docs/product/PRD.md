@@ -3,10 +3,10 @@
 | Field          | Value          |
 | -------------- | -------------- |
 | Status         | **Approved**   |
-| Version        | 1.0.0          |
+| Version        | 1.0.1          |
 | Owner          | Emre Hekimoğlu |
 | Target release | v0.1.0         |
-| Last updated   | 2026-10-07     |
+| Last updated   | 2026-10-09     |
 
 ---
 
@@ -227,14 +227,13 @@ The rules below reflect FC 27 at launch, based on research dated 2026-10-07. Eve
 
 ### 7.2 Squad rating
 
-The formula is community reverse-engineered:
+Only the starting XI counts; substitutes and the manager do not affect the squad rating (confirmed by the owner from the game, 2026-10-09). With `n = 11` and the ratings of the eleven starters, the community reverse-engineered formula is:
 
-1. `sum = Σ ratings`, `avg = sum / n`
+1. `sum = Σ ratings`, `avg = sum / 11`
 2. `cf = Σ max(0, rating_i − avg)`
-3. `rating = floor(round(sum + cf) / n)`
+3. `rating = floor(round(sum + cf) / 11)`
 
-⚠ The value of `n` must be confirmed: 11 (starting XI only), or 18 (XI plus substitutes). This
-will be verified against in-game examples.
+The domain-engine tests (M3) assert this formula against in-game squads, including the rounding.
 
 ### 7.3 Chemistry styles
 
@@ -389,7 +388,7 @@ Every milestone ends with a demo the owner can open on the preview URL (§10.2).
 
 ## 13. Open questions
 
-1. Squad-rating `n` (11 vs 18). Needs an in-game screenshot of a full squad (XI + 7 substitutes) with its rating; resolved before M3.
+1. ~~Squad-rating `n` (11 vs 18).~~ Resolved: the starting XI only, `n = 11` (§7.2).
 2. The exact list of FC 27 formations. Resolved before M3.
 3. Chemistry-style per-attribute tables. FUT.GG exposes face-stat-level boosts only; the per-attribute tables are resolved before M3.
 4. ~~Which price source is reachable without circumvention.~~ Resolved by ADR-0004.
