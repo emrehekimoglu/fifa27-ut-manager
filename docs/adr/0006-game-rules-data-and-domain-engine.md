@@ -48,6 +48,8 @@ FUT.GG's public site renders its squad builder and chemistry-style pages from da
 
 **4. AcceleRATE is not recomputed after a style boost.** FUT.GG's bundle only distinguishes three of the seven FC 27 types, so the card keeps its source AcceleRATE. This is revisited with the true rating (M3, part 2).
 
+_Update 2026-10-09:_ FUT.GG's card data lists, per card, the AcceleRATE type each chemistry style gives at full chemistry. The catalog stores it as `accelerateTypeByStyle`, and `accelerateTypeWith` uses it ([true-rating design](../domain/true-rating.md) §2.3).
+
 ## Alternatives considered
 
 - **Community guides:** they give face-stat boosts only and contradict each other, e.g. Sniper as Shooting and Physical, or Shooting and Dribbling.
