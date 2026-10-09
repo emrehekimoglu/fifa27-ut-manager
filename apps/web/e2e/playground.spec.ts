@@ -182,6 +182,21 @@ test('shows the AcceleRATE type with the chosen chemistry style', async ({ page 
   await expect(field(slot(page, 'GK · Kaleci'), 'AcceleRATE')).toHaveText('Uzun');
 });
 
+test('shows the PlayStyles and the roles at the slot position', async ({ page }) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+  const striker = slot(page, 'ST · Santrafor');
+
+  await expect(field(striker, "PlayStyle'lar")).toHaveText(
+    'Finesse Shot+, Power Shot, Precision Header, Incisive Pass, Technical, Trickster, Quick Step',
+  );
+  // Pelé is a CAM with Shadow Striker++ and Playmaker+ there, but only False 9++ at ST.
+  await expect(field(striker, 'Roller')).toHaveText('False 9++');
+  await expect(field(slot(page, 'RW · Sağ kanat'), 'Roller')).toHaveText('Inside Forward+');
+  await expect(field(slot(page, 'GK · Kaleci'), 'Roller')).toHaveText('Goalkeeper++');
+});
+
 test('keeps the cards when the formation changes, out of position where they no longer fit', async ({
   page,
 }) => {

@@ -1,0 +1,182 @@
+[
+  {
+    "eaId": 1,
+    "name": "Chip Shot",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 2,
+    "name": "Power Shot",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 3,
+    "name": "Dead Ball",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 0,
+    "name": "Finesse Shot",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 6,
+    "name": "Pinged Pass",
+    "category": "Passing"
+  },
+  {
+    "eaId": 5,
+    "name": "Incisive Pass",
+    "category": "Passing"
+  },
+  {
+    "eaId": 7,
+    "name": "Long Ball Pass",
+    "category": "Passing"
+  },
+  {
+    "eaId": 8,
+    "name": "Tiki Taka",
+    "category": "Passing"
+  },
+  {
+    "eaId": 9,
+    "name": "Whipped Pass",
+    "category": "Passing"
+  },
+  {
+    "eaId": 19,
+    "name": "First Touch",
+    "category": "Ball Control"
+  },
+  {
+    "eaId": 21,
+    "name": "Press Proven",
+    "category": "Ball Control"
+  },
+  {
+    "eaId": 17,
+    "name": "Rapid",
+    "category": "Ball Control"
+  },
+  {
+    "eaId": 16,
+    "name": "Technical",
+    "category": "Ball Control"
+  },
+  {
+    "eaId": 11,
+    "name": "Block",
+    "category": "Defending"
+  },
+  {
+    "eaId": 15,
+    "name": "Bruiser",
+    "category": "Physical"
+  },
+  {
+    "eaId": 12,
+    "name": "Intercept",
+    "category": "Defending"
+  },
+  {
+    "eaId": 10,
+    "name": "Jockey",
+    "category": "Defending"
+  },
+  {
+    "eaId": 14,
+    "name": "Slide Tackle",
+    "category": "Defending"
+  },
+  {
+    "eaId": 13,
+    "name": "Anticipate",
+    "category": "Defending"
+  },
+  {
+    "eaId": 25,
+    "name": "Acrobatic",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 23,
+    "name": "Relentless",
+    "category": "Physical"
+  },
+  {
+    "eaId": 22,
+    "name": "Quick Step",
+    "category": "Physical"
+  },
+  {
+    "eaId": 26,
+    "name": "Long Throw",
+    "category": "Physical"
+  },
+  {
+    "eaId": 28,
+    "name": "Far Throw",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 29,
+    "name": "Footwork",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 30,
+    "name": "Cross Claimer",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 31,
+    "name": "1v1 Close Down",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 32,
+    "name": "Far Reach",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 33,
+    "name": "Deflector",
+    "category": "Goalkeeping"
+  },
+  {
+    "eaId": 34,
+    "name": "Low Driven Shot",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 35,
+    "name": "Aerial Fortress",
+    "category": "Defending"
+  },
+  {
+    "eaId": 36,
+    "name": "Enforcer",
+    "category": "Physical"
+  },
+  {
+    "eaId": 37,
+    "name": "Gamechanger",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 38,
+    "name": "Inventive",
+    "category": "Passing"
+  },
+  {
+    "eaId": 39,
+    "name": "Precision Header",
+    "category": "Scoring"
+  },
+  {
+    "eaId": 20,
+    "name": "Trickster",
+    "category": "Ball Control"
+  }
+]
