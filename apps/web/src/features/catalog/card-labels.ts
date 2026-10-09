@@ -43,6 +43,19 @@ const ACCELERATE_LABELS: Record<AccelerateType, string> = {
   lengthy: 'Uzun',
 };
 
+/** The card's PlayStyles, PlayStyles+ first and marked with +. */
+export function playStylesLabel(_card: Pick<CatalogCard, 'playStyles' | 'playStylesPlus'>): string {
+  throw new Error('Not implemented');
+}
+
+/** The card's Role++ and Role+, with positions unless only those of `position` are listed. */
+export function rolesLabel(
+  _card: Pick<CatalogCard, 'rolesPlus' | 'rolesPlusPlus'>,
+  _position?: Position,
+): string {
+  throw new Error('Not implemented');
+}
+
 /** Turkish name of a position, e.g. "Santrafor" for ST. */
 export function positionName(position: Position): string {
   return POSITION_NAMES[position];

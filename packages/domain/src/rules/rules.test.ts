@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import faceGains from '../../test/fixtures/futgg-chemistry-face-gains.json' with { type: 'json' };
+import futggPlayStyles from '../../test/fixtures/futgg-playstyles.json' with { type: 'json' };
+import futggRoles from '../../test/fixtures/futgg-roles.json' with { type: 'json' };
 import tacticsSlots from '../../test/fixtures/futgg-tactics-slots.json' with { type: 'json' };
 import { CHEMISTRY_STYLES } from './chemistry-styles.js';
 import { GOALKEEPER_FACE_WEIGHTS, OUTFIELD_FACE_WEIGHTS } from './face-stats.js';
 import type { AttributeWeights } from './face-stats.js';
 import { FORMATIONS } from './formations.js';
+import { PLAYSTYLES } from './playstyles.js';
+import { ROLES } from './roles.js';
 
 // The rules data comes from FUT.GG's site bundle (ADR-0006). These tests check it
 // against what FUT.GG's pages publish independently: the slots on each tactics page
@@ -134,5 +138,35 @@ describe('face-stat weights', () => {
       (weights) => Math.round(weights.reduce((sum, [, weight]) => sum + weight, 0) * 1000) / 1000,
     );
     expect(sums).toEqual(Array.from({ length: 12 }, () => 1));
+  });
+});
+
+describe('PLAYSTYLES', () => {
+  it('has every PlayStyle of the FUT.GG PlayStyle list, with the same EA id, name and category', () => {
+    expect(PLAYSTYLES.map(({ id, name, category }) => ({ eaId: id, name, category }))).toEqual(
+      futggPlayStyles,
+    );
+  });
+
+  it('identifies each PlayStyle by a distinct EA id', () => {
+    expect(new Set(PLAYSTYLES.map((playStyle) => playStyle.id)).size).toBe(36);
+  });
+});
+
+describe('ROLES', () => {
+  it('has every role of the FUT.GG role list, with the same position and Role+/Role++ ids', () => {
+    expect(
+      ROLES.map(({ name, position, plusId, plusPlusId }) => ({
+        name,
+        positionName: position,
+        plusEaId: plusId,
+        plusPlusEaId: plusPlusId,
+      })),
+    ).toEqual(futggRoles);
+  });
+
+  it('identifies each Role+ and Role++ by a distinct EA id', () => {
+    const ids = ROLES.flatMap((role) => [role.plusId, role.plusPlusId]);
+    expect(new Set(ids).size).toBe(98);
   });
 });

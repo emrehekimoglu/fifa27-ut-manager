@@ -252,6 +252,34 @@ test.describe('card detail', () => {
     await expect(field(page, 'Diğer mevkiler')).toHaveText('—');
   });
 
+  test('names the PlayStyles and roles of the card', async ({ page }) => {
+    await serveCard(page, [{ data: pele, is_active: true }]);
+    await page.goto('/katalog/237067');
+
+    await expect(field(page, "PlayStyle'lar")).toHaveText(
+      'Finesse Shot+, Power Shot, Precision Header, Incisive Pass, Technical, Trickster, Quick Step',
+    );
+    await expect(field(page, 'Roller')).toHaveText(
+      'CAM Shadow Striker++, ST False 9++, CAM Playmaker+',
+    );
+  });
+
+  test('says when the source reports no PlayStyles or roles', async ({ page }) => {
+    const eaCard = {
+      ...pele,
+      source: 'ea',
+      playStyles: null,
+      playStylesPlus: null,
+      rolesPlus: null,
+      rolesPlusPlus: null,
+    };
+    await serveCard(page, [{ data: eaCard, is_active: true }]);
+    await page.goto('/katalog/237067');
+
+    await expect(field(page, "PlayStyle'lar")).toHaveText('Bilinmiyor');
+    await expect(field(page, 'Roller')).toHaveText('Bilinmiyor');
+  });
+
   test('names the missing club of a hero', async ({ page }) => {
     await serveCard(page, [{ data: { ...pele, club: null }, is_active: true }]);
     await page.goto('/katalog/237067');
