@@ -1,3 +1,4 @@
+export * from './accelerate.js';
 export * from './card-traits.js';
 export * from './chemistry.js';
 export * from './chemistry-style.js';

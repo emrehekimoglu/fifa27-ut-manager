@@ -4,6 +4,7 @@ import futggPage from '../../../../../packages/data-sync/test/fixtures/futgg-def
 import { ACCELERATE_TYPES, POSITIONS, parseFutggDefinitionsPage } from '@fc27/data-sync';
 import type { CatalogCard } from '@fc27/data-sync';
 import {
+  accelerateByStyle,
   accelerateLabel,
   footLabel,
   playStylesLabel,
@@ -151,6 +152,35 @@ describe('accelerateLabel', () => {
       'Çoğunlukla uzun',
       'Uzun',
     ]);
+  });
+});
+
+describe('accelerateByStyle', () => {
+  it('groups the chemistry styles by the AcceleRATE type they give, in type order', () => {
+    // Raw fixture: Pelé is Controlled with Architect and Sniper, Explosive with the rest.
+    expect(accelerateByStyle(pele)).toEqual([
+      {
+        label: 'Patlayıcı',
+        styles:
+          'Anchor, Artist, Backbone, Basic, Catalyst, Deadeye, Engine, Finisher, Gladiator, ' +
+          'Guardian, Hawk, Hunter, Maestro, Marksman, Powerhouse, Sentinel, Shadow',
+      },
+      { label: 'Kontrollü', styles: 'Architect, Sniper' },
+    ]);
+    expect(accelerateByStyle(courtois)).toEqual([
+      { label: 'Uzun', styles: 'Cat, GK Basic, Glove, Shield, Wall' },
+    ]);
+  });
+
+  it('lists the style names alphabetically', () => {
+    expect(
+      accelerateByStyle({ accelerateTypeByStyle: { Sniper: 'lengthy', Anchor: 'lengthy' } }),
+    ).toEqual([{ label: 'Uzun', styles: 'Anchor, Sniper' }]);
+  });
+
+  it('is null when the source has no per-style types', () => {
+    expect(accelerateByStyle({ accelerateTypeByStyle: null })).toBeNull();
+    expect(accelerateByStyle({})).toBeNull();
   });
 });
 

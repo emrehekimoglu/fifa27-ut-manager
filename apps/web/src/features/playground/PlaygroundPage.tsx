@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 
 import { CardImage } from '../catalog/CardImage';
-import { playStylesLabel, positionName, rolesLabel, statGroups } from '../catalog/card-labels';
+import {
+  accelerateLabel,
+  playStylesLabel,
+  positionName,
+  rolesLabel,
+  statGroups,
+} from '../catalog/card-labels';
 import { CardPicker } from './CardPicker';
 import {
   changeFormation,
@@ -69,6 +75,10 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
                 <dd className={slot.inPosition ? undefined : 'status status--error'}>
                   {slot.inPosition ? `${slot.chemistry} / 3` : 'Mevki dışı'}
                 </dd>
+              </div>
+              <div>
+                <dt>AcceleRATE</dt>
+                <dd>{slot.accelerateType === null ? '—' : accelerateLabel(slot.accelerateType)}</dd>
               </div>
               <div>
                 <dt>PlayStyle'lar</dt>

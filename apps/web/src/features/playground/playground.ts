@@ -1,7 +1,8 @@
-import type { CatalogCard, Position } from '@fc27/data-sync';
+import type { AccelerateType, CatalogCard, Position } from '@fc27/data-sync';
 import {
   CHEMISTRY_STYLES,
   FORMATIONS,
+  accelerateTypeWith,
   applyChemistryStyle,
   canPlay,
   squadChemistry,
@@ -34,6 +35,8 @@ export interface EvaluatedSlot {
   readonly chemistry: number;
   /** The card's stats with its chemistry style applied; null for an empty slot. */
   readonly stats: CardStats | null;
+  /** The AcceleRATE type with the chosen style at the player's chemistry; null when unknown. */
+  readonly accelerateType: AccelerateType | null;
 }
 
 export interface Evaluation {
@@ -88,8 +91,11 @@ export function changeFormation(playground: Playground, formationId: number): Pl
   return { ...playground, formationId };
 }
 
+const styleOf = (styleId: number | null) =>
+  CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId) ?? null;
+
 function statsOf(card: CatalogCard, styleId: number | null, chemistry: number): CardStats {
-  const style = CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId);
+  const style = styleOf(styleId);
   return style
     ? applyChemistryStyle(card, style, chemistry)
     : {
@@ -115,6 +121,7 @@ export function evaluate(playground: Playground): Evaluation {
       inPosition: card !== null && canPlay(card, slot.position),
       chemistry: playerChemistry,
       stats: card && statsOf(card, styleId, playerChemistry),
+      accelerateType: card && accelerateTypeWith(card, styleOf(styleId), playerChemistry),
     };
   });
   return {

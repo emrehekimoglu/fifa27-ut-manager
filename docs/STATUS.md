@@ -52,7 +52,7 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 - **Heroes have no club** (`club: null`). Their chemistry comes from league and nation only.
 - **The squad rating uses the starting XI only** (confirmed by the owner). Its rounding follows the community formula and has not yet been compared with in-game squads.
 - **The rules data** (formations, chemistry styles, face-stat weights) comes from FUT.GG's site bundle, cross-checked against FUT.GG's pages (ADR-0006). A rules change is a data change in `packages/domain/src/rules`.
-- **AcceleRATE** is not recomputed after a chemistry-style boost.
+- **AcceleRATE with a chemistry style** comes from FUT.GG's per-card table of the type each style gives at full chemistry (`accelerateTypeByStyle`). Below full chemistry the card's own type is used, an approximation (true-rating design §2.3). Cards get the table at their next catalog sync.
 - **The manager** is not supported yet, because there is no manager catalog.
 - **The playground** is not saved.
 

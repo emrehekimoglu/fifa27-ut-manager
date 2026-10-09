@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router';
 
 import { browserSupabase } from '../../lib/supabase';
 import {
+  accelerateByStyle,
   accelerateLabel,
   footLabel,
   playStylesLabel,
@@ -64,6 +65,23 @@ function CardFacts({ card }: { readonly card: CatalogCard }) {
       <Fact label="Roller">{rolesLabel(card)}</Fact>
       <Fact label="Takas">{card.isUntradeable ? 'Takas edilemez' : 'Takas edilebilir'}</Fact>
     </dl>
+  );
+}
+
+function AccelerateByStyle({ card }: { readonly card: CatalogCard }) {
+  const rows = accelerateByStyle(card);
+  if (rows === null) return null;
+  return (
+    <section className="panel" aria-labelledby="accelerate-by-style-title">
+      <h2 id="accelerate-by-style-title">Kimya stiline göre AcceleRATE</h2>
+      <dl className="source__facts">
+        {rows.map((row) => (
+          <Fact key={row.label} label={row.label}>
+            {row.styles}
+          </Fact>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -153,6 +171,7 @@ export function CardDetailPage() {
           <section className="panel" aria-label="Kart bilgileri">
             <CardFacts card={outcome.stored.card} />
           </section>
+          <AccelerateByStyle card={outcome.stored.card} />
           <CardStats card={outcome.stored.card} />
         </>
       )}

@@ -138,6 +138,11 @@ export interface CatalogCard {
   readonly heightCm: number | null;
   readonly weightKg: number | null;
   readonly accelerateType: AccelerateType | null;
+  /**
+   * The AcceleRATE type with each chemistry style at full chemistry, keyed by style name;
+   * null when the source does not report it. Absent in cards stored before 2026-10-09.
+   */
+  readonly accelerateTypeByStyle?: Readonly<Record<string, AccelerateType>> | null;
   readonly playStyles: readonly number[] | null;
   readonly playStylesPlus: readonly number[] | null;
   readonly rolesPlus: readonly number[] | null;

@@ -169,6 +169,19 @@ test('shows the stats with the chosen chemistry style', async ({ page }) => {
   ).toHaveText(['Stil yok', 'GK Basic', 'Wall', 'Glove', 'Shield', 'Cat']);
 });
 
+test('shows the AcceleRATE type with the chosen chemistry style', async ({ page }) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+  const striker = slot(page, 'ST · Santrafor');
+
+  await expect(field(striker, 'AcceleRATE')).toHaveText('Patlayıcı');
+  // Pelé has 3 chemistry, so Sniper's full boost makes him Controlled.
+  await striker.getByRole('combobox', { name: 'Kimya stili' }).selectOption({ label: 'Sniper' });
+  await expect(field(striker, 'AcceleRATE')).toHaveText('Kontrollü');
+  await expect(field(slot(page, 'GK · Kaleci'), 'AcceleRATE')).toHaveText('Uzun');
+});
+
 test('shows the PlayStyles and the roles at the slot position', async ({ page }) => {
   await serveCards(page);
   await page.goto('/oyun-alani');

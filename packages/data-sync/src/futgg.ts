@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import type { CatalogCard } from './catalog-card.js';
+import { SourceValidationError } from './catalog-card.js';
+import type { AccelerateType, CatalogCard } from './catalog-card.js';
 import { getJson } from './http.js';
 import type { FetchFn } from './http.js';
 import { displayName, parseWith, toAccelerateType, toFoot, toPosition } from './normalize.js';
@@ -88,6 +89,7 @@ const itemSchema = z.object({
   height: int.nullable(),
   weight: int.nullable(),
   accelerateType: z.string().nullable(),
+  accelerateTypes: z.record(z.string(), z.array(z.string())).nullable(),
   playstyles: ids,
   playstylesPlus: ids,
   rolesPlus: ids,
@@ -110,6 +112,29 @@ const pageSchema = z.object({
 });
 
 type FutggItem = z.infer<typeof itemSchema>;
+
+/** FUT.GG's style names per AcceleRATE type (keys like `mostlyExplosive`) as a type per style. */
+function accelerateTypeByStyle(
+  stylesByType: Readonly<Record<string, readonly string[]>>,
+): Record<string, AccelerateType> {
+  const byStyle: Record<string, AccelerateType> = {};
+  for (const [key, styles] of Object.entries(stylesByType)) {
+    const type = toAccelerateType(
+      'futgg',
+      key.replace(/[A-Z]/g, (letter) => `_${letter}`),
+    );
+    for (const style of styles) {
+      if (style in byStyle) {
+        throw new SourceValidationError(
+          'futgg',
+          `chemistry style ${style} has two AcceleRATE types`,
+        );
+      }
+      byStyle[style] = type;
+    }
+  }
+  return byStyle;
+}
 
 function toCard(item: FutggItem): CatalogCard {
   const position = toPosition('futgg', item.position);
@@ -187,6 +212,8 @@ function toCard(item: FutggItem): CatalogCard {
     weightKg: item.weight,
     accelerateType:
       item.accelerateType === null ? null : toAccelerateType('futgg', item.accelerateType),
+    accelerateTypeByStyle:
+      item.accelerateTypes === null ? null : accelerateTypeByStyle(item.accelerateTypes),
     playStyles: item.playstyles,
     playStylesPlus: item.playstylesPlus,
     rolesPlus: item.rolesPlus,
