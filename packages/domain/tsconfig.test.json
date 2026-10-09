@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "outDir": "./node_modules/.tmp/test",
+    "types": ["node"]
+  },
+  "include": ["src", "test/**/*.ts", "test/**/*.json", "vitest.config.ts"],
+  "references": [{ "path": "../data-sync/tsconfig.lib.json" }]
+}
