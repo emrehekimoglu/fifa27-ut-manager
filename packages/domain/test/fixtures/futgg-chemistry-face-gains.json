@@ -1,0 +1,178 @@
+{
+  "Anchor": {
+    "Pace": 3.0,
+    "Shooting": 0,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 4.2,
+    "Physicality": 3.9
+  },
+  "Architect": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 5.3,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 6.6
+  },
+  "Artist": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 4.2,
+    "Dribbling": 2.7,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Backbone": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 2.6,
+    "Dribbling": 0,
+    "Defending": 4.2,
+    "Physicality": 4.2
+  },
+  "Catalyst": {
+    "Pace": 6.0,
+    "Shooting": 0,
+    "Passing": 5.1,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Deadeye": {
+    "Pace": 0,
+    "Shooting": 4.2,
+    "Passing": 4.5,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Engine": {
+    "Pace": 3.0,
+    "Shooting": 0,
+    "Passing": 3.6,
+    "Dribbling": 3.3,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Finisher": {
+    "Pace": 0,
+    "Shooting": 5.3,
+    "Passing": 0,
+    "Dribbling": 5.0,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Gladiator": {
+    "Pace": 0,
+    "Shooting": 2.0,
+    "Passing": 0,
+    "Dribbling": 2.7,
+    "Defending": 3.3,
+    "Physicality": 0
+  },
+  "Guardian": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 0,
+    "Dribbling": 4.5,
+    "Defending": 5.7,
+    "Physicality": 0
+  },
+  "Hawk": {
+    "Pace": 3.0,
+    "Shooting": 4.1,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 3.0
+  },
+  "Hunter": {
+    "Pace": 6.0,
+    "Shooting": 2.9,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Maestro": {
+    "Pace": 0,
+    "Shooting": 2.0,
+    "Passing": 2.8,
+    "Dribbling": 3.5,
+    "Defending": 0,
+    "Physicality": 0
+  },
+  "Marksman": {
+    "Pace": 0,
+    "Shooting": 4.7,
+    "Passing": 0,
+    "Dribbling": 3.6,
+    "Defending": 0,
+    "Physicality": 3.2
+  },
+  "Powerhouse": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 4.9,
+    "Dribbling": 0,
+    "Defending": 5.1,
+    "Physicality": 0
+  },
+  "Sentinel": {
+    "Pace": 0,
+    "Shooting": 0,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 5.7,
+    "Physicality": 3.2
+  },
+  "Shadow": {
+    "Pace": 6.0,
+    "Shooting": 0,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 3.9,
+    "Physicality": 0
+  },
+  "Sniper": {
+    "Pace": 0,
+    "Shooting": 3.9,
+    "Passing": 0,
+    "Dribbling": 0,
+    "Defending": 0,
+    "Physicality": 6.6
+  },
+  "Cat": {
+    "Diving": 0,
+    "Handling": 0,
+    "Kicking": 0,
+    "Reflexes": 6.0,
+    "Speed": 1.8,
+    "Positioning": 9.0
+  },
+  "Glove": {
+    "Diving": 6.0,
+    "Handling": 9.0,
+    "Kicking": 0,
+    "Reflexes": 0,
+    "Speed": 0,
+    "Positioning": 3.0
+  },
+  "Shield": {
+    "Diving": 0,
+    "Handling": 0,
+    "Kicking": 6.0,
+    "Reflexes": 9.0,
+    "Speed": 1.2,
+    "Positioning": 0
+  },
+  "Wall": {
+    "Diving": 9.0,
+    "Handling": 3.0,
+    "Kicking": 6.0,
+    "Reflexes": 0,
+    "Speed": 0,
+    "Positioning": 0
+  }
+}
