@@ -303,6 +303,19 @@ test.describe('card detail', () => {
     await expect(field(page, 'Roller')).toHaveText('Bilinmiyor');
   });
 
+  test('shows the true rating at each position the card plays', async ({ page }) => {
+    await serveCard(page, [{ data: pele, is_active: true }]);
+    await page.goto('/katalog/237067');
+    const ratings = page.getByRole('region', { name: 'Gerçek reyting' });
+
+    // The values come from the calibrated weights; the unit tests check the arithmetic.
+    await expect(ratings.locator('dt')).toHaveText(['CAM', 'ST']);
+    await expect(ratings.locator('dd')).toHaveText([
+      /^\d{1,2},\d · [A-Za-z ]+$/,
+      /^\d{1,2},\d · [A-Za-z ]+$/,
+    ]);
+  });
+
   test('names the missing club of a hero', async ({ page }) => {
     await serveCard(page, [{ data: { ...pele, club: null }, is_active: true }]);
     await page.goto('/katalog/237067');
