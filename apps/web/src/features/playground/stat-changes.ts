@@ -1,6 +1,8 @@
 import type { CatalogCard } from '@fc27/data-sync';
 import type { CardStats } from '@fc27/domain';
 
+import { statGroups } from '../catalog/card-labels';
+
 export interface StatChange {
   readonly label: string;
   readonly value: number;
@@ -13,6 +15,19 @@ export interface StatGroupChange extends StatChange {
 }
 
 /** The card's face stats and attributes with `stats` applied, each with its change. */
-export function statChanges(_card: CatalogCard, _stats: CardStats): readonly StatGroupChange[] {
-  throw new Error('Not implemented');
+export function statChanges(card: CatalogCard, stats: CardStats): readonly StatGroupChange[] {
+  const before = statGroups(card);
+  return statGroups({ ...card, ...stats }).map((group, index) => {
+    const printed = before[index];
+    return {
+      label: group.label,
+      value: group.value,
+      change: group.value - (printed?.value ?? group.value),
+      attributes: group.attributes.map((row, at) => ({
+        label: row.label,
+        value: row.value,
+        change: row.value - (printed?.attributes[at]?.value ?? row.value),
+      })),
+    };
+  });
 }
