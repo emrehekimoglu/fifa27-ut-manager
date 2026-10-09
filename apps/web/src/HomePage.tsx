@@ -12,6 +12,9 @@ export function HomePage() {
         <Link className="hero__link" to="/katalog">
           Kart kataloğu
         </Link>
+        <Link className="hero__link" to="/oyun-alani">
+          Kadro deneme alanı
+        </Link>
         <Link className="hero__link" to="/kaynaklar">
           Veri kaynakları
         </Link>
