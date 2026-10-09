@@ -9,6 +9,7 @@ export default defineConfig({
       '@fc27/data-sync': fileURLToPath(
         new URL('../../packages/data-sync/src/index.ts', import.meta.url),
       ),
+      '@fc27/domain': fileURLToPath(new URL('../../packages/domain/src/index.ts', import.meta.url)),
     },
   },
   test: {

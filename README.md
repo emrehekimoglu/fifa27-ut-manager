@@ -22,6 +22,7 @@ apps/
   web/              React + Vite web app (PWA in later milestones)
 packages/
   data-sync/        Card source adapters, catalog sync engine and its CLI
+  domain/           Game logic: chemistry, squad rating, chemistry styles (ADR-0006)
 supabase/           Database migrations and local stack config
 docs/
   product/          Product requirements

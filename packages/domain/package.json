@@ -1,0 +1,32 @@
+{
+  "name": "@fc27/domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pure game logic: chemistry, squad rating, chemistry styles and true rating.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:mutation": "stryker run"
+  },
+  "dependencies": {
+    "@fc27/data-sync": "workspace:*"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "~4.1.11",
+    "typescript": "~6.0.3",
+    "vitest": "~4.1.11"
+  }
+}

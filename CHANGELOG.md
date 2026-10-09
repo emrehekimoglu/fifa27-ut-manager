@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Catalog sync status on the `/kaynaklar` page.
 - Database integration tests against a local Supabase stack in CI.
 - `/katalog` card catalog: search by name ignoring case and accents, filter by a position the card can play, 30 cards per page, best first. `/katalog/:eaId` card detail with all facts and the face stats with their attributes, in Turkish.
+- `@fc27/domain` package (ADR-0006): FC 27 rules data (29 formations, 24 chemistry styles with attribute boosts, chemistry thresholds, face-stat weights), squad chemistry, squad rating and chemistry-style boosts.
+- `/oyun-alani` squad playground: pick a formation and a card per slot, and see each player's chemistry, team chemistry, squad rating and the stats with a chemistry style.
 
 ### Changed
 

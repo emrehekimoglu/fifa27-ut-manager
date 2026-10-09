@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@fc27/data-sync": "workspace:*",
+    "@fc27/domain": "workspace:*",
     "@supabase/supabase-js": "^2.117.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
