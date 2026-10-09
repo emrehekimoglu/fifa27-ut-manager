@@ -13,6 +13,9 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts'],
     environment: 'node',
+    // The fit tests solve nine least-squares problems; mutation runs instrument every
+    // arithmetic step and run several packages at once, so allow well above their ~0.4 s.
+    testTimeout: 30_000,
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
