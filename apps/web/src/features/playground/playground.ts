@@ -1,4 +1,4 @@
-import type { CatalogCard, Position } from '@fc27/data-sync';
+import type { AccelerateType, CatalogCard, Position } from '@fc27/data-sync';
 import {
   CHEMISTRY_STYLES,
   FORMATIONS,
@@ -34,6 +34,8 @@ export interface EvaluatedSlot {
   readonly chemistry: number;
   /** The card's stats with its chemistry style applied; null for an empty slot. */
   readonly stats: CardStats | null;
+  /** The AcceleRATE type with the chosen style at the player's chemistry; null when unknown. */
+  readonly accelerateType: AccelerateType | null;
 }
 
 export interface Evaluation {
@@ -115,6 +117,7 @@ export function evaluate(playground: Playground): Evaluation {
       inPosition: card !== null && canPlay(card, slot.position),
       chemistry: playerChemistry,
       stats: card && statsOf(card, styleId, playerChemistry),
+      accelerateType: null,
     };
   });
   return {

@@ -1,3 +1,4 @@
+export * from './accelerate.js';
 export * from './chemistry.js';
 export * from './chemistry-style.js';
 export * from './squad-rating.js';

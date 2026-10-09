@@ -252,6 +252,29 @@ test.describe('card detail', () => {
     await expect(field(page, 'Diğer mevkiler')).toHaveText('—');
   });
 
+  test('shows the AcceleRATE type each chemistry style gives', async ({ page }) => {
+    await serveCard(page, [{ data: pele, is_active: true }]);
+    await page.goto('/katalog/237067');
+    const byStyle = page.getByRole('region', { name: 'Kimya stiline göre AcceleRATE' });
+
+    await expect(byStyle.locator('dt')).toHaveText(['Patlayıcı', 'Kontrollü']);
+    await expect(field(byStyle, 'Patlayıcı')).toHaveText(
+      'Anchor, Artist, Backbone, Basic, Catalyst, Deadeye, Engine, Finisher, Gladiator, ' +
+        'Guardian, Hawk, Hunter, Maestro, Marksman, Powerhouse, Sentinel, Shadow',
+    );
+    await expect(field(byStyle, 'Kontrollü')).toHaveText('Architect, Sniper');
+  });
+
+  test('leaves out the per-style AcceleRATE when the source has none', async ({ page }) => {
+    await serveCard(page, [{ data: { ...pele, accelerateTypeByStyle: null }, is_active: true }]);
+    await page.goto('/katalog/237067');
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pelé');
+    await expect(page.getByRole('region', { name: 'Kimya stiline göre AcceleRATE' })).toHaveCount(
+      0,
+    );
+  });
+
   test('names the missing club of a hero', async ({ page }) => {
     await serveCard(page, [{ data: { ...pele, club: null }, is_active: true }]);
     await page.goto('/katalog/237067');

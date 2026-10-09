@@ -56,6 +56,19 @@ export function accelerateLabel(type: AccelerateType): string {
   return ACCELERATE_LABELS[type];
 }
 
+/** One AcceleRATE type with the chemistry styles that give it. */
+export interface AccelerateStyles {
+  readonly label: string;
+  readonly styles: string;
+}
+
+/** The chemistry styles grouped by the AcceleRATE type they give; null when unknown. */
+export function accelerateByStyle(
+  _card: Pick<CatalogCard, 'accelerateTypeByStyle'>,
+): readonly AccelerateStyles[] | null {
+  throw new Error('Not implemented');
+}
+
 type AttributeKey = keyof Attributes;
 
 /** Attributes behind each outfield face stat, in in-game order. */

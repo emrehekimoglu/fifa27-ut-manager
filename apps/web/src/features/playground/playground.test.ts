@@ -21,6 +21,7 @@ const [pele, kubo, courtois] = parseFutggDefinitionsPage(futggPage).cards as [
   CatalogCard,
 ];
 const HUNTER = 17;
+const SNIPER = 2;
 
 const formationId = (name: string) => {
   const found = FORMATIONS.find((formation) => formation.name === name);
@@ -65,6 +66,7 @@ describe('evaluate', () => {
       inPosition: false,
       chemistry: 0,
       stats: null,
+      accelerateType: null,
     });
   });
 
@@ -92,6 +94,24 @@ describe('evaluate', () => {
     // Hunter at 3 chemistry: pace 99, shooting 97 (worked out in the domain tests).
     const stats = evaluate(chooseStyle(trio(), ST, HUNTER)).slots[ST]?.stats;
     expect(stats?.faceStats).toEqual({ ...pele.faceStats, pace: 99, shooting: 97 });
+  });
+});
+
+describe('evaluate AcceleRATE', () => {
+  it('gives each player the AcceleRATE type of their style at their chemistry', () => {
+    // Pelé (Icon) has 3 chemistry at ST; Sniper makes him Controlled, Hunter keeps Explosive.
+    const sniper = evaluate(chooseStyle(trio(), ST, SNIPER)).slots[ST];
+    expect(sniper?.chemistry).toBe(3);
+    expect(sniper?.accelerateType).toBe('controlled');
+    expect(evaluate(chooseStyle(trio(), ST, HUNTER)).slots[ST]?.accelerateType).toBe('explosive');
+    expect(evaluate(trio()).slots[ST]?.accelerateType).toBe('explosive');
+    expect(evaluate(trio()).slots[GK]?.accelerateType).toBe('lengthy');
+  });
+
+  it('keeps the card’s own type below full chemistry', () => {
+    // Pelé at RW is out of position, so he has 0 chemistry and Sniper does nothing.
+    const outOfPosition = chooseStyle(placeCard(newPlayground(), RW, pele), RW, SNIPER);
+    expect(evaluate(outOfPosition).slots[RW]?.accelerateType).toBe('explosive');
   });
 });
 
