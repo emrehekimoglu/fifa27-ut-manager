@@ -2,6 +2,8 @@
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/product/PRD.md](docs/product/PRD.md) before making changes. They are binding. The rules below are the ones most often relevant.
 
+[docs/STATUS.md](docs/STATUS.md) records where the project stands and what comes next. Read it at the start of a session, and update it in every pull request that changes the state it describes.
+
 ## Hard rules
 
 - **No AI attribution anywhere.** No `Co-Authored-By` trailers, "Generated with" lines or tool names in commits, PR titles and descriptions, or GitHub comments. If a tool appends such a footer automatically, remove it immediately and verify that it is gone.
