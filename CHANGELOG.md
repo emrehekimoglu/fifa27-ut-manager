@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - PlayStyle and role rules data (36 PlayStyles, 49 roles). The card detail names a card's PlayStyles, PlayStyles+, Role+ and Role++; each playground slot names the card's PlayStyles and its roles at the slot's position.
 - True rating (`@fc27/domain`): `trueRating`, `bestChemistryStyle` and `squadTrueRating`, with weights fitted against FUT.GG's meta ratings. The card detail shows the true rating at each position the card plays, with the best chemistry style at full chemistry.
 - `@fc27/calibration` package and the manual **True-rating calibration** workflow, which samples the catalog, fetches FUT.GG's meta ratings, fits the weights and reports their accuracy (`docs/domain/true-rating-calibration.md`).
+- True rating in the playground: each slot shows the player's true rating at the slot's position, the chemistry style defaults to **Otomatik** (the best style at the player's chemistry, "Etkisiz" at 0), and the summary shows the squad true rating.
 
 ### Changed
 

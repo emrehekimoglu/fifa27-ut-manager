@@ -4,9 +4,12 @@ import {
   FORMATIONS,
   accelerateTypeWith,
   applyChemistryStyle,
+  bestChemistryStyle,
   canPlay,
   squadChemistry,
   squadRating,
+  squadTrueRating,
+  trueRating,
   TRUE_RATING_RULES,
 } from '@fc27/domain';
 import type { CardStats, ChemistryStyle, Formation, TrueRatingRules } from '@fc27/domain';
@@ -56,7 +59,7 @@ export interface Evaluation {
   readonly trueRating: number;
 }
 
-const EMPTY_SLOT: PlaygroundSlot = { card: null, styleId: null };
+const EMPTY_SLOT: PlaygroundSlot = { card: null, styleId: 'auto' };
 
 function formationOf(id: number): Formation {
   const formation = FORMATIONS.find((candidate) => candidate.id === id);
@@ -76,9 +79,9 @@ function withSlot(playground: Playground, index: number, slot: PlaygroundSlot): 
   };
 }
 
-/** Puts a card into a slot; its chemistry style starts empty. */
+/** Puts a card into a slot; its chemistry style starts automatic. */
 export function placeCard(playground: Playground, index: number, card: CatalogCard): Playground {
-  return withSlot(playground, index, { card, styleId: null });
+  return withSlot(playground, index, { card, styleId: 'auto' });
 }
 
 export function removeCard(playground: Playground, index: number): Playground {
@@ -100,11 +103,10 @@ export function changeFormation(playground: Playground, formationId: number): Pl
   return { ...playground, formationId };
 }
 
-const styleOf = (styleId: StyleChoice) =>
+const styleById = (styleId: number) =>
   CHEMISTRY_STYLES.find((candidate) => candidate.id === styleId) ?? null;
 
-function statsOf(card: CatalogCard, styleId: StyleChoice, chemistry: number): CardStats {
-  const style = styleOf(styleId);
+function statsOf(card: CatalogCard, style: ChemistryStyle | null, chemistry: number): CardStats {
   return style
     ? applyChemistryStyle(card, style, chemistry)
     : {
@@ -114,10 +116,10 @@ function statsOf(card: CatalogCard, styleId: StyleChoice, chemistry: number): Ca
       };
 }
 
-/** Chemistry, squad rating and boosted stats of the playground's XI. */
+/** Chemistry, squad ratings, styles and boosted stats of the playground's XI. */
 export function evaluate(
   playground: Playground,
-  _rules: TrueRatingRules = TRUE_RATING_RULES,
+  rules: TrueRatingRules = TRUE_RATING_RULES,
 ): Evaluation {
   const formation = formationOf(playground.formationId);
   const cards = playground.slots.map((slot) => slot.card);
@@ -125,17 +127,37 @@ export function evaluate(
   const slots = formation.slots.map((slot, index): EvaluatedSlot => {
     const { card, styleId } = playground.slots[index] ?? EMPTY_SLOT;
     const playerChemistry = chemistry.players[index] ?? 0;
+    if (card === null) {
+      return {
+        code: slot.code,
+        position: slot.position,
+        card,
+        styleId,
+        style: null,
+        inPosition: false,
+        chemistry: playerChemistry,
+        stats: null,
+        accelerateType: null,
+        trueRating: null,
+      };
+    }
+    const style =
+      styleId === 'auto'
+        ? bestChemistryStyle(card, slot.position, playerChemistry, rules)
+        : styleId === null
+          ? null
+          : styleById(styleId);
     return {
       code: slot.code,
       position: slot.position,
       card,
       styleId,
-      style: null,
-      inPosition: card !== null && canPlay(card, slot.position),
+      style,
+      inPosition: canPlay(card, slot.position),
       chemistry: playerChemistry,
-      stats: card && statsOf(card, styleId, playerChemistry),
-      accelerateType: card && accelerateTypeWith(card, styleOf(styleId), playerChemistry),
-      trueRating: null,
+      stats: statsOf(card, style, playerChemistry),
+      accelerateType: accelerateTypeWith(card, style, playerChemistry),
+      trueRating: trueRating(card, slot.position, style, playerChemistry, rules),
     };
   });
   return {
@@ -143,7 +165,10 @@ export function evaluate(
     slots,
     chemistry: chemistry.total,
     rating: squadRating(cards.map((card) => card?.overall ?? null)),
-    trueRating: 0,
+    trueRating: squadTrueRating(
+      slots.map((slot) => ({ position: slot.position, rating: slot.trueRating })),
+      rules,
+    ),
   };
 }
 
