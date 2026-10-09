@@ -3,21 +3,21 @@
 This file tells a new working session where the project stands and what comes next. Read it after [CLAUDE.md](../CLAUDE.md), [CONTRIBUTING.md](../CONTRIBUTING.md) and the [PRD](product/PRD.md). Update it in the pull request that changes the state it describes.
 
 - **Last updated:** 2026-10-09
-- **Current milestone:** M3 (domain engine), part 1 in review
+- **Current milestone:** M3 (domain engine); part 1 merged, part 2 (true rating) next
 
 ## 1. Milestones
 
-| Milestone             | State       | Pull requests                      | What the owner can see                                                                               |
-| --------------------- | ----------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| M0 Foundation         | Done        | #2, #9                             | Placeholder page with build info, CI, preview deployments                                            |
-| M1 Data spike         | Done        | #8                                 | `/kaynaklar` source page; ADR-0003 (card sources), ADR-0004 (prices via a home agent)                |
-| M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14            | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail |
-| M3 Domain engine      | In progress | #15 (merged), #16 (open, CI green) | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006)  |
-| M4 Squad builder      | Not started | —                                  | —                                                                                                    |
-| M5 Prices             | Not started | —                                  | —                                                                                                    |
-| M6 Recommendations    | Not started | —                                  | —                                                                                                    |
-| M7 Search and compare | Not started | —                                  | —                                                                                                    |
-| M8 Release            | Not started | —                                  | —                                                                                                    |
+| Milestone             | State       | Pull requests           | What the owner can see                                                                               |
+| --------------------- | ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| M0 Foundation         | Done        | #2, #9                  | Placeholder page with build info, CI, preview deployments                                            |
+| M1 Data spike         | Done        | #8                      | `/kaynaklar` source page; ADR-0003 (card sources), ADR-0004 (prices via a home agent)                |
+| M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14 | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail |
+| M3 Domain engine      | In progress | #15, #16                | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006)  |
+| M4 Squad builder      | Not started | —                       | —                                                                                                    |
+| M5 Prices             | Not started | —                       | —                                                                                                    |
+| M6 Recommendations    | Not started | —                       | —                                                                                                    |
+| M7 Search and compare | Not started | —                       | —                                                                                                    |
+| M8 Release            | Not started | —                       | —                                                                                                    |
 
 ## 2. What runs in production
 
@@ -58,9 +58,9 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 
 ## 4. Next steps, in order
 
-1. **Finish M3 part 1.**
-   - The owner verifies #16 on the preview and compares a full XI's squad rating and chemistry with the game, then merges.
-   - Fix any mismatch the owner reports.
+1. **Check M3 part 1 against the game.**
+   - The owner builds a full XI from their club in `/oyun-alani` and compares squad rating and chemistry with the game.
+   - Fix any mismatch the owner reports, especially in the squad-rating rounding.
 2. **PlayStyle names.**
    - `https://www.fut.gg/api/fut/playstyles/` returns 36 PlayStyles with the `eaId` the catalog stores.
    - Add them as rules data and show names on the card detail and in the playground.
