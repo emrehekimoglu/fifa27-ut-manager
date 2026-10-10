@@ -1,10 +1,11 @@
 import type { CatalogCard } from '@fc27/data-sync';
-import { CHEMISTRY_STYLES, FORMATIONS, stylesFor } from '@fc27/domain';
+import { FORMATIONS, stylesFor } from '@fc27/domain';
 import type { CardStats } from '@fc27/domain';
 import { useState } from 'react';
 
 import { CardImage } from '../catalog/CardImage';
-import { positionName } from '../catalog/card-labels';
+import { accelerateLabel, playStylesLabel, positionName, rolesLabel } from '../catalog/card-labels';
+import { formatTrueRating } from '../catalog/true-rating-rows';
 import { CardPicker } from './CardPicker';
 import { pitchSpot } from './pitch';
 import {
@@ -16,7 +17,7 @@ import {
   placeCard,
   removeCard,
 } from './playground';
-import type { EvaluatedSlot } from './playground';
+import type { EvaluatedSlot, StyleChoice } from './playground';
 import { statChanges, styleBoosts } from './stat-changes';
 import type { StatChange } from './stat-changes';
 
@@ -157,9 +158,9 @@ function SlotStats({ card, stats }: { readonly card: CatalogCard; readonly stats
   );
 }
 
-/** What the chosen style adds at full chemistry, and why nothing changes at 0 chemistry. */
+/** What the style in effect adds at full chemistry, and why nothing changes at 0 chemistry. */
 function StyleNote({ slot }: { readonly slot: EvaluatedSlot }) {
-  const style = CHEMISTRY_STYLES.find((candidate) => candidate.id === slot.styleId);
+  const { style } = slot;
   if (!style) return null;
   const boosts = styleBoosts(style)
     .map((row) => `${row.label} +${row.boost}`)
@@ -180,7 +181,7 @@ interface SlotPanelProps {
   readonly slot: EvaluatedSlot;
   readonly onPick: () => void;
   readonly onRemove: () => void;
-  readonly onStyle: (styleId: number | null) => void;
+  readonly onStyle: (styleId: StyleChoice) => void;
 }
 
 function SlotPanel({ slot, onPick, onRemove, onStyle }: SlotPanelProps) {
@@ -207,10 +208,26 @@ function SlotPanel({ slot, onPick, onRemove, onStyle }: SlotPanelProps) {
           </div>
           <dl className="facts">
             <div>
+              <dt>Gerçek reyting</dt>
+              <dd>{slot.trueRating === null ? '—' : formatTrueRating(slot.trueRating)}</dd>
+            </div>
+            <div>
               <dt>Kimya</dt>
               <dd className={slot.inPosition ? undefined : 'status status--error'}>
                 {slot.inPosition ? `${slot.chemistry} / 3` : 'Mevki dışı'}
               </dd>
+            </div>
+            <div>
+              <dt>AcceleRATE</dt>
+              <dd>{slot.accelerateType === null ? '—' : accelerateLabel(slot.accelerateType)}</dd>
+            </div>
+            <div className="facts__wide">
+              <dt>PlayStyle'lar</dt>
+              <dd>{playStylesLabel(card)}</dd>
+            </div>
+            <div className="facts__wide">
+              <dt>Roller</dt>
+              <dd>{rolesLabel(card, slot.position)}</dd>
             </div>
           </dl>
           <label className="field">
@@ -219,9 +236,14 @@ function SlotPanel({ slot, onPick, onRemove, onStyle }: SlotPanelProps) {
               value={slot.styleId ?? ''}
               onChange={(event) => {
                 const { value } = event.target;
-                onStyle(value === '' ? null : Number(value));
+                onStyle(value === 'auto' ? 'auto' : value === '' ? null : Number(value));
               }}
             >
+              <option value="auto">
+                {slot.styleId === 'auto'
+                  ? `Otomatik (${slot.style?.name ?? 'Etkisiz'})`
+                  : 'Otomatik'}
+              </option>
               <option value="">Stil yok</option>
               {stylesFor(card).map((style) => (
                 <option key={style.id} value={style.id}>
@@ -258,7 +280,8 @@ export function PlaygroundPage() {
     <div className="page">
       <h1 className="page__title">Kadro deneme alanı</h1>
       <p className="page__lead">
-        Diziliş seç ve kartları sahaya yerleştir. Kimya ve kadro reytingi anında hesaplanır.
+        Diziliş seç ve kartları sahaya yerleştir. Kimya, kadro reytingi ve gerçek reyting anında
+        hesaplanır. Kimya stili varsayılan olarak oyuncunun kimyasında en iyi sonucu verendir.
       </p>
 
       <label className="field playground__formation">
@@ -285,6 +308,10 @@ export function PlaygroundPage() {
           <div>
             <dt>Kadro reytingi</dt>
             <dd>{evaluation.rating}</dd>
+          </div>
+          <div>
+            <dt>Kadro gerçek reytingi</dt>
+            <dd>{formatTrueRating(evaluation.trueRating)}</dd>
           </div>
           <div>
             <dt>Takım kimyası</dt>

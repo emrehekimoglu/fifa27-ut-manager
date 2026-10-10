@@ -1,11 +1,17 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import faceGains from '../../test/fixtures/futgg-chemistry-face-gains.json' with { type: 'json' };
+import futggPlayStyles from '../../test/fixtures/futgg-playstyles.json' with { type: 'json' };
+import futggRoles from '../../test/fixtures/futgg-roles.json' with { type: 'json' };
 import tacticsSlots from '../../test/fixtures/futgg-tactics-slots.json' with { type: 'json' };
 import { CHEMISTRY_STYLES } from './chemistry-styles.js';
 import { GOALKEEPER_FACE_WEIGHTS, OUTFIELD_FACE_WEIGHTS } from './face-stats.js';
 import type { AttributeWeights } from './face-stats.js';
 import { FORMATIONS } from './formations.js';
+import { PLAYSTYLES } from './playstyles.js';
+import { ROLES } from './roles.js';
+import { POSITION_GROUPS, TRUE_RATING_RULES } from './true-rating.js';
 
 // The rules data comes from FUT.GG's site bundle (ADR-0006). These tests check it
 // against what FUT.GG's pages publish independently: the slots on each tactics page
@@ -134,5 +140,92 @@ describe('face-stat weights', () => {
       (weights) => Math.round(weights.reduce((sum, [, weight]) => sum + weight, 0) * 1000) / 1000,
     );
     expect(sums).toEqual(Array.from({ length: 12 }, () => 1));
+  });
+});
+
+describe('PLAYSTYLES', () => {
+  it('has every PlayStyle of the FUT.GG PlayStyle list, with the same EA id, name and category', () => {
+    expect(PLAYSTYLES.map(({ id, name, category }) => ({ eaId: id, name, category }))).toEqual(
+      futggPlayStyles,
+    );
+  });
+
+  it('identifies each PlayStyle by a distinct EA id', () => {
+    expect(new Set(PLAYSTYLES.map((playStyle) => playStyle.id)).size).toBe(36);
+  });
+});
+
+describe('ROLES', () => {
+  it('has every role of the FUT.GG role list, with the same position and Role+/Role++ ids', () => {
+    expect(
+      ROLES.map(({ name, position, plusId, plusPlusId }) => ({
+        name,
+        positionName: position,
+        plusEaId: plusId,
+        plusPlusEaId: plusPlusId,
+      })),
+    ).toEqual(futggRoles);
+  });
+
+  it('identifies each Role+ and Role++ by a distinct EA id', () => {
+    const ids = ROLES.flatMap((role) => [role.plusId, role.plusPlusId]);
+    expect(new Set(ids).size).toBe(98);
+  });
+});
+
+/** The PlayStyle relevance table of the approved design, docs/domain/true-rating.md §2.5. */
+function designRelevance(): Record<number, Record<string, number>> {
+  const design = readFileSync(
+    new URL('../../../../docs/domain/true-rating.md', import.meta.url),
+    'utf8',
+  );
+  const rows = design.split('\n').filter((line) => /^\| [^|]+ \(\d+\) +\|/.test(line));
+  return Object.fromEntries(
+    rows.map((line) => {
+      const [label = '', ...cells] = line
+        .split('|')
+        .slice(1, -1)
+        .map((cell) => cell.trim());
+      const id = Number(/\((\d+)\)$/.exec(label)?.[1]);
+      const relevance = Object.fromEntries(
+        POSITION_GROUPS.map((group, index): [string, number] => [
+          group,
+          Number(cells[index]),
+        ]).filter(([, value]) => value !== 0),
+      );
+      return [id, relevance];
+    }),
+  );
+}
+
+describe('TRUE_RATING_RULES', () => {
+  it('has the PlayStyle relevance table of the approved design for all 36 PlayStyles', () => {
+    const design = designRelevance();
+    expect(Object.keys(design)).toHaveLength(36);
+    expect(TRUE_RATING_RULES.playStyleRelevance).toEqual(design);
+  });
+
+  it('has the fixed values of the approved design', () => {
+    expect(TRUE_RATING_RULES.playStyleCap).toBe(6);
+    expect(TRUE_RATING_RULES.rolePlusBonus).toBe(0.5);
+    expect(TRUE_RATING_RULES.rolePlusPlusBonus).toBe(1);
+    expect(Object.values(TRUE_RATING_RULES.squadWeights)).toEqual(POSITION_GROUPS.map(() => 1));
+  });
+
+  it('weights each group’s attributes with non-negative weights summing to 1', () => {
+    for (const group of POSITION_GROUPS) {
+      const weights = Object.values(TRUE_RATING_RULES.groups[group].attributes);
+      expect(weights.every((weight) => weight >= 0)).toBe(true);
+      expect(Math.round(weights.reduce((sum, weight) => sum + weight, 0) * 1e6) / 1e6).toBe(1);
+    }
+  });
+
+  it('never takes points away for more weak-foot or skill-move stars or PlayStyles', () => {
+    for (const group of POSITION_GROUPS) {
+      const { weakFoot, skillMoves, playStyles } = TRUE_RATING_RULES.groups[group];
+      expect([weakFoot, skillMoves, playStyles].every((value) => value >= 0)).toBe(true);
+    }
+    expect(TRUE_RATING_RULES.groups.GK.skillMoves).toBe(0);
+    expect(TRUE_RATING_RULES.playStylePlusMultiplier).toBeGreaterThanOrEqual(1);
   });
 });

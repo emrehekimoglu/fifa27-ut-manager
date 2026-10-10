@@ -1,0 +1,296 @@
+[
+  {
+    "name": "Goalkeeper",
+    "positionName": "GK",
+    "plusEaId": 1,
+    "plusPlusEaId": 101
+  },
+  {
+    "name": "Sweeper Keeper",
+    "positionName": "GK",
+    "plusEaId": 2,
+    "plusPlusEaId": 102
+  },
+  {
+    "name": "Fullback",
+    "positionName": "RB",
+    "plusEaId": 3,
+    "plusPlusEaId": 103
+  },
+  {
+    "name": "Falseback",
+    "positionName": "RB",
+    "plusEaId": 4,
+    "plusPlusEaId": 104
+  },
+  {
+    "name": "Wingback",
+    "positionName": "RB",
+    "plusEaId": 5,
+    "plusPlusEaId": 105
+  },
+  {
+    "name": "Attacking Wingback",
+    "positionName": "RB",
+    "plusEaId": 6,
+    "plusPlusEaId": 106
+  },
+  {
+    "name": "Fullback",
+    "positionName": "LB",
+    "plusEaId": 7,
+    "plusPlusEaId": 107
+  },
+  {
+    "name": "Falseback",
+    "positionName": "LB",
+    "plusEaId": 8,
+    "plusPlusEaId": 108
+  },
+  {
+    "name": "Wingback",
+    "positionName": "LB",
+    "plusEaId": 9,
+    "plusPlusEaId": 109
+  },
+  {
+    "name": "Attacking Wingback",
+    "positionName": "LB",
+    "plusEaId": 10,
+    "plusPlusEaId": 110
+  },
+  {
+    "name": "Defender",
+    "positionName": "CB",
+    "plusEaId": 11,
+    "plusPlusEaId": 111
+  },
+  {
+    "name": "Stopper",
+    "positionName": "CB",
+    "plusEaId": 12,
+    "plusPlusEaId": 112
+  },
+  {
+    "name": "Ball-Playing Defender",
+    "positionName": "CB",
+    "plusEaId": 13,
+    "plusPlusEaId": 113
+  },
+  {
+    "name": "Holding",
+    "positionName": "CDM",
+    "plusEaId": 14,
+    "plusPlusEaId": 114
+  },
+  {
+    "name": "Centre-Half",
+    "positionName": "CDM",
+    "plusEaId": 15,
+    "plusPlusEaId": 115
+  },
+  {
+    "name": "Deep-Lying Playmaker",
+    "positionName": "CDM",
+    "plusEaId": 16,
+    "plusPlusEaId": 116
+  },
+  {
+    "name": "Box-To-Box",
+    "positionName": "CM",
+    "plusEaId": 18,
+    "plusPlusEaId": 118
+  },
+  {
+    "name": "Holding",
+    "positionName": "CM",
+    "plusEaId": 19,
+    "plusPlusEaId": 119
+  },
+  {
+    "name": "Deep-Lying Playmaker",
+    "positionName": "CM",
+    "plusEaId": 20,
+    "plusPlusEaId": 120
+  },
+  {
+    "name": "Playmaker",
+    "positionName": "CM",
+    "plusEaId": 21,
+    "plusPlusEaId": 121
+  },
+  {
+    "name": "Half-Winger",
+    "positionName": "CM",
+    "plusEaId": 22,
+    "plusPlusEaId": 122
+  },
+  {
+    "name": "Winger",
+    "positionName": "RM",
+    "plusEaId": 23,
+    "plusPlusEaId": 123
+  },
+  {
+    "name": "Wide Midfielder",
+    "positionName": "RM",
+    "plusEaId": 24,
+    "plusPlusEaId": 124
+  },
+  {
+    "name": "Wide Playmaker",
+    "positionName": "RM",
+    "plusEaId": 25,
+    "plusPlusEaId": 125
+  },
+  {
+    "name": "Inside Forward",
+    "positionName": "RM",
+    "plusEaId": 26,
+    "plusPlusEaId": 126
+  },
+  {
+    "name": "Winger",
+    "positionName": "LM",
+    "plusEaId": 27,
+    "plusPlusEaId": 127
+  },
+  {
+    "name": "Wide Midfielder",
+    "positionName": "LM",
+    "plusEaId": 28,
+    "plusPlusEaId": 128
+  },
+  {
+    "name": "Wide Playmaker",
+    "positionName": "LM",
+    "plusEaId": 29,
+    "plusPlusEaId": 129
+  },
+  {
+    "name": "Inside Forward",
+    "positionName": "LM",
+    "plusEaId": 30,
+    "plusPlusEaId": 130
+  },
+  {
+    "name": "Playmaker",
+    "positionName": "CAM",
+    "plusEaId": 31,
+    "plusPlusEaId": 131
+  },
+  {
+    "name": "Shadow Striker",
+    "positionName": "CAM",
+    "plusEaId": 32,
+    "plusPlusEaId": 132
+  },
+  {
+    "name": "Half-Winger",
+    "positionName": "CAM",
+    "plusEaId": 33,
+    "plusPlusEaId": 133
+  },
+  {
+    "name": "Winger",
+    "positionName": "RW",
+    "plusEaId": 35,
+    "plusPlusEaId": 135
+  },
+  {
+    "name": "Inside Forward",
+    "positionName": "RW",
+    "plusEaId": 36,
+    "plusPlusEaId": 136
+  },
+  {
+    "name": "Wide Playmaker",
+    "positionName": "RW",
+    "plusEaId": 37,
+    "plusPlusEaId": 137
+  },
+  {
+    "name": "Winger",
+    "positionName": "LW",
+    "plusEaId": 38,
+    "plusPlusEaId": 138
+  },
+  {
+    "name": "Inside Forward",
+    "positionName": "LW",
+    "plusEaId": 39,
+    "plusPlusEaId": 139
+  },
+  {
+    "name": "Wide Playmaker",
+    "positionName": "LW",
+    "plusEaId": 40,
+    "plusPlusEaId": 140
+  },
+  {
+    "name": "Advanced Forward",
+    "positionName": "ST",
+    "plusEaId": 41,
+    "plusPlusEaId": 141
+  },
+  {
+    "name": "Poacher",
+    "positionName": "ST",
+    "plusEaId": 42,
+    "plusPlusEaId": 142
+  },
+  {
+    "name": "False 9",
+    "positionName": "ST",
+    "plusEaId": 43,
+    "plusPlusEaId": 143
+  },
+  {
+    "name": "Target Forward",
+    "positionName": "ST",
+    "plusEaId": 44,
+    "plusPlusEaId": 144
+  },
+  {
+    "name": "Classic 10",
+    "positionName": "CAM",
+    "plusEaId": 34,
+    "plusPlusEaId": 134
+  },
+  {
+    "name": "Wide Half",
+    "positionName": "CDM",
+    "plusEaId": 17,
+    "plusPlusEaId": 117
+  },
+  {
+    "name": "Ball Playing Keeper",
+    "positionName": "GK",
+    "plusEaId": 45,
+    "plusPlusEaId": 145
+  },
+  {
+    "name": "Box Crasher",
+    "positionName": "CDM",
+    "plusEaId": 49,
+    "plusPlusEaId": 149
+  },
+  {
+    "name": "Inverted Wingback",
+    "positionName": "LB",
+    "plusEaId": 47,
+    "plusPlusEaId": 147
+  },
+  {
+    "name": "Inverted Wingback",
+    "positionName": "RB",
+    "plusEaId": 46,
+    "plusPlusEaId": 146
+  },
+  {
+    "name": "Wide Back",
+    "positionName": "CB",
+    "plusEaId": 48,
+    "plusPlusEaId": 148
+  }
+]

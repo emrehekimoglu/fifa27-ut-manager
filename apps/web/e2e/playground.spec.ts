@@ -46,6 +46,9 @@ const spot = (page: Page, code: string) =>
   page.getByRole('list', { name: 'Saha' }).getByRole('button', { name: new RegExp(`^${code} · `) });
 /** The details panel of the selected slot, named like "RW · Sağ kanat". */
 const slot = (page: Page, name: string) => page.getByRole('region', { name });
+const styleSelect = (region: Locator) => region.getByRole('combobox', { name: 'Kimya stili' });
+// The true ratings come from the calibrated weights; the unit tests check the arithmetic.
+const TRUE_RATING = /^\d{1,2},\d$/;
 const summary = (page: Page) => page.getByRole('region', { name: 'Kadro özeti' });
 
 /** Taps an empty slot on the pitch and picks a card in the search that opens. */
@@ -87,6 +90,7 @@ test('starts with an empty 4-3-3 on the pitch', async ({ page }) => {
   await expect(page.getByRole('combobox', { name: 'Diziliş' })).toHaveValue('8');
   await expect(field(summary(page), 'Kadro reytingi')).toHaveText('0');
   await expect(field(summary(page), 'Takım kimyası')).toHaveText('0 / 33');
+  await expect(field(summary(page), 'Kadro gerçek reytingi')).toHaveText('0,0');
   const spots = page.getByRole('list', { name: 'Saha' }).getByRole('button');
   await expect(spots).toHaveCount(11);
   for (const [index, name] of [
@@ -184,6 +188,7 @@ test('shows what the chosen chemistry style changes in the stats', async ({ page
   const striker = slot(page, 'ST · Santrafor');
   const stats = striker.getByRole('list', { name: 'İstatistikler' }).getByRole('listitem');
 
+  await styleSelect(striker).selectOption({ label: 'Stil yok' });
   await expect(stats).toHaveText([
     'Hız 93',
     'Şut 94',
@@ -192,7 +197,7 @@ test('shows what the chosen chemistry style changes in the stats', async ({ page
     'Defans 58',
     'Fizik 74',
   ]);
-  await striker.getByRole('combobox', { name: 'Kimya stili' }).selectOption({ label: 'Hunter' });
+  await styleSelect(striker).selectOption({ label: 'Hunter' });
   // Hunter at 3 chemistry (worked out in the domain tests): pace +6, shooting +3.
   await expect(stats).toHaveText([
     'Hız 99 +6',
@@ -219,9 +224,92 @@ test('shows what the chosen chemistry style changes in the stats', async ({ page
   ]);
 
   await spot(page, 'GK').click();
-  await expect(
-    slot(page, 'GK · Kaleci').getByRole('combobox', { name: 'Kimya stili' }).locator('option'),
-  ).toHaveText(['Stil yok', 'GK Basic', 'Wall', 'Glove', 'Shield', 'Cat']);
+  await expect(styleSelect(slot(page, 'GK · Kaleci')).locator('option')).toHaveText([
+    /^Otomatik \((GK Basic|Wall|Glove|Shield|Cat)\)$/,
+    'Stil yok',
+    'GK Basic',
+    'Wall',
+    'Glove',
+    'Shield',
+    'Cat',
+  ]);
+});
+
+test('shows the AcceleRATE type with the chosen chemistry style', async ({ page }) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+  const striker = slot(page, 'ST · Santrafor');
+
+  await styleSelect(striker).selectOption({ label: 'Stil yok' });
+  await expect(field(striker, 'AcceleRATE')).toHaveText('Patlayıcı');
+  // Pelé has 3 chemistry, so Sniper's full boost makes him Controlled.
+  await styleSelect(striker).selectOption({ label: 'Sniper' });
+  await expect(field(striker, 'AcceleRATE')).toHaveText('Kontrollü');
+  await spot(page, 'GK').click();
+  await expect(field(slot(page, 'GK · Kaleci'), 'AcceleRATE')).toHaveText('Uzun');
+});
+
+test('shows the PlayStyles and the roles at the slot position', async ({ page }) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+  const striker = slot(page, 'ST · Santrafor');
+
+  await expect(field(striker, "PlayStyle'lar")).toHaveText(
+    'Finesse Shot+, Power Shot, Precision Header, Incisive Pass, Technical, Trickster, Quick Step',
+  );
+  // Pelé is a CAM with Shadow Striker++ and Playmaker+ there, but only False 9++ at ST.
+  await expect(field(striker, 'Roller')).toHaveText('False 9++');
+  await spot(page, 'RW').click();
+  await expect(field(slot(page, 'RW · Sağ kanat'), 'Roller')).toHaveText('Inside Forward+');
+  await spot(page, 'GK').click();
+  await expect(field(slot(page, 'GK · Kaleci'), 'Roller')).toHaveText('Goalkeeper++');
+});
+
+test('picks each player’s chemistry style automatically and shows the true ratings', async ({
+  page,
+}) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+  const striker = slot(page, 'ST · Santrafor');
+
+  await expect(styleSelect(striker)).toHaveValue('auto');
+  await expect(styleSelect(striker).locator('option').first()).toHaveText(
+    /^Otomatik \([A-Za-z ]+\)$/,
+  );
+  await expect(striker.getByTestId('style-boosts')).toHaveText(/^[A-Za-z ]+ tam kimyada: /);
+  for (const [code, name] of [
+    ['GK', 'GK · Kaleci'],
+    ['RW', 'RW · Sağ kanat'],
+    ['ST', 'ST · Santrafor'],
+  ] as const) {
+    await spot(page, code).click();
+    await expect(field(slot(page, name), 'Gerçek reyting')).toHaveText(TRUE_RATING);
+  }
+  await expect(field(summary(page), 'Kadro gerçek reytingi')).toHaveText(TRUE_RATING);
+  await expect(field(summary(page), 'Kadro gerçek reytingi')).not.toHaveText('0,0');
+
+  // Picking a style by hand switches Otomatik off; picking Otomatik again restores it.
+  await styleSelect(striker).selectOption({ label: 'Hunter' });
+  await expect(styleSelect(striker)).toHaveValue('17');
+  await expect(styleSelect(striker).locator('option').first()).toHaveText('Otomatik');
+  await styleSelect(striker).selectOption({ index: 0 });
+  await expect(styleSelect(striker)).toHaveValue('auto');
+});
+
+test('has no automatic style for a player without chemistry', async ({ page }) => {
+  await serveCards(page);
+  await page.goto('/oyun-alani');
+  await pickTrio(page);
+
+  await page.getByRole('combobox', { name: 'Diziliş' }).selectOption({ label: '4-4-2' });
+  await spot(page, 'LM').click();
+  const winger = slot(page, 'LM · Sol orta saha');
+
+  await expect(styleSelect(winger).locator('option').first()).toHaveText('Otomatik (Etkisiz)');
+  await expect(field(winger, 'Gerçek reyting')).toHaveText(TRUE_RATING);
 });
 
 test('keeps the cards when the formation changes, out of position where they no longer fit', async ({
@@ -239,9 +327,7 @@ test('keeps the cards when the formation changes, out of position where they no 
   await spot(page, 'LM').click();
   await expect(slot(page, 'LM · Sol orta saha')).toContainText('Takefusa Kubo 80');
   await expect(field(slot(page, 'LM · Sol orta saha'), 'Kimya')).toHaveText('Mevki dışı');
-  await slot(page, 'LM · Sol orta saha')
-    .getByRole('combobox', { name: 'Kimya stili' })
-    .selectOption({ label: 'Hunter' });
+  await styleSelect(slot(page, 'LM · Sol orta saha')).selectOption({ label: 'Hunter' });
   await expect(slot(page, 'LM · Sol orta saha')).toContainText(
     'Kimyası 0 olduğu için stil şu an etki etmiyor.',
   );
@@ -300,9 +386,7 @@ test('fits the viewport without horizontal scrolling', async ({ page }) => {
   await serveCards(page);
   await page.goto('/oyun-alani');
   await pickTrio(page);
-  await slot(page, 'ST · Santrafor')
-    .getByRole('combobox', { name: 'Kimya stili' })
-    .selectOption({ label: 'Hunter' });
+  await styleSelect(slot(page, 'ST · Santrafor')).selectOption({ label: 'Hunter' });
   await slot(page, 'ST · Santrafor').getByText('Tüm statlar').click();
 
   const overflow = await page.evaluate(
