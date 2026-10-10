@@ -29,6 +29,17 @@
   --color-danger: #fb8b8b;
   --color-danger-soft: rgb(248 113 113 / 14%);
 
+  --color-danger-strong: #dc2626;
+  --color-chem: #15803d;
+
+  /* Pitch and the gold card face. Text on the card uses on-accent (9:1 on the darker end). */
+  --color-pitch: #14532d;
+  --color-pitch-alt: #166534;
+  --color-pitch-line: rgb(255 255 255 / 28%);
+  --color-card-top: #fbe29a;
+  --color-card-bottom: #d9ac34;
+  --color-card-edge: #8a6a14;
+
   --color-focus: #8ab4ff;
   --color-backdrop: rgb(3 6 12 / 72%);
 
