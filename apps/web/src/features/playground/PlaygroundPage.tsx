@@ -3,7 +3,14 @@ import { FORMATIONS, stylesFor } from '@fc27/domain';
 import { useState } from 'react';
 
 import { CardImage } from '../catalog/CardImage';
-import { positionName, statGroups } from '../catalog/card-labels';
+import { formatTrueRating } from '../catalog/true-rating-rows';
+import {
+  accelerateLabel,
+  playStylesLabel,
+  positionName,
+  rolesLabel,
+  statGroups,
+} from '../catalog/card-labels';
 import { CardPicker } from './CardPicker';
 import {
   changeFormation,
@@ -14,14 +21,14 @@ import {
   placeCard,
   removeCard,
 } from './playground';
-import type { EvaluatedSlot } from './playground';
+import type { EvaluatedSlot, StyleChoice } from './playground';
 
 interface SlotCardProps {
   readonly index: number;
   readonly slot: EvaluatedSlot;
   readonly onPick: () => void;
   readonly onRemove: () => void;
-  readonly onStyle: (styleId: number | null) => void;
+  readonly onStyle: (styleId: StyleChoice) => void;
 }
 
 function SlotStats({ card, slot }: { readonly card: CatalogCard; readonly slot: EvaluatedSlot }) {
@@ -64,10 +71,26 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
             </div>
             <dl className="facts">
               <div>
+                <dt>Gerçek reyting</dt>
+                <dd>{slot.trueRating === null ? '—' : formatTrueRating(slot.trueRating)}</dd>
+              </div>
+              <div>
                 <dt>Kimya</dt>
                 <dd className={slot.inPosition ? undefined : 'status status--error'}>
                   {slot.inPosition ? `${slot.chemistry} / 3` : 'Mevki dışı'}
                 </dd>
+              </div>
+              <div>
+                <dt>AcceleRATE</dt>
+                <dd>{slot.accelerateType === null ? '—' : accelerateLabel(slot.accelerateType)}</dd>
+              </div>
+              <div>
+                <dt>PlayStyle'lar</dt>
+                <dd>{playStylesLabel(card)}</dd>
+              </div>
+              <div>
+                <dt>Roller</dt>
+                <dd>{rolesLabel(card, slot.position)}</dd>
               </div>
             </dl>
             <label className="field">
@@ -76,9 +99,14 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
                 value={slot.styleId ?? ''}
                 onChange={(event) => {
                   const { value } = event.target;
-                  onStyle(value === '' ? null : Number(value));
+                  onStyle(value === 'auto' ? 'auto' : value === '' ? null : Number(value));
                 }}
               >
+                <option value="auto">
+                  {slot.styleId === 'auto'
+                    ? `Otomatik (${slot.style?.name ?? 'Etkisiz'})`
+                    : 'Otomatik'}
+                </option>
                 <option value="">Stil yok</option>
                 {stylesFor(card).map((style) => (
                   <option key={style.id} value={style.id}>
@@ -113,7 +141,8 @@ export function PlaygroundPage() {
     <div className="page">
       <h1 className="page__title">Kadro deneme alanı</h1>
       <p className="page__lead">
-        Diziliş seç ve kartları yerleştir. Kimya ve kadro reytingi anında hesaplanır.
+        Diziliş seç ve kartları yerleştir. Kimya, kadro reytingi ve gerçek reyting anında
+        hesaplanır. Kimya stili varsayılan olarak oyuncunun kimyasında en iyi sonucu verendir.
       </p>
 
       <label className="field playground__formation">
@@ -140,6 +169,10 @@ export function PlaygroundPage() {
           <div>
             <dt>Kadro reytingi</dt>
             <dd>{evaluation.rating}</dd>
+          </div>
+          <div>
+            <dt>Kadro gerçek reytingi</dt>
+            <dd>{formatTrueRating(evaluation.trueRating)}</dd>
           </div>
           <div>
             <dt>Takım kimyası</dt>

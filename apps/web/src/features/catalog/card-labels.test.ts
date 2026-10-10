@@ -3,9 +3,17 @@ import { describe, expect, it } from 'vitest';
 import futggPage from '../../../../../packages/data-sync/test/fixtures/futgg-definitions-page.json' with { type: 'json' };
 import { ACCELERATE_TYPES, POSITIONS, parseFutggDefinitionsPage } from '@fc27/data-sync';
 import type { CatalogCard } from '@fc27/data-sync';
-import { accelerateLabel, footLabel, positionName, statGroups } from './card-labels';
+import {
+  accelerateByStyle,
+  accelerateLabel,
+  footLabel,
+  playStylesLabel,
+  positionName,
+  rolesLabel,
+  statGroups,
+} from './card-labels';
 
-const [pele, , courtois] = parseFutggDefinitionsPage(futggPage).cards as [
+const [pele, kubo, courtois] = parseFutggDefinitionsPage(futggPage).cards as [
   CatalogCard,
   CatalogCard,
   CatalogCard,
@@ -144,5 +152,92 @@ describe('accelerateLabel', () => {
       'Çoğunlukla uzun',
       'Uzun',
     ]);
+  });
+});
+
+describe('accelerateByStyle', () => {
+  it('groups the chemistry styles by the AcceleRATE type they give, in type order', () => {
+    // Raw fixture: Pelé is Controlled with Architect and Sniper, Explosive with the rest.
+    expect(accelerateByStyle(pele)).toEqual([
+      {
+        label: 'Patlayıcı',
+        styles:
+          'Anchor, Artist, Backbone, Basic, Catalyst, Deadeye, Engine, Finisher, Gladiator, ' +
+          'Guardian, Hawk, Hunter, Maestro, Marksman, Powerhouse, Sentinel, Shadow',
+      },
+      { label: 'Kontrollü', styles: 'Architect, Sniper' },
+    ]);
+    expect(accelerateByStyle(courtois)).toEqual([
+      { label: 'Uzun', styles: 'Cat, GK Basic, Glove, Shield, Wall' },
+    ]);
+  });
+
+  it('lists the style names alphabetically', () => {
+    expect(
+      accelerateByStyle({ accelerateTypeByStyle: { Sniper: 'lengthy', Anchor: 'lengthy' } }),
+    ).toEqual([{ label: 'Uzun', styles: 'Anchor, Sniper' }]);
+  });
+
+  it('is null when the source has no per-style types', () => {
+    expect(accelerateByStyle({ accelerateTypeByStyle: null })).toBeNull();
+    expect(accelerateByStyle({})).toBeNull();
+  });
+});
+
+// PlayStyle and role names are looked up by hand in FUT.GG's lists
+// (packages/domain/test/fixtures/futgg-playstyles.json and futgg-roles.json).
+
+describe('playStylesLabel', () => {
+  it('lists the PlayStyles+ first, marked with +, then the PlayStyles', () => {
+    // Pelé: playstylesPlus [0], playstyles [2, 39, 5, 16, 20, 22].
+    expect(playStylesLabel(pele)).toBe(
+      'Finesse Shot+, Power Shot, Precision Header, Incisive Pass, Technical, Trickster, Quick Step',
+    );
+    // Kubo: playstylesPlus [], playstyles [0, 37, 38, 16, 19].
+    expect(playStylesLabel(kubo)).toBe(
+      'Finesse Shot, Gamechanger, Inventive, Technical, First Touch',
+    );
+  });
+
+  it('shows an unknown PlayStyle by its id', () => {
+    expect(playStylesLabel({ playStyles: [99], playStylesPlus: [] })).toBe('PlayStyle #99');
+  });
+
+  it('shows a dash for a card without PlayStyles', () => {
+    expect(playStylesLabel({ playStyles: [], playStylesPlus: [] })).toBe('—');
+  });
+
+  it('says when the source does not report PlayStyles', () => {
+    expect(playStylesLabel({ playStyles: null, playStylesPlus: null })).toBe('Bilinmiyor');
+  });
+});
+
+describe('rolesLabel', () => {
+  it('lists the Role++ then the Role+ with their positions', () => {
+    // Pelé: rolesPlusPlus [132, 143], rolesPlus [31].
+    expect(rolesLabel(pele)).toBe('CAM Shadow Striker++, ST False 9++, CAM Playmaker+');
+    // Courtois: rolesPlusPlus [101].
+    expect(rolesLabel(courtois)).toBe('GK Goalkeeper++');
+  });
+
+  it('lists only the roles of a given position, without the position', () => {
+    expect(rolesLabel(pele, 'ST')).toBe('False 9++');
+    expect(rolesLabel(pele, 'CAM')).toBe('Shadow Striker++, Playmaker+');
+    // Kubo: rolesPlus [23, 25, 36]; 36 is a RW role.
+    expect(rolesLabel(kubo, 'RM')).toBe('Winger+, Wide Playmaker+');
+  });
+
+  it('shows a dash when the card has no role at the position', () => {
+    expect(rolesLabel(pele, 'CB')).toBe('—');
+    expect(rolesLabel({ rolesPlus: [], rolesPlusPlus: [] })).toBe('—');
+  });
+
+  it('shows an unknown role by its id', () => {
+    expect(rolesLabel({ rolesPlus: [999], rolesPlusPlus: [998] })).toBe('Rol #998++, Rol #999+');
+  });
+
+  it('says when the source does not report roles', () => {
+    expect(rolesLabel({ rolesPlus: null, rolesPlusPlus: null })).toBe('Bilinmiyor');
+    expect(rolesLabel({ rolesPlus: null, rolesPlusPlus: null }, 'ST')).toBe('Bilinmiyor');
   });
 });

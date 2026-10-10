@@ -137,6 +137,27 @@ describe('parseFutggDefinitionsPage', () => {
       heightCm: 173,
       weightKg: 70,
       accelerateType: 'explosive',
+      accelerateTypeByStyle: {
+        Anchor: 'explosive',
+        Architect: 'controlled',
+        Artist: 'explosive',
+        Backbone: 'explosive',
+        Basic: 'explosive',
+        Catalyst: 'explosive',
+        Deadeye: 'explosive',
+        Engine: 'explosive',
+        Finisher: 'explosive',
+        Gladiator: 'explosive',
+        Guardian: 'explosive',
+        Hawk: 'explosive',
+        Hunter: 'explosive',
+        Maestro: 'explosive',
+        Marksman: 'explosive',
+        Powerhouse: 'explosive',
+        Sentinel: 'explosive',
+        Shadow: 'explosive',
+        Sniper: 'controlled',
+      },
       playStyles: [2, 39, 5, 16, 20, 22],
       playStylesPlus: [0],
       rolesPlus: [31],
@@ -182,6 +203,13 @@ describe('parseFutggDefinitionsPage', () => {
     expect(courtois.position).toBe('GK');
     expect(courtois.alternatePositions).toEqual([]);
     expect(courtois.accelerateType).toBe('lengthy');
+    expect(courtois.accelerateTypeByStyle).toEqual({
+      Cat: 'lengthy',
+      'GK Basic': 'lengthy',
+      Glove: 'lengthy',
+      Shield: 'lengthy',
+      Wall: 'lengthy',
+    });
     expect(courtois.goalkeeperFaceStats).toEqual({
       diving: 87,
       handling: 89,
@@ -270,6 +298,53 @@ describe('parseFutggDefinitionsPage', () => {
     expectValidationError(
       () => parseFutggDefinitionsPage(withItem(0, { accelerateType: 'TURBO' })),
       '[futgg] unknown AcceleRATE type TURBO',
+    );
+  });
+
+  it('maps every AcceleRATE type of the per-style table', () => {
+    const accelerateTypes = {
+      explosive: ['Hunter'],
+      mostlyExplosive: ['Basic'],
+      controlledExplosive: ['Engine'],
+      controlled: ['Sniper'],
+      controlledLengthy: ['Anchor'],
+      mostlyLengthy: ['Shadow'],
+      lengthy: [],
+    };
+    const parsed = parseFutggDefinitionsPage(withItem(0, { accelerateTypes }));
+    expect(parsed.cards[0]?.accelerateTypeByStyle).toEqual({
+      Hunter: 'explosive',
+      Basic: 'mostly_explosive',
+      Engine: 'controlled_explosive',
+      Sniper: 'controlled',
+      Anchor: 'controlled_lengthy',
+      Shadow: 'mostly_lengthy',
+    });
+    const lengthy = parseFutggDefinitionsPage(
+      withItem(0, { accelerateTypes: { lengthy: ['Hawk'] } }),
+    );
+    expect(lengthy.cards[0]?.accelerateTypeByStyle).toEqual({ Hawk: 'lengthy' });
+  });
+
+  it('keeps a missing per-style AcceleRATE table as unknown', () => {
+    const parsed = parseFutggDefinitionsPage(withItem(0, { accelerateTypes: null }));
+    expect(parsed.cards[0]?.accelerateTypeByStyle).toBeNull();
+  });
+
+  it('rejects an unknown AcceleRATE type in the per-style table', () => {
+    expectValidationError(
+      () => parseFutggDefinitionsPage(withItem(0, { accelerateTypes: { turbo: ['Hunter'] } })),
+      '[futgg] unknown AcceleRATE type turbo',
+    );
+  });
+
+  it('rejects a chemistry style listed under two AcceleRATE types', () => {
+    expectValidationError(
+      () =>
+        parseFutggDefinitionsPage(
+          withItem(0, { accelerateTypes: { explosive: ['Hunter'], lengthy: ['Hunter'] } }),
+        ),
+      '[futgg] chemistry style Hunter has two AcceleRATE types',
     );
   });
 

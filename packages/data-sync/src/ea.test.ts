@@ -112,6 +112,7 @@ describe('parseEaRatingsPage', () => {
       heightCm: null,
       weightKg: null,
       accelerateType: null,
+      accelerateTypeByStyle: null,
       playStyles: null,
       playStylesPlus: null,
       rolesPlus: null,

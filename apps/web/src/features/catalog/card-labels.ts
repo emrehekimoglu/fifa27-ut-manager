@@ -1,3 +1,4 @@
+import { ACCELERATE_TYPES } from '@fc27/data-sync';
 import type {
   AccelerateType,
   Attributes,
@@ -7,6 +8,7 @@ import type {
   GoalkeeperFaceStats,
   Position,
 } from '@fc27/data-sync';
+import { cardPlayStyles, cardRoles } from '@fc27/domain';
 
 export interface StatRow {
   readonly label: string;
@@ -43,6 +45,40 @@ const ACCELERATE_LABELS: Record<AccelerateType, string> = {
   lengthy: 'Uzun',
 };
 
+/** Shown when the source does not report a list. */
+const UNKNOWN = 'Bilinmiyor';
+
+const joined = (items: readonly string[]) => (items.length > 0 ? items.join(', ') : '—');
+
+/** The card's PlayStyles, PlayStyles+ first and marked with +. */
+export function playStylesLabel(card: Pick<CatalogCard, 'playStyles' | 'playStylesPlus'>): string {
+  const playStyles = cardPlayStyles(card);
+  if (playStyles === null) return UNKNOWN;
+  return joined(
+    playStyles.map(({ id, name, plus }) => `${name ?? `PlayStyle #${id}`}${plus ? '+' : ''}`),
+  );
+}
+
+/** The card's Role++ and Role+, with positions unless only those of `position` are listed. */
+export function rolesLabel(
+  card: Pick<CatalogCard, 'rolesPlus' | 'rolesPlusPlus'>,
+  position?: Position,
+): string {
+  const roles = cardRoles(card, position);
+  if (roles === null) return UNKNOWN;
+  return joined(
+    roles.map((role) => {
+      const name =
+        role.name === null
+          ? `Rol #${role.id}`
+          : position === undefined
+            ? `${role.position} ${role.name}`
+            : role.name;
+      return `${name}${role.plusPlus ? '++' : '+'}`;
+    }),
+  );
+}
+
 /** Turkish name of a position, e.g. "Santrafor" for ST. */
 export function positionName(position: Position): string {
   return POSITION_NAMES[position];
@@ -54,6 +90,28 @@ export function footLabel(foot: Foot): string {
 
 export function accelerateLabel(type: AccelerateType): string {
   return ACCELERATE_LABELS[type];
+}
+
+/** One AcceleRATE type with the chemistry styles that give it. */
+export interface AccelerateStyles {
+  readonly label: string;
+  readonly styles: string;
+}
+
+/** The chemistry styles grouped by the AcceleRATE type they give; null when unknown. */
+export function accelerateByStyle(
+  card: Pick<CatalogCard, 'accelerateTypeByStyle'>,
+): readonly AccelerateStyles[] | null {
+  const byStyle = card.accelerateTypeByStyle;
+  if (byStyle === null || byStyle === undefined) return null;
+  const entries = Object.entries(byStyle);
+  return ACCELERATE_TYPES.flatMap((type) => {
+    const styles = entries
+      .filter(([, styleType]) => styleType === type)
+      .map(([style]) => style)
+      .sort((a, b) => a.localeCompare(b, 'en'));
+    return styles.length > 0 ? [{ label: ACCELERATE_LABELS[type], styles: styles.join(', ') }] : [];
+  });
 }
 
 type AttributeKey = keyof Attributes;
