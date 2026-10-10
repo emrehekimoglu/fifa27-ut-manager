@@ -3,7 +3,7 @@
 This file tells a new working session where the project stands and what comes next. Read it after [CLAUDE.md](../CLAUDE.md), [CONTRIBUTING.md](../CONTRIBUTING.md) and the [PRD](product/PRD.md). Update it in the pull request that changes the state it describes.
 
 - **Last updated:** 2026-10-09
-- **Current milestone:** M3 (domain engine); part 1 merged; part 2 (true rating) design approved, implementation in progress
+- **Current milestone:** M3 (domain engine); part 1 merged; part 2 (true rating) in progress: rules data, AcceleRATE, calibration and the card-detail rating done; the playground part is next
 
 ## 1. Milestones
 
@@ -53,6 +53,7 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 - **The squad rating uses the starting XI only** (confirmed by the owner). Its rounding follows the community formula and has not yet been compared with in-game squads.
 - **The rules data** (formations, chemistry styles, face-stat weights) comes from FUT.GG's site bundle, cross-checked against FUT.GG's pages (ADR-0006). A rules change is a data change in `packages/domain/src/rules`.
 - **AcceleRATE with a chemistry style** comes from FUT.GG's per-card table of the type each style gives at full chemistry (`accelerateTypeByStyle`). Below full chemistry the card's own type is used, an approximation (true-rating design §2.3). Cards get the table at their next catalog sync.
+- **The true rating misses its accuracy bounds** against FUT.GG's meta ratings: mean error 1.7–3.0 points per position group (bound 1.5), rank correlation 0.85–0.97 (bound 0.90; CB, FB, CDM and ST below). The owner chose to ship these weights; the bounds stay as targets for a richer model ([report](domain/true-rating-calibration.md), design §4).
 - **The manager** is not supported yet, because there is no manager catalog.
 - **The playground** is not saved.
 
@@ -63,9 +64,9 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
    - Fix any mismatch the owner reports, especially in the squad-rating rounding.
 2. **M3 part 2: true rating** (PRD §7.4), following the approved design [`docs/domain/true-rating.md`](domain/true-rating.md) (#19), one PR per step of its delivery plan (§7):
    - ~~PlayStyle and role rules data, with names on the card detail and in the playground~~ (#20).
-   - Per-style AcceleRATE in the catalog. FUT.GG's card data lists each card's AcceleRATE type per chemistry style (`accelerateTypes`), so no AcceleRATE rules are needed.
-   - The calibration workflow. It uses FUT.GG's per-role, per-style meta ratings (`/api/fut/metarank/player/{eaId}/`), fetched by a manual GitHub Actions workflow and never committed.
-   - The true rating and chemistry-style auto-selection in `@fc27/domain` and the UI.
+   - ~~Per-style AcceleRATE in the catalog~~ (#22).
+   - ~~The calibration workflow, the true rating in `@fc27/domain` and on the card detail~~ (this PR). Accuracy: [`true-rating-calibration.md`](domain/true-rating-calibration.md).
+   - **Next:** the playground part: true rating per slot, an **Otomatik** chemistry-style option and **Kadro gerçek reytingi** (design §6).
 3. **Manager support.** Find a source for FC 27 managers (nation, league), then add a manager slot to the chemistry calculation and the playground.
 4. **M4 squad builder.**
    - Google sign-in with an allow-list of the two users.
@@ -86,5 +87,6 @@ Cloud sessions need these hosts on the environment's network allowlist: `www.fut
 - **Packages:**
   - `@fc27/data-sync`: source adapters and the catalog sync.
   - `@fc27/domain`: pure game logic.
+  - `@fc27/calibration`: fits the true-rating weights (workflow **True-rating calibration**, started by hand).
   - `@fc27/web`: React app and the `/api/source-health` function.
   - The web app's tests alias both packages to their sources.

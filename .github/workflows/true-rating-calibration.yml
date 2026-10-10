@@ -1,0 +1,44 @@
+name: True-rating calibration
+
+# Fits the true-rating weights against FUT.GG's meta ratings (docs/domain/true-rating.md §4).
+# Started by hand. The fetched sample stays in the run's artifact and is never committed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: true-rating-calibration
+  cancel-in-progress: false
+
+env:
+  HUSKY: '0'
+
+jobs:
+  calibrate:
+    name: Sample and fit
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @fc27/calibration build
+      - name: Sample cards and fetch their meta ratings
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node packages/calibration/dist/cli/sample.js calibration
+      - name: Fit the weights
+        run: node packages/calibration/dist/cli/fit.js calibration >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the weights and the report
+        uses: actions/upload-artifact@v6
+        with:
+          name: true-rating-calibration
+          path: calibration/
+          retention-days: 7

@@ -157,7 +157,7 @@ PRD §7.4 asks for calibration against third-party meta ratings, "so the result 
 
 **Reference.** FUT.GG publishes a meta rating per card, per role and per chemistry style (`/api/fut/metarank/player/{eaId}/`; base Pelé has 152 scores: 8 roles × 19 styles). For a card, position and style, the reference is the best score among that position's roles.
 
-- The metarank role ids are FUT.GG's own and are not in the role list. The calibration script maps them by matching each card's Role+ and Role++ flags, which both endpoints report.
+- The metarank role ids are FUT.GG's own and are not in the role list. They come in one block per position (`METARANK_ROLE_POSITIONS` in `@fc27/calibration`), found by checking which positions the scored cards can play. The Role+ and Role++ flags in the metarank response do not match the cards' roles reliably, so they are not used.
 - The scores are taken to be at full chemistry. The calibration PR checks this on a few cards whose style changes the face stats.
 
 **Sample.**
@@ -170,7 +170,8 @@ PRD §7.4 asks for calibration against third-party meta ratings, "so the result 
 **Fit.**
 
 - For each group, fit the attribute weights (non-negative, summing to 1), `c_wf`, `c_sm`, `c_acc`, `c_h` and `α`, plus the global `β`, by least squares with a small L2 penalty, so that no weight swings wildly on sparse data.
-- The solver is a deterministic projected-gradient loop in TypeScript; no new language or service.
+- The solver is Lawson and Hanson's active-set non-negative least squares in TypeScript, deterministic; no new language or service. AcceleRATE and height may take either sign, so each has a positive and a negative column, and the sum of the attribute weights is held to 1 by a heavily weighted penalty.
+- `β` is the candidate (1, 1.5, 2, 2.5 or 3) with the lowest error on the training cards.
 - Weights are rounded to 0.005 and renormalised before they are committed.
 - 20 % of the cards (a fixed, seeded split) are held out and never used for fitting.
 
@@ -182,6 +183,13 @@ PRD §7.4 asks for calibration against third-party meta ratings, "so the result 
 If a group misses either bound, the calibration PR says so, with the numbers and a proposal, instead of loosening the bound silently.
 
 The report (date, sample size, the two metrics per group, and the largest disagreements) is committed as `docs/domain/true-rating-calibration.md`. Re-running the calibration is how the weights follow a game update.
+
+**First calibration (2026-10-09).** No group meets the mean-error bound, and CB, FB, CDM and ST miss the Spearman bound ([report](true-rating-calibration.md)):
+
+- Mean absolute error is 1.7–3.0 points per group; Spearman is 0.85–0.97. FUT.GG's rating is not linear in the attributes: even fitted to all of a partial sample with a free scale and offset, a linear model missed it by 1.0–1.5 points on average, and rescaling our held-out ratings does not close the gap.
+- 32 of the 573 cards with meta ratings have ratings that do not cover the card's primary position, apparently those of another version of the card, often 15–20 points lower. They are left out. Another 147 sampled cards have no meta ratings at all.
+- The fit gives PlayStyles a weight of about 0: once the attributes are in, they explain nothing more of FUT.GG's rating.
+- **Decision (owner, #24):** ship these weights, since the order of cards agrees well. The bounds stay as targets for a later model (for example, the best of several role-specific weightings, as FUT.GG does), not as a gate for re-calibrations.
 
 ## 5. Squad true rating
 
