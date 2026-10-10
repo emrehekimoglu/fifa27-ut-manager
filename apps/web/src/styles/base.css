@@ -1,0 +1,85 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  dl,
+  dd,
+  figure {
+    margin: 0;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    font-size: 100%;
+    line-height: 1.5;
+    color: var(--color-text);
+    background: var(--color-bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgb(242 201 76 / 8%), transparent 60%), var(--color-bg);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+  }
+
+  a {
+    color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0ms !important;
+      animation-duration: 0ms !important;
+    }
+  }
+}

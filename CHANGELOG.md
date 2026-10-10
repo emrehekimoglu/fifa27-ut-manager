@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- UI foundation (ADR-0007): design tokens, an app shell with a main menu (bottom tab bar on phones, header links on desktop), a skip link, 44 px touch targets and a restyled landing, catalog, card detail, playground and source page.
 - Product requirements document for v0.1.
 - pnpm monorepo with a React + Vite web app, strict TypeScript, ESLint and Prettier.
 - Test tooling: Vitest with coverage thresholds, Stryker mutation testing, and Playwright end-to-end tests on desktop and 360 px mobile.

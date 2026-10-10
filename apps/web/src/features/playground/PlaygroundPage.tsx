@@ -1,7 +1,6 @@
 import type { CatalogCard } from '@fc27/data-sync';
 import { FORMATIONS, stylesFor } from '@fc27/domain';
 import { useState } from 'react';
-import { Link } from 'react-router';
 
 import { CardImage } from '../catalog/CardImage';
 import { formatTrueRating } from '../catalog/true-rating-rows';
@@ -57,8 +56,8 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
         </h3>
         {card === null ? (
           <>
-            <p className="panel__note">Boş</p>
-            <button type="button" onClick={onPick}>
+            <p className="slot__empty">Boş</p>
+            <button type="button" className="button--primary" onClick={onPick}>
               Kart seç
             </button>
           </>
@@ -67,10 +66,10 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
             <div className="slot__card">
               <CardImage card={card} size={48} />
               <span className="sample__name">
-                {card.name} {card.overall}
+                {card.name} <span className="rating-chip">{card.overall}</span>
               </span>
             </div>
-            <dl className="source__facts">
+            <dl className="facts">
               <div>
                 <dt>Gerçek reyting</dt>
                 <dd>{slot.trueRating === null ? '—' : formatTrueRating(slot.trueRating)}</dd>
@@ -94,7 +93,7 @@ function SlotCard({ index, slot, onPick, onRemove, onStyle }: SlotCardProps) {
                 <dd>{rolesLabel(card, slot.position)}</dd>
               </div>
             </dl>
-            <label className="catalog-filters__field">
+            <label className="field">
               <span>Kimya stili</span>
               <select
                 value={slot.styleId ?? ''}
@@ -139,17 +138,14 @@ export function PlaygroundPage() {
   const pickingSlot = picking === null ? undefined : evaluation.slots[picking];
 
   return (
-    <main className="page">
-      <nav className="page__nav">
-        <Link to="/">← Ana sayfa</Link>
-      </nav>
+    <div className="page">
       <h1 className="page__title">Kadro deneme alanı</h1>
       <p className="page__lead">
         Diziliş seç ve kartları yerleştir. Kimya, kadro reytingi ve gerçek reyting anında
         hesaplanır. Kimya stili varsayılan olarak oyuncunun kimyasında en iyi sonucu verendir.
       </p>
 
-      <label className="catalog-filters__field playground__formation">
+      <label className="field playground__formation">
         <span>Diziliş</span>
         <select
           value={playground.formationId}
@@ -165,9 +161,11 @@ export function PlaygroundPage() {
         </select>
       </label>
 
-      <section className="panel source" aria-labelledby="playground-summary-title">
-        <h2 id="playground-summary-title">Kadro özeti</h2>
-        <dl className="source__facts">
+      <section className="summary" aria-labelledby="playground-summary-title">
+        <h2 id="playground-summary-title" className="visually-hidden">
+          Kadro özeti
+        </h2>
+        <dl className="summary__stats">
           <div>
             <dt>Kadro reytingi</dt>
             <dd>{evaluation.rating}</dd>
@@ -215,6 +213,6 @@ export function PlaygroundPage() {
           }}
         />
       )}
-    </main>
+    </div>
   );
 }
