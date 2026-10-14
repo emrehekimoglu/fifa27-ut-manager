@@ -37,7 +37,7 @@ jobs:
       - name: Fit the weights
         run: node packages/calibration/dist/cli/fit.js calibration >> "$GITHUB_STEP_SUMMARY"
       - name: Upload the weights and the report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: true-rating-calibration
           path: calibration/
