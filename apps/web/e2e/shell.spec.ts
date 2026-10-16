@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
 
+import { signIn } from './auth';
+
 /** The sections of the main menu, in order, with the address each one opens. */
 const SECTIONS = [
   { name: 'Ana sayfa', path: '/' },
@@ -25,6 +27,7 @@ test.beforeEach(async ({ page }) => {
   await page.route(/^https:\/\/supabase\.e2e\.test\//, (route) => route.abort());
   await page.route('**/api/source-health', (route) => route.abort());
   await page.route(/^https:\/\/game-assets\.fut\.gg\//, (route) => route.abort());
+  await signIn(page);
 });
 
 test('offers a skip link as the first focusable element', async ({ page }) => {
@@ -114,6 +117,12 @@ test('gives every main menu link a touch-sized target', async ({ page }) => {
     const link = mainMenu(page).getByRole('link', { name: item.name, exact: true });
     expect(await heightOf(link)).toBeGreaterThanOrEqual(MIN_TARGET);
   }
+});
+
+test('gives the sign-out button a touch-sized target in the header', async ({ page }) => {
+  await page.goto('/');
+  const signOut = page.getByRole('banner').getByRole('button', { name: 'Çıkış yap' });
+  expect(await heightOf(signOut)).toBeGreaterThanOrEqual(MIN_TARGET);
 });
 
 test('gives the catalog filters touch-sized targets', async ({ page }) => {

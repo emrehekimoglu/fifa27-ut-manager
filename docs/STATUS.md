@@ -5,6 +5,7 @@ This file tells a new working session where the project stands and what comes ne
 - **Last updated:** 2026-10-16
 - **Current milestone:** M3 (domain engine); part 1 merged; part 2 (true rating) done with this PR: rules data, AcceleRATE, calibration, the card detail and the playground; manager support is next
 - **In parallel:** UI foundation (ADR-0007), decided by the owner on 2026-10-09 to come before M4
+- **Started early:** M4 sign-in (ADR-0008), chosen by the owner on 2026-10-16 so that private data can follow; open as this PR
 
 ## 1. Milestones
 
@@ -15,7 +16,7 @@ This file tells a new working session where the project stands and what comes ne
 | M2 Catalog pipeline   | Done        | #10, #11, #12, #13, #14      | Daily catalog sync into Supabase (ADR-0005); `/katalog` with search, position filter and card detail                                                                                |
 | M3 Domain engine      | In progress | #15, #16, #19, #20, #22, #24 | `/oyun-alani` playground: formation, 11 slots, chemistry, squad rating, chemistry styles (ADR-0006); PlayStyle and role names; true rating on the card detail and in the playground |
 | UI foundation         | In progress | #29 (replaces #21, #23)      | App shell and main menu, design tokens, restyled pages; playground pitch with style stat changes                                                                                    |
-| M4 Squad builder      | Not started | —                            | —                                                                                                                                                                                   |
+| M4 Squad builder      | In progress | this PR                      | Google sign-in with a two-account allow-list; every page behind it (ADR-0008)                                                                                                       |
 | M5 Prices             | Not started | —                            | —                                                                                                                                                                                   |
 | M6 Recommendations    | Not started | —                            | —                                                                                                                                                                                   |
 | M7 Search and compare | Not started | —                            | —                                                                                                                                                                                   |
@@ -24,11 +25,11 @@ This file tells a new working session where the project stands and what comes ne
 ## 2. What runs in production
 
 - **Web app:** https://fifa27-ut-manager.vercel.app (Vercel, root `apps/web`).
-  - The production domain is public.
+  - The production domain is public, but every page asks for Google sign-in, and only the two allow-listed accounts get in (ADR-0008).
   - Preview deployments are behind Vercel Authentication.
-  - No personal data is stored yet; sign-in arrives in M4.
+  - The only personal data is the allow-list (`allowed_users`), which lives in the database and never in the repository.
 - **Database:** Supabase Postgres with `cards` and `catalog_syncs` (migrations in `supabase/migrations`).
-  - RLS allows reads only.
+  - RLS allows reads only to allow-listed Google accounts (`is_allowed()`); anonymous visitors read nothing.
   - Writes need the secret key.
 - **Catalog sync:** `.github/workflows/catalog-sync.yml`, daily at 03:47 UTC and on demand.
   - It reads FUT.GG in seven overall bands, about 19,958 cards.
@@ -73,8 +74,7 @@ The UI foundation runs alongside steps 1–3. The playground now shows the XI on
    - ~~The playground part: true rating per slot, an **Otomatik** chemistry-style option and **Kadro gerçek reytingi**~~ (this PR).
 3. **Manager support.** Find a source for FC 27 managers (nation, league), then add a manager slot to the chemistry calculation and the playground.
 4. **M4 squad builder.**
-   - Google sign-in with an allow-list of the two users.
-   - RLS on reads.
+   - ~~Google sign-in with an allow-list of the two users, RLS on reads~~ (this PR). Before merging, the owner follows [`guides/sign-in.md`](guides/sign-in.md).
    - Saved squads with 7 substitutes and a manager.
    - Pitch UI and club management (owned cards cost 0).
 5. **M5 prices:** the home price agent (ADR-0004), with a Windows setup guide written step by step for the owner.

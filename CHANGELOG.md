@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Google sign-in with an allow-list of two accounts (ADR-0008): every page asks for sign-in, other accounts see an access-denied screen, and row-level security limits reads of the catalog to allow-listed Google identities. Setup guide in `docs/guides/sign-in.md`.
 - Playground pitch: the XI stands in its formation as FUT-style cards; the slot panel shows what the chemistry style adds to each stat, and its true rating, AcceleRATE, PlayStyles, roles and automatic style.
 - UI foundation (ADR-0007): design tokens, an app shell with a main menu (bottom tab bar on phones, header links on desktop), a skip link, 44 px touch targets and a restyled landing, catalog, card detail, playground and source page.
 - Product requirements document for v0.1.

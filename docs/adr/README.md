@@ -20,3 +20,4 @@ We record significant technical decisions as ADRs, following [Michael Nygard's f
 | [0005](0005-catalog-storage-and-sync.md)          | Catalog storage and sync          | Accepted |
 | [0006](0006-game-rules-data-and-domain-engine.md) | Game rules data and domain engine | Proposed |
 | [0007](0007-ui-foundation.md)                     | UI foundation                     | Proposed |
+| [0008](0008-sign-in-and-access.md)                | Sign-in and access control        | Proposed |

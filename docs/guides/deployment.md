@@ -112,6 +112,10 @@ GitHub's runners only have IPv4. The direct connection on the free plan is IPv6-
 - **The secret key and database URL grant full access.** They belong only in GitHub secrets.
 - **Vercel bakes `VITE_*` variables into the build.** After changing them, redeploy.
 
+## Sign-in
+
+The app only opens for two allow-listed Google accounts. Set this up once with the [sign-in guide](sign-in.md).
+
 ## Environment variables and secrets
 
 - **Register each new variable** in Vercel under **Settings → Environment Variables**, separately for Production and Preview where needed.
