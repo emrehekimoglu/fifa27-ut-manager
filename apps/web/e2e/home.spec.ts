@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 import packageJson from '../package.json' with { type: 'json' };
+import { signIn } from './auth';
 import { E2E_BUILD } from './build-fixture';
 
 test.beforeEach(async ({ page }) => {
+  await signIn(page);
   await page.goto('/');
 });
 

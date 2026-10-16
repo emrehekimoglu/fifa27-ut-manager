@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import type { Locator, Page, Route } from '@playwright/test';
 
+import { signIn } from './auth';
 import { E2E_SUPABASE } from './build-fixture';
 import cards from './fixtures/futgg-catalog-cards.json' with { type: 'json' };
 
@@ -74,6 +75,7 @@ async function centre(locator: Locator): Promise<{ x: number; y: number }> {
 test.beforeEach(async ({ page }) => {
   // Card images come from a third-party CDN; keep the tests offline and deterministic.
   await page.route(/^https:\/\/game-assets\.fut\.gg\//, (route) => route.abort());
+  await signIn(page);
 });
 
 test('is reachable from the landing page', async ({ page }) => {

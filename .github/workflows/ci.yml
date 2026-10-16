@@ -100,6 +100,8 @@ jobs:
           export SUPABASE_URL="$LOCAL_API_URL"
           export SUPABASE_SECRET_KEY="${LOCAL_SECRET_KEY:-$LOCAL_SERVICE_ROLE_KEY}"
           pnpm --filter @fc27/data-sync test:integration
+      - name: Run database tests
+        run: pnpm exec supabase test db
 
   commits:
     name: Conventional commits

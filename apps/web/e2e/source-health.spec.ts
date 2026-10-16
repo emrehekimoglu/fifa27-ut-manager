@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import type { Locator, Page, Route } from '@playwright/test';
 
+import { signIn } from './auth';
 import { E2E_SUPABASE } from './build-fixture';
 import futggCards from './fixtures/futgg-catalog-cards.json' with { type: 'json' };
 import report from './fixtures/source-health-report.json' with { type: 'json' };
@@ -55,6 +56,7 @@ test.beforeEach(async ({ page }) => {
   await page.route(CARDS, (route) => fulfillCards(route, futggCards, 19958));
   // Card images come from third-party CDNs; keep the tests offline and deterministic.
   await page.route(/^https:\/\/game-assets\.fut\.gg\//, (route) => route.abort());
+  await signIn(page);
 });
 
 test('is reachable from the landing page', async ({ page }) => {
