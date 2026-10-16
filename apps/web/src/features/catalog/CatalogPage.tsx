@@ -107,10 +107,7 @@ export function CatalogPage() {
     state.kind === 'loaded' ? Math.max(1, Math.ceil(state.result.total / CATALOG_PAGE_SIZE)) : 1;
 
   return (
-    <main className="page">
-      <nav className="page__nav">
-        <Link to="/">← Ana sayfa</Link>
-      </nav>
+    <div className="page">
       <h1 className="page__title">Kart kataloğu</h1>
       <p className="page__lead">FC 27 Ultimate Team kartları, en yüksek reytingden başlayarak.</p>
 
@@ -123,7 +120,7 @@ export function CatalogPage() {
           update({ q: draft });
         }}
       >
-        <label className="catalog-filters__field">
+        <label className="field">
           <span>Oyuncu ara</span>
           <input
             type="search"
@@ -140,7 +137,7 @@ export function CatalogPage() {
             }}
           />
         </label>
-        <label className="catalog-filters__field">
+        <label className="field">
           <span>Mevki</span>
           <select
             value={position ?? ''}
@@ -183,7 +180,8 @@ export function CatalogPage() {
                       <CardImage card={card} size={48} />
                       <span className="sample__name">{card.name}</span>{' '}
                       <span className="sample__meta">
-                        {card.overall} · {card.position} · {card.club?.name ?? card.league.name}
+                        <span className="rating-chip">{card.overall}</span> · {card.position} ·{' '}
+                        {card.club?.name ?? card.league.name}
                       </span>
                     </Link>
                   </li>
@@ -216,6 +214,6 @@ export function CatalogPage() {
           </>
         )}
       </section>
-    </main>
+    </div>
   );
 }

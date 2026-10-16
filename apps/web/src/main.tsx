@@ -8,7 +8,11 @@ import { CatalogPage } from './features/catalog/CatalogPage';
 import { PlaygroundPage } from './features/playground/PlaygroundPage';
 import { SourceHealthPage } from './features/source-health/SourceHealthPage';
 import { HomePage } from './HomePage';
-import './styles.css';
+import './styles/tokens.css';
+import './styles/base.css';
+import './styles/layout.css';
+import './styles/components.css';
+import './styles/features.css';
 
 const router = createBrowserRouter([
   {

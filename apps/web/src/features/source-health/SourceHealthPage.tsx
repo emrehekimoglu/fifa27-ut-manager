@@ -1,6 +1,5 @@
 import type { CatalogCard, SourceHealth, SourceHealthReport } from '@fc27/data-sync';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
 
 import { browserSupabase } from '../../lib/supabase';
 import { formatSyncTime } from './catalog-sync';
@@ -56,7 +55,7 @@ type StoredState =
 function StoredFutggFacts({ catalog }: { readonly catalog: StoredFutggCatalog }) {
   return (
     <>
-      <dl className="source__facts">
+      <dl className="facts">
         <div>
           <dt>Durum</dt>
           <dd className={`status status--${catalog.status ?? 'ok'}`}>
@@ -72,7 +71,7 @@ function StoredFutggFacts({ catalog }: { readonly catalog: StoredFutggCatalog })
           <dd>{catalog.lastFetchedAt === null ? '—' : formatSyncTime(catalog.lastFetchedAt)}</dd>
         </div>
         {catalog.error !== null && (
-          <div className="source__error">
+          <div className="facts__wide">
             <dt>Hata ayrıntısı</dt>
             <dd>{catalog.error}</dd>
           </div>
@@ -133,7 +132,7 @@ function SourceCard({ health }: { readonly health: SourceHealth }) {
         <h3 id={titleId}>{sourceName(health.source)}</h3>
         <span className="badge">{sourceRole(health.source)}</span>
       </header>
-      <dl className="source__facts">
+      <dl className="facts">
         <div>
           <dt>Durum</dt>
           <dd className={`status status--${health.status}`}>{statusLabel(health.status)}</dd>
@@ -155,7 +154,7 @@ function SourceCard({ health }: { readonly health: SourceHealth }) {
           <dd>{formatCheckedAt(health.checkedAt)}</dd>
         </div>
         {health.error !== null && (
-          <div className="source__error">
+          <div className="facts__wide">
             <dt>Hata ayrıntısı</dt>
             <dd>{health.error}</dd>
           </div>
@@ -220,10 +219,7 @@ export function SourceHealthPage() {
   };
 
   return (
-    <main className="page">
-      <nav className="page__nav">
-        <Link to="/">← Ana sayfa</Link>
-      </nav>
+    <div className="page">
       <h1 className="page__title">Veri kaynakları</h1>
       <p className="page__lead">
         Kart verisi kaynaklarının durumu ve fiyat erişimi testinin sonuçları.
@@ -232,7 +228,12 @@ export function SourceHealthPage() {
       <section className="panel" aria-labelledby="card-sources-title">
         <div className="panel__header">
           <h2 id="card-sources-title">Kart verisi</h2>
-          <button type="button" onClick={recheck} disabled={state.kind === 'loading'}>
+          <button
+            type="button"
+            className="button--primary"
+            onClick={recheck}
+            disabled={state.kind === 'loading'}
+          >
             Yeniden kontrol et
           </button>
         </div>
@@ -268,6 +269,6 @@ export function SourceHealthPage() {
         </p>
         <PriceAccessTable />
       </section>
-    </main>
+    </div>
   );
 }

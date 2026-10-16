@@ -13,7 +13,7 @@ type SyncState =
 
 function SyncFacts({ sync }: { readonly sync: SyncRecord }) {
   return (
-    <dl className="source__facts">
+    <dl className="facts">
       <div>
         <dt>Durum</dt>
         <dd className={`status status--${sync.status === 'failed' ? 'error' : 'ok'}`}>
@@ -37,7 +37,7 @@ function SyncFacts({ sync }: { readonly sync: SyncRecord }) {
         <dd>{sync.deactivatedCount ?? '—'}</dd>
       </div>
       {sync.error && (
-        <div className="source__error">
+        <div className="facts__wide">
           <dt>Hata ayrıntısı</dt>
           <dd>{sync.error}</dd>
         </div>

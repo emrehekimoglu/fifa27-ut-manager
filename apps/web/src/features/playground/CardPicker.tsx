@@ -73,7 +73,7 @@ export function CardPicker({ slotCode, position, onPick, onClose }: CardPickerPr
           Kapat
         </button>
       </div>
-      <label className="catalog-filters__field">
+      <label className="field">
         <span>Oyuncu ara</span>
         <input
           type="search"

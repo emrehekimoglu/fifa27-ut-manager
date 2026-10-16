@@ -44,7 +44,7 @@ function Fact({ label, children }: { readonly label: string; readonly children: 
 
 function CardFacts({ card }: { readonly card: CatalogCard }) {
   return (
-    <dl className="source__facts">
+    <dl className="facts">
       <Fact label="Reyting">{String(card.overall)}</Fact>
       <Fact label="Mevki">{`${card.position} · ${positionName(card.position)}`}</Fact>
       <Fact label="Diğer mevkiler">
@@ -74,7 +74,7 @@ function TrueRatings({ card }: { readonly card: CatalogCard }) {
     <section className="panel" aria-labelledby="true-rating-title">
       <h2 id="true-rating-title">Gerçek reyting</h2>
       <p className="panel__note">Tam kimyada, en iyi kimya stiliyle.</p>
-      <dl className="source__facts">
+      <dl className="facts">
         {trueRatingRows(card).map((row) => (
           <Fact key={row.position} label={row.position}>
             {`${row.rating} · ${row.style}`}
@@ -91,7 +91,7 @@ function AccelerateByStyle({ card }: { readonly card: CatalogCard }) {
   return (
     <section className="panel" aria-labelledby="accelerate-by-style-title">
       <h2 id="accelerate-by-style-title">Kimya stiline göre AcceleRATE</h2>
-      <dl className="source__facts">
+      <dl className="facts">
         {rows.map((row) => (
           <Fact key={row.label} label={row.label}>
             {row.styles}
@@ -164,7 +164,7 @@ export function CardDetailPage() {
         : null;
 
   return (
-    <main className="page">
+    <div className="page">
       <nav className="page__nav">
         <Link to="/katalog">← Katalog</Link>
       </nav>
@@ -185,7 +185,7 @@ export function CardDetailPage() {
           {!outcome.stored.isActive && (
             <p className="panel__note">Bu kart artık kaynakta listelenmiyor.</p>
           )}
-          <section className="panel" aria-label="Kart bilgileri">
+          <section className="panel source" aria-label="Kart bilgileri">
             <CardFacts card={outcome.stored.card} />
           </section>
           <TrueRatings card={outcome.stored.card} />
@@ -193,6 +193,6 @@ export function CardDetailPage() {
           <CardStats card={outcome.stored.card} />
         </>
       )}
-    </main>
+    </div>
   );
 }
