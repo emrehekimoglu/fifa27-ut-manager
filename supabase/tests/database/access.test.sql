@@ -25,7 +25,11 @@ values
 
 insert into public.allowed_users (email) values ('oyuncu@example.com'), ('arkadas@example.com');
 
--- One sync and one card, so every reader either sees exactly one row or none.
+-- Exactly one sync and one card, so every reader either sees one row or none.
+-- The integration tests run first and leave their rows; the rollback restores them.
+delete from public.cards;
+delete from public.catalog_syncs;
+
 insert into public.catalog_syncs (started_at, finished_at, status, source, card_count, deactivated_count)
 values ('2026-10-16T03:47:00Z', '2026-10-16T03:52:00Z', 'succeeded', 'futgg', 1, 0);
 
