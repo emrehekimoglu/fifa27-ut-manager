@@ -73,11 +73,14 @@ export function createSupabaseCatalogStore(client: SupabaseClient): CatalogStore
     },
 
     async deactivateCardsNotSeen(syncId) {
+      // Sync ids come from an identity column, so every card not touched by this
+      // sync has a smaller last_seen_sync_id. A range filter (unlike `neq`) can use
+      // cards_last_seen_sync_idx instead of scanning every active card.
       const { count, error } = await client
         .from('cards')
         .update({ is_active: false }, { count: 'exact' })
         .eq('is_active', true)
-        .neq('last_seen_sync_id', syncId);
+        .lt('last_seen_sync_id', syncId);
       if (error) fail('deactivate unseen cards', error);
       return count ?? 0;
     },
